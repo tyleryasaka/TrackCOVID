@@ -2,6 +2,11 @@
 #### Config ####
 # ------------------------------------------------------- #
 
+# simulation settings
+nTrials = 20
+toggleIntervention = F # enable or disable the intervention (app) in the simulation
+genPlot = F
+
 # model config
 nPlaces = 5
 nPeople = 40
@@ -10,15 +15,13 @@ initialInfected = 0.05
 activeTime = 16
 infectionProb = 0.1 # probability of being infected when exposed
 probDiscoverInfection = 0.1 # dice rolled each time frame
-nTrials = 1
-isolationCompliance = 0.5
+isolationCompliance = 0.75
 
 # intervention config
 assumedTimeFromInfect = 20 # how far back in time to assume infection upon discovery
 putativeInfectProb = 0.95 # the probability of infection on exposure as estimated by the app
 riskToleranceThreshold = 0 # above this risk level, people stay home
-
-toggleIntervention = T # enable or disable the intervention (app) in the simulation
+interventionCompliance = 0.75
 
 # ------------------------------------------------------- #
 #### Libraries ####
@@ -35,18 +38,14 @@ flaggedRisk = function(personIndex, t) {
   # Or at least a simplified version of it
   lastEvent = getVertexIndex(peopleLocations[personIndex], t)
   exposureTable = distances(exposureNetwork, to=lastEvent, mode = 'out')
-  risks = c()
+  isRisk = F
   for (flaggedEvent in unique(flaggedExposeEvents)) {
     exposeDistance = exposureTable[flaggedExposeEvents[1]]
     if (!(exposeDistance %in% c(0, Inf))) {
-      risks = append(risks, putativeInfectProb^exposeDistance)
+      isRisk = T
     }
   }
-  if (length(risks) > 0) {
-    totalRisk = 1 - prod(1 - risks)
-    return(totalRisk > riskToleranceThreshold)
-  }
-  return(F)
+  return(isRisk)
 }
 
 booleanProb = function(probTrue, n=1) {
@@ -58,7 +57,7 @@ updatePersonAtHome = function(personIndex, t) {
     return(booleanProb(isolationCompliance))
   } else if (t > 1 & toggleIntervention & flaggedRisk(personIndex, t - 1)) {
     # again this assumes 100% compliance
-    return(T)
+    return(booleanProb(interventionCompliance))
   } else {
     return(F)
   }
@@ -235,22 +234,24 @@ for (q in 1:nTrials) {
 # print(infectedStart)
 print(paste(mean(trialResults), round(sd(trialResults) * 100) / 100, sep=' +- '))
 
-eventColors = ifelse(
-  exposeEvents,
-  '#e37d7d',
-  '#86bdfc'
-)
-edgeColors = ifelse(
-  infectedMovements,
-  '#cf1111',
-  '#076adb'
-)
-plot(
-  exposureNetwork,
-  layout=function(g) { return(layout_on_grid(g, width=nPlaces)) },
-  vertex.color=eventColors, #86bdfc
-  vertex.size=rep(sqrt(placePopularities * 100) * 2, totalTime),
-  edge.width=0.5,
-  edge.color=edgeColors,
-  label.font=2
-)
+if (genPlot) {
+  eventColors = ifelse(
+    exposeEvents,
+    '#e37d7d',
+    '#86bdfc'
+  )
+  edgeColors = ifelse(
+    infectedMovements,
+    '#cf1111',
+    '#076adb'
+  )
+  plot(
+    exposureNetwork,
+    layout=function(g) { return(layout_on_grid(g, width=nPlaces)) },
+    vertex.color=eventColors, #86bdfc
+    vertex.size=rep(sqrt(placePopularities * 100) * 2, totalTime),
+    edge.width=0.5,
+    edge.color=edgeColors,
+    label.font=2
+  )
+}
