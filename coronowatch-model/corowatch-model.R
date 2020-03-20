@@ -2,16 +2,24 @@
 #### Config ####
 # ------------------------------------------------------- #
 
-nPlaces = 5
-nPeople = 20
-totalTime = 4
-initialInfected = 0.2
-activeTime = 2
-# probability of being infected when exposed
-infectionProb = 0.4
-probAwayMin = 0.7
-probAwayMax = 0.9
+# model config
+nPlaces = 10
+nPeople = 50
+totalTime = 30
+initialInfected = 0.1
+activeTime = 8
+infectionProb = 0.5 # probability of being infected when exposed
+# probAwayMin = 0.7
+# probAwayMax = 0.9
+probDiscoverInfection = 0.5 # dice rolled each time frame
 nTrials = 1
+
+# intervention config
+assumedTimeFromInfect = 2 # how far back in time to assume infection upon discovery
+putativeInfectProb = 0.5 # the probability of infection on exposure as estimated by the app
+riskToleranceThreshold = 0 # above this risk level, people stay home
+
+toggleIntervention = F # enable or disable the intervention (app) in the simulation
 
 # ------------------------------------------------------- #
 #### Libraries ####
@@ -23,14 +31,40 @@ library(igraph)
 #### Methods ####
 # ------------------------------------------------------- #
 
+flaggedRisk = function(personIndex, t) {
+  # This is how the app would assess each person's risk
+  # Or at least a simplified version of it
+  lastEvent = getVertexIndex(peopleLocations[personIndex], t)
+  exposureTable = distances(exposureNetwork, to=lastEvent, mode = 'out')
+  risks = c()
+  for (flaggedEvent in unique(flaggedExposeEvents)) {
+    exposeDistance = exposureTable[flaggedExposeEvents[1]]
+    if (!(exposeDistance %in% c(0, Inf))) {
+      risks = append(risks, putativeInfectProb^exposeDistance)
+    }
+  }
+  if (length(risks) > 0) {
+    totalRisk = 1 - prod(1 - risks)
+    return(totalRisk > riskToleranceThreshold)
+  }
+  return(F)
+}
 
 booleanProb = function(probTrue, n=1) {
   sample(c(T,F), n, replace=T, c(probTrue, 1 - probTrue))
 }
 
-updatePersonAtHome = function(personIndex) {
-  probAway = extroversions[personIndex]
-  return(booleanProb(1 - probAway, 1))
+updatePersonAtHome = function(personIndex, t) {
+  # probAway = extroversions[personIndex]
+  probAway = 1
+  if (isActiveInfected(personIndex) & infectionKnowledge[personIndex]) {
+    # for now this assumes 100% compliance
+    return(T)
+  } else if (t > 1 & toggleIntervention & flaggedRisk(personIndex, t - 1)) {
+    return(T)
+  } else {
+    return(booleanProb(1 - probAway, 1))
+  }
 }
 
 updatePersonLocation = function(personIndex) {
@@ -52,7 +86,6 @@ getPlaceProbabilities = function(personIndex) {
 
 isActiveInfected = function(personIndex) {
   return(
-    !peopleAtHome[personIndex] &
     infected[personIndex] &
     (t - infectedTime[personIndex] <= activeTime)
   )
@@ -98,6 +131,23 @@ logExposeEvents = function(exposedPlaces) {
   return(newEvents)
 }
 
+updateInfectionKnowledge = function(personIndex, t) {
+  # person may discover their infection with some probability
+  if (!infectionKnowledge[personIndex]) {
+    infectionKnowledge[personIndex] = booleanProb(probDiscoverInfection)
+  }
+  return(infectionKnowledge)
+}
+
+flagInfection = function(personIndex, t) {
+  # person assumes they have had infection for some time
+  for (u in max(t - assumedTimeFromInfect, 1):t) {
+    flaggedLocation = locationHistory[u, personIndex]
+    flaggedExposeEvents = append(flaggedExposeEvents, getVertexIndex(flaggedLocation, u))
+  }
+  return(flaggedExposeEvents[!is.na(flaggedExposeEvents)])
+}
+
 # ------------------------------------------------------- #
 #### Model ####
 # ------------------------------------------------------- #
@@ -110,6 +160,7 @@ for (q in 1:nTrials) {
   peopleHomes = floor(runif(nPeople, min=0, max=nPlaces))
   extroversions = runif(nPeople, min=probAwayMin, max=probAwayMax)
   peopleLocations = floor(runif(nPeople, min=1, max=nPlaces))
+  locationHistory = matrix(nrow=totalTime, ncol=nPeople)
   lastMovedTime = rep(1, nPeople)
   peopleAtHome = rep(NA, nPeople)
   infected = booleanProb(initialInfected, n=nPeople)
@@ -124,6 +175,11 @@ for (q in 1:nTrials) {
   # the edges represent movement of people across time
   # edges are allowed to skip layers. This happens when people stay home for that time frame.
   exposureNetwork = graph.empty(n=0, directed=T)
+  infectionKnowledge = rep(F, nPeople)
+  # These may or may not be true expose events
+  # This represents the information that is available in the network
+  flaggedExposeEvents = c()
+  infectedMovements = c() # for visualization
 
   placeProbabilities = matrix(nrow=nPeople, ncol=nPlaces)
   for (personIndex in 1:nPeople) {
@@ -136,7 +192,7 @@ for (q in 1:nTrials) {
     exposureNetwork = addLayer()
     for (personIndex in 1:nPeople) {
       # update locations (simulate movement)
-      peopleAtHome[personIndex] = updatePersonAtHome(personIndex)
+      peopleAtHome[personIndex] = updatePersonAtHome(personIndex, t)
       personMoved = !peopleAtHome[personIndex]
       previousLocation = NA
       if (t > 1 & personMoved) {
@@ -146,10 +202,16 @@ for (q in 1:nTrials) {
         lastMovedTime[personIndex] = t
         # update exposure network
         exposureNetwork = logMovement(personIndex, t, previousLocation, previousMoveTime)
+        infectedMovements = append(infectedMovements, isActiveInfected(personIndex))
       }
-      if (isActiveInfected(personIndex)) {
-        # if person is infected and active, they have exposed everyone at this location at the same time
+      locationHistory[t,personIndex] = ifelse(personMoved, peopleLocations[personIndex], NA)
+      if (!peopleAtHome[personIndex] & isActiveInfected(personIndex)) {
+        # if person is infected and active and not at home, they have exposed everyone at this location/point in time
         exposedPlaces = append(exposedPlaces, peopleLocations[personIndex])
+        infectionKnowledge = updateInfectionKnowledge(personIndex, t)
+        if (infectionKnowledge[personIndex]) {
+          flaggedExposeEvents = flagInfection(personIndex, t)
+        }
       }
     }
     for (personIndex in 1:nPeople) {
@@ -165,8 +227,9 @@ for (q in 1:nTrials) {
     }
     exposeEvents = append(exposeEvents, logExposeEvents(exposedPlaces))
     if (nTrials == 1) {
-      activeInfected = isActiveInfected(infected)
+      activeInfected = sapply(1:nPeople, function(i) { isActiveInfected(i) })
       print(paste('t:', t, ', # infected:', length(activeInfected[activeInfected])))
+      print(paste('t:', t, ', # at home:', length(peopleAtHome[peopleAtHome])))
     }
   }
   trialResults = append(trialResults, length(infected[infected]))
@@ -176,14 +239,20 @@ print(paste(mean(trialResults), round(sd(trialResults) * 100) / 100, sep=' +- ')
 
 eventColors = ifelse(
   exposeEvents,
-  'red',
+  '#e37d7d',
   '#86bdfc'
+)
+edgeColors = ifelse(
+  infectedMovements,
+  '#cf1111',
+  '#076adb'
 )
 plot(
   exposureNetwork,
   layout=function(g) { return(layout_on_grid(g, width=nPlaces)) },
   vertex.color=eventColors, #86bdfc
-  vertex.size=rep(sqrt(placePopularities * 100) * 3, totalTime),
+  vertex.size=rep(sqrt(placePopularities * 100) * 2, totalTime),
   edge.width=0.5,
-  edge.color="#076adb"
+  edge.color=edgeColors,
+  label.font=2
 )
