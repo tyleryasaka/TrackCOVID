@@ -2,26 +2,47 @@
 #### Config ####
 # ------------------------------------------------------- #
 # simulation settings
+initialConfig = list(
+  nTrials = 20,
+  toggleIntervention = F, # enable or disable the intervention (app) in the simulation
+  genPlot = T,
+  
+  # model config
+  nPlaces = 5,
+  nPeople = 10,
+  totalTime = 20,
+  initialInfected = 0.05,
+  activeTime = 16,
+  infectionProb = 0.1, # probability of being infected when exposed
+  probDiscoverInfection = 0.8, # dice rolled each time frame
+  isolationCompliance = 0.75,
+  
+  # intervention config
+  assumedTimeFromInfect = 20, # how far back in time to assume infection upon discovery
+  putativeInfectProb = 0.95, # the probability of infection on exposure as estimated by the app
+  interventionCompliance = 0.75
+)
+
 setConfig = function(input) {
   return(list(
-    nTrials = 2,
-    toggleIntervention = input$toggleIntervention | T, # enable or disable the intervention (app) in the simulation
-    genPlot = T,
+    nTrials = initialConfig$nTrials,
+    toggleIntervention = input$toggleIntervention,
+    genPlot = initialConfig$genPlot,
     
     # model config
-    nPlaces = 5,
-    nPeople = 10,
-    totalTime = 20,
-    initialInfected = input$initialInfected | 0.05,
-    activeTime = input$activeTime | 16,
-    infectionProb = input$infectionProb | 0.1, # probability of being infected when exposed
-    probDiscoverInfection = input$probDiscoverInfection | 0.8, # dice rolled each time frame
-    isolationCompliance = input$isolationCompliance | 0.75,
+    nPlaces = initialConfig$nPlaces,
+    nPeople = initialConfig$nPeople,
+    totalTime = initialConfig$totalTime,
+    initialInfected = input$initialInfected,
+    activeTime = input$activeTime,
+    infectionProb = input$infectionProb,
+    probDiscoverInfection = input$probDiscoverInfection,
+    isolationCompliance = input$isolationCompliance,
     
     # intervention config
-    assumedTimeFromInfect = input$assumedTimeFromInfect | 20, # how far back in time to assume infection upon discovery
-    putativeInfectProb = input$putativeInfectProb | 0.95, # the probability of infection on exposure as estimated by the app
-    interventionCompliance = input$interventionCompliance | 0.75
+    assumedTimeFromInfect = input$assumedTimeFromInfect | initialConfig$assumedTimeFromInfect,
+    putativeInfectProb = input$putativeInfectProb | initialConfig$putativeInfectProb,
+    interventionCompliance = input$interventionCompliance | initialConfig$interventionCompliance
   ))
 }
 
@@ -43,33 +64,33 @@ ui <- fluidPage(
     ),
     fluidRow(
       align = "center",
-      checkboxInput("toggleIntervention", "Use Intervention", value = config$toggleIntervention)
+      checkboxInput("toggleIntervention", "Use Intervention", value = initialConfig$toggleIntervention)
     ),
     fluidRow(
       column(
         3,
-        sliderInput("initialInfected", h3("Initial Infected"), min = 0, max = 1, value = config$initialInfected),
-        sliderInput("activeTime", h3("Active Time"), min = 0, max = 20, value = config$activeTime)
+        sliderInput("initialInfected", h3("Initial Infected"), min = 0, max = 1, value = initialConfig$initialInfected),
+        sliderInput("activeTime", h3("Active Time"), min = 0, max = 20, value = initialConfig$activeTime)
       ),
       column(
         3,
-        sliderInput("infectionProb", h3("Transmission Rate"), min = 0, max = 1, value = config$infectionProb),
-        sliderInput("probDiscoverInfection", h3("Discovery Rate"), min = 0, max = 1, value = config$probDiscoverInfection)
+        sliderInput("infectionProb", h3("Transmission Rate"), min = 0, max = 1, value = initialConfig$infectionProb),
+        sliderInput("probDiscoverInfection", h3("Discovery Rate"), min = 0, max = 1, value = initialConfig$probDiscoverInfection)
       ),
       column(
         3,
-        sliderInput("isolationCompliance", h3("Isolation Compliance"), min = 0, max = 1, value = config$isolationCompliance)
+        sliderInput("isolationCompliance", h3("Isolation Compliance"), min = 0, max = 1, value = initialConfig$isolationCompliance)
       )
     ),
     fluidRow(
       column(
         3,
-        sliderInput("assumedTimeFromInfect", h3("Estimated Time from Infection"), min = 0, max = 20, value = config$assumedTimeFromInfect),
-        sliderInput("putativeInfectProb", h3("Estimated Transmission Rate"), min = 0, max = 1, value = config$putativeInfectProb)
+        sliderInput("assumedTimeFromInfect", h3("Estimated Time from Infection"), min = 0, max = 20, value = initialConfig$assumedTimeFromInfect),
+        sliderInput("putativeInfectProb", h3("Estimated Transmission Rate"), min = 0, max = 1, value = initialConfig$putativeInfectProb)
       ),
       column(
         3,
-        sliderInput("interventionCompliance", h3("Intervention Compliance"), min = 0, max = 1, value = config$interventionCompliance)
+        sliderInput("interventionCompliance", h3("Intervention Compliance"), min = 0, max = 1, value = initialConfig$interventionCompliance)
       )
     ),
     fluidRow(
@@ -165,7 +186,7 @@ getVertexIndex = function(location, t, config) {
   return((t - 1) * config$nPlaces + location)
 }
 
-logMovement = function(personIndex, currentMoveTime, previousLocation, previousMoveTime, context) {
+logMovement = function(personIndex, currentMoveTime, previousLocation, previousMoveTime, context, config) {
   currentLocation = context$peopleLocations[personIndex]
   fromIndex = getVertexIndex(previousLocation, previousMoveTime, config)
   toIndex = getVertexIndex(currentLocation, currentMoveTime, config)
@@ -173,16 +194,16 @@ logMovement = function(personIndex, currentMoveTime, previousLocation, previousM
   return(context$exposureNetwork)
 }
 
-logExposeEvents = function(exposedPlaces) {
+logExposeEvents = function(context, config) {
   newEvents = c()
-  uniqueExposedPlaces = unique(exposedPlaces)
+  uniqueExposedPlaces = unique(context$exposedPlaces)
   for (p in 1:config$nPlaces) {
     newEvents = append(newEvents, p %in% uniqueExposedPlaces)
   }
   return(newEvents)
 }
 
-updateInfectionKnowledge = function(personIndex, t, context) {
+updateInfectionKnowledge = function(personIndex, t, context, config) {
   # person may discover their infection with some probability
   if (!context$infectionKnowledge[personIndex]) {
     context$infectionKnowledge[personIndex] = booleanProb(config$probDiscoverInfection)
@@ -255,14 +276,14 @@ modelFn = function(input) {
           context$peopleLocations[personIndex] = updatePersonLocation(personIndex, context, config)
           context$lastMovedTime[personIndex] = t
           # update exposure network
-          context$exposureNetwork = logMovement(personIndex, t, previousLocation, previousMoveTime, context)
+          context$exposureNetwork = logMovement(personIndex, t, previousLocation, previousMoveTime, context, config)
           context$infectedMovements = append(context$infectedMovements, isActiveInfected(personIndex, context, config, t))
         }
         context$locationHistory[t,personIndex] = ifelse(personMoved, context$peopleLocations[personIndex], NA)
         if (!context$peopleAtHome[personIndex] & isActiveInfected(personIndex, context, config, t)) {
           # if person is infected and active and not at home, they have exposed everyone at this location/point in time
           context$exposedPlaces = append(context$exposedPlaces, context$peopleLocations[personIndex])
-          context$infectionKnowledge = updateInfectionKnowledge(personIndex, t, context)
+          context$infectionKnowledge = updateInfectionKnowledge(personIndex, t, context, config)
           if (context$infectionKnowledge[personIndex]) {
             context$flaggedExposeEvents = flagInfection(personIndex, t, context, config)
           }
@@ -275,11 +296,11 @@ modelFn = function(input) {
           context$infected[personIndex] = sample(booleanProb(config$infectionProb))
           if (context$infected[personIndex]) {
             # if infected, set time of infection
-            context$ infectedTime[personIndex] = t
+            context$infectedTime[personIndex] = t
           }
         }
       }
-      context$exposeEvents = append(context$exposeEvents, logExposeEvents(context$exposedPlaces))
+      context$exposeEvents = append(context$exposeEvents, logExposeEvents(context, config))
       if (config$nTrials == 1) {
         activeInfected = sapply(1:config$nPeople, function(i) { isActiveInfected(i, context, config, t) })
         print(paste('t:', t, ', # active:', length(context$activeInfected[context$activeInfected])))
@@ -288,11 +309,11 @@ modelFn = function(input) {
       }
     }
     activeInfected = sapply(1:config$nPeople, function(i) { isActiveInfected(i, context, config, t) })
-    trialResults = append(trialResults, length(context$infected[context$infected]) / config$nPeople)
+    allInfected = length(context$infected[context$infected]) / config$nPeople
+    print(length(context$infected[context$infected]))
+    trialResults = append(trialResults, allInfected)
   }
-  # print(infectedStart)
   percent_infected = paste(round(mean(trialResults) * 100), '%', sep='')
-  print(percent_infected)
   
   if (config$genPlot) {
     eventColors = ifelse(
@@ -305,7 +326,7 @@ modelFn = function(input) {
       '#cf1111',
       '#076adb'
     )
-    
+
     return(list(
       plot=plot(
         context$exposureNetwork,
