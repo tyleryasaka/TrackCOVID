@@ -3,9 +3,9 @@
 # ------------------------------------------------------- #
 # simulation settings
 initialConfig = list(
-  nTrials = 20,
+  nTrials = 10,
+  maxNTrials = 20,
   toggleIntervention = F, # enable or disable the intervention (app) in the simulation
-  genPlot = T,
   
   # model config
   nPlaces = 5,
@@ -25,7 +25,7 @@ initialConfig = list(
 
 setConfig = function(input) {
   return(list(
-    nTrials = initialConfig$nTrials,
+    nTrials = input$nTrials,
     toggleIntervention = input$toggleIntervention,
     genPlot = initialConfig$genPlot,
     
@@ -79,7 +79,8 @@ ui <- fluidPage(
       ),
       column(
         3,
-        sliderInput("isolationCompliance", h3("Isolation Compliance"), min = 0, max = 1, value = initialConfig$isolationCompliance)
+        sliderInput("isolationCompliance", h3("Isolation Compliance"), min = 0, max = 1, value = initialConfig$isolationCompliance),
+        selectInput("nTrials", "# of Simulations", 1:initialConfig$maxNTrials, selected = initialConfig$nTrials)
       )
     ),
     fluidRow(
@@ -95,7 +96,8 @@ ui <- fluidPage(
     ),
     fluidRow(
       align = "center",
-      textOutput("percent_infected")
+      verbatimTextOutput("percent_infected"),
+      uiOutput('selectSim')
     ),
     fluidRow(
       align = "center",
@@ -225,7 +227,7 @@ flagInfection = function(personIndex, t, context, config) {
 # ------------------------------------------------------- #
 modelFn = function(input) {
   config = setConfig(input)
-  trialResults = c()
+  simulationResults = list()
   for (q in 1:config$nTrials) {
     # infection model
     infected = booleanProb(config$initialInfected, n=config$nPeople)
@@ -310,47 +312,65 @@ modelFn = function(input) {
     }
     activeInfected = sapply(1:config$nPeople, function(i) { isActiveInfected(i, context, config, t) })
     allInfected = length(context$infected[context$infected]) / config$nPeople
-    print(length(context$infected[context$infected]))
-    trialResults = append(trialResults, allInfected)
-  }
-  percent_infected = paste(round(mean(trialResults) * 100), '%', sep='')
-  
-  if (config$genPlot) {
-    eventColors = ifelse(
-      context$exposeEvents,
-      '#e37d7d',
-      '#86bdfc'
-    )
-    edgeColors = ifelse(
-      context$infectedMovements,
-      '#cf1111',
-      '#076adb'
-    )
 
-    return(list(
-      plot=plot(
-        context$exposureNetwork,
-        layout=function(g) { return(layout_on_grid(g, width=config$nPlaces)) },
-        vertex.color=eventColors, #86bdfc
-        vertex.size=rep(sqrt(context$placePopularities * 100), config$totalTime),
-        edge.width=0.5,
-        edge.color=edgeColors,
-        label.font=2
-      ),
-      infected=percent_infected,
+    simulationResults[[q]] = list(
+      exposureNetwork=context$exposureNetwork,
+      exposeEvents=context$exposeEvents,
+      infectedMovements=context$infectedMovements,
+      placePopularities=context$placePopularities,
+      infected=allInfected,
+      nPlaces=config$nPlaces,
+      totalTime=config$totalTime,
       nTrials=config$nTrials
-    ))
+    )
   }
+  return(simulationResults)
 }
 
 server <- function(input, output) {
-  result = reactive(modelFn(input))
+  values <- reactiveValues(currentSim = 1)
+  observeEvent(input$currentSim, {
+    values$currentSim <- as.numeric(input$currentSim)
+  })
+  simulationResults = reactive(modelFn(input))
+  currentResult = reactive(simulationResults()[[values$currentSim]])
   output$plot1 <- renderPlot({
-    result()$item
+    return(list(
+      plot=plot(
+        currentResult()$exposureNetwork,
+        layout=function(g) { return(layout_on_grid(g, width=currentResult()$nPlaces)) },
+        vertex.color=ifelse(
+          currentResult()$exposeEvents,
+          '#e37d7d',
+          '#86bdfc'
+        ),
+        vertex.size=rep(sqrt(currentResult()$placePopularities * 100), currentResult()$totalTime),
+        edge.width=0.5,
+        edge.color=ifelse(
+          currentResult()$infectedMovements,
+          '#cf1111',
+          '#076adb'
+        ),
+        label.font=2
+      ),
+      infected=currentResult()$infected,
+      nTrials=currentResult()$nTrials
+    ))
   }, height = 800, width = 800)
   output$percent_infected <- renderPrint(
-    {paste('Average of ',result()$nTrials,' simulations: ', result()$infected,' infected', sep='')}
+    {paste(
+      'Average of ',
+      currentResult()$nTrials,
+      ' simulations: ',
+      paste(round(mean(sapply(simulationResults(), function(l) l$infected)) * 100), '%', sep=''),
+      ' infected',
+      sep=''
+    )}
   )
+  output$selectSim = renderUI({
+    selectInput("currentSim", "Show Plot from Simulation #", 1:currentResult()$nTrials, selected = values$currentSim)
+  })
+  
 }
 
 shinyApp(ui, server)
