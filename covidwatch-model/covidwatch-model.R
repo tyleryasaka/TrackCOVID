@@ -60,33 +60,47 @@ ui <- fluidPage(
   mainPanel(
     fluidRow(
       align = "center",
-      titlePanel("Infection Spread +- Intervention")
+      titlePanel("Infection Spread With and Without Intervention")
     ),
     fluidRow(
       align = "center",
-      checkboxInput("toggleIntervention", "Use Intervention", value = initialConfig$toggleIntervention)
+      checkboxInput("toggleIntervention", "Use Intervention", value = initialConfig$toggleIntervention),
+      selectInput("nTrials", "# of Simulations", 1:initialConfig$maxNTrials, selected = initialConfig$nTrials)
+    ),
+    fluidRow(
+      align = "center",
+      h3('Model Parameters')
     ),
     fluidRow(
       column(
         3,
-        sliderInput("initialInfected", h3("Initial Infected"), min = 0, max = 1, value = initialConfig$initialInfected),
+        sliderInput("initialInfected", h3("Initial Infected Proportion"), min = 0, max = 1, value = initialConfig$initialInfected),
+        sliderInput("isolationCompliance", h3("Isolation Compliance"), min = 0, max = 1, value = initialConfig$isolationCompliance)
+      ),
+      column(
+        3,
         sliderInput("activeTime", h3("Active Time"), min = 0, max = 20, value = initialConfig$activeTime)
       ),
       column(
         3,
-        sliderInput("infectionProb", h3("Transmission Rate"), min = 0, max = 1, value = initialConfig$infectionProb),
-        sliderInput("probDiscoverInfection", h3("Discovery Rate"), min = 0, max = 1, value = initialConfig$probDiscoverInfection)
+        sliderInput("infectionProb", h3("Transmission Rate"), min = 0, max = 1, value = initialConfig$infectionProb)
       ),
       column(
         3,
-        sliderInput("isolationCompliance", h3("Isolation Compliance"), min = 0, max = 1, value = initialConfig$isolationCompliance),
-        selectInput("nTrials", "# of Simulations", 1:initialConfig$maxNTrials, selected = initialConfig$nTrials)
+        sliderInput("probDiscoverInfection", h3("Discovery Rate"), min = 0, max = 1, value = initialConfig$probDiscoverInfection)
       )
+    ),
+    fluidRow(
+      align = "center",
+      h3('Intervention Parameters')
     ),
     fluidRow(
       column(
         3,
-        sliderInput("assumedTimeFromInfect", h3("Estimated Time from Infection"), min = 0, max = 20, value = initialConfig$assumedTimeFromInfect),
+        sliderInput("assumedTimeFromInfect", h3("Estimated Time from Infection"), min = 0, max = 20, value = initialConfig$assumedTimeFromInfect)
+      ),
+      column(
+        3,
         sliderInput("putativeInfectProb", h3("Estimated Transmission Rate"), min = 0, max = 1, value = initialConfig$putativeInfectProb)
       ),
       column(
@@ -96,8 +110,9 @@ ui <- fluidPage(
     ),
     fluidRow(
       align = "center",
-      verbatimTextOutput("percent_infected"),
-      uiOutput('selectSim')
+      verbatimTextOutput("percentInfectedMean"),
+      uiOutput('selectSim'),
+      verbatimTextOutput("percentInfectedCurrent")
     ),
     fluidRow(
       align = "center",
@@ -357,18 +372,26 @@ server <- function(input, output) {
       nTrials=currentResult()$nTrials
     ))
   }, height = 800, width = 800)
-  output$percent_infected <- renderPrint(
+  output$percentInfectedMean <- renderPrint(
     {paste(
       'Average of ',
       currentResult()$nTrials,
-      ' simulations: ',
+      ' Simulations: ',
       paste(round(mean(sapply(simulationResults(), function(l) l$infected)) * 100), '%', sep=''),
-      ' infected',
+      ' Infected',
+      sep=''
+    )}
+  )
+  output$percentInfectedCurrent <- renderPrint(
+    {paste(
+      'Selected Simulation: ',
+      round(currentResult()$infected * 100),
+      '% Infected',
       sep=''
     )}
   )
   output$selectSim = renderUI({
-    selectInput("currentSim", "Show Plot from Simulation #", 1:currentResult()$nTrials, selected = values$currentSim)
+    selectInput("currentSim", "Show Simulation #", 1:currentResult()$nTrials, selected = values$currentSim)
   })
   
 }
