@@ -63,7 +63,8 @@ ui = fluidPage(
       align = "center",
       verbatimTextOutput("percentInfectedMean"),
       uiOutput('selectSim'),
-      verbatimTextOutput("percentInfectedCurrent")
+      verbatimTextOutput("percentInfectedCurrent"),
+      actionButton("refresh", "Run Again with the Same Parameters", style="margin:10px 0")
     ),
     fluidRow(
       align = "center",
@@ -74,11 +75,14 @@ ui = fluidPage(
 )
 
 server = function(input, output) {
-  values <- reactiveValues(currentSim = 1)
+  values <- reactiveValues(currentSim = 1, toggleDummy = F)
   observeEvent(input$currentSim, {
     values$currentSim <- as.numeric(input$currentSim)
   })
-  simulationResults = reactive(modelFn(input))
+  observeEvent(input$refresh, {
+    values$toggleDummy <- !values$toggleDummy
+  })
+  simulationResults = reactive(modelFn(input, values$toggleDummy))
   currentResult = reactive(simulationResults()[[values$currentSim]])
   output$plot1 <- renderPlot({
     return(list(

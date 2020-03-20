@@ -169,7 +169,7 @@ setConfig = function(input) {
 # ------------------------------------------------------- #
 #### Model ####
 # ------------------------------------------------------- #
-modelFn = function(input) {
+modelFn = function(input, toggleDummy) {
   config = setConfig(input)
   simulationResults = list()
   for (q in 1:config$nTrials) {
@@ -265,7 +265,8 @@ modelFn = function(input) {
       infected=allInfected,
       nPlaces=config$nPlaces,
       totalTime=config$totalTime,
-      nTrials=config$nTrials
+      nTrials=config$nTrials,
+      dummyOutput=toggleDummy
     )
   }
   return(simulationResults)
