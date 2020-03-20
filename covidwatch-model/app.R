@@ -3,12 +3,11 @@
 # ------------------------------------------------------- #
 library(shiny)
 library(igraph)
+library(rsconnect)
+
 source('./covidwatch-model.R')
 
-# ------------------------------------------------------- #
-#### UI ####
-# ------------------------------------------------------- #
-ui <- fluidPage(
+ui = fluidPage(
   mainPanel(
     fluidRow(
       align = "center",
@@ -74,10 +73,7 @@ ui <- fluidPage(
   )
 )
 
-# ------------------------------------------------------- #
-#### Server ####
-# ------------------------------------------------------- #
-server <- function(input, output) {
+server = function(input, output) {
   values <- reactiveValues(currentSim = 1)
   observeEvent(input$currentSim, {
     values$currentSim <- as.numeric(input$currentSim)
@@ -128,7 +124,6 @@ server <- function(input, output) {
   output$selectSim = renderUI({
     selectInput("currentSim", "Show Simulation #", 1:currentResult()$nTrials, selected = values$currentSim)
   })
-  
 }
 
 shinyApp(ui, server)
