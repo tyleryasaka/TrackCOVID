@@ -3,23 +3,22 @@
 # ------------------------------------------------------- #
 
 # model config
-nPlaces = 10
-nPeople = 50
-totalTime = 30
-initialInfected = 0.1
-activeTime = 8
-infectionProb = 0.5 # probability of being infected when exposed
-# probAwayMin = 0.7
-# probAwayMax = 0.9
-probDiscoverInfection = 0.5 # dice rolled each time frame
+nPlaces = 5
+nPeople = 40
+totalTime = 20
+initialInfected = 0.05
+activeTime = 16
+infectionProb = 0.1 # probability of being infected when exposed
+probDiscoverInfection = 0.1 # dice rolled each time frame
 nTrials = 1
+isolationCompliance = 0.5
 
 # intervention config
-assumedTimeFromInfect = 2 # how far back in time to assume infection upon discovery
-putativeInfectProb = 0.5 # the probability of infection on exposure as estimated by the app
+assumedTimeFromInfect = 20 # how far back in time to assume infection upon discovery
+putativeInfectProb = 0.95 # the probability of infection on exposure as estimated by the app
 riskToleranceThreshold = 0 # above this risk level, people stay home
 
-toggleIntervention = F # enable or disable the intervention (app) in the simulation
+toggleIntervention = T # enable or disable the intervention (app) in the simulation
 
 # ------------------------------------------------------- #
 #### Libraries ####
@@ -55,15 +54,13 @@ booleanProb = function(probTrue, n=1) {
 }
 
 updatePersonAtHome = function(personIndex, t) {
-  # probAway = extroversions[personIndex]
-  probAway = 1
   if (isActiveInfected(personIndex) & infectionKnowledge[personIndex]) {
-    # for now this assumes 100% compliance
-    return(T)
+    return(booleanProb(isolationCompliance))
   } else if (t > 1 & toggleIntervention & flaggedRisk(personIndex, t - 1)) {
+    # again this assumes 100% compliance
     return(T)
   } else {
-    return(booleanProb(1 - probAway, 1))
+    return(F)
   }
 }
 
@@ -158,7 +155,6 @@ for (q in 1:nTrials) {
   infectedStart = length(infected[infected])
   placePopularities = rbeta(nPlaces, 2, 2)
   peopleHomes = floor(runif(nPeople, min=0, max=nPlaces))
-  extroversions = runif(nPeople, min=probAwayMin, max=probAwayMax)
   peopleLocations = floor(runif(nPeople, min=1, max=nPlaces))
   locationHistory = matrix(nrow=totalTime, ncol=nPeople)
   lastMovedTime = rep(1, nPeople)
@@ -228,11 +224,13 @@ for (q in 1:nTrials) {
     exposeEvents = append(exposeEvents, logExposeEvents(exposedPlaces))
     if (nTrials == 1) {
       activeInfected = sapply(1:nPeople, function(i) { isActiveInfected(i) })
-      print(paste('t:', t, ', # infected:', length(activeInfected[activeInfected])))
+      print(paste('t:', t, ', # active:', length(activeInfected[activeInfected])))
+      print(paste('t:', t, ', # infected:', length(infected[infected])))
       print(paste('t:', t, ', # at home:', length(peopleAtHome[peopleAtHome])))
     }
   }
-  trialResults = append(trialResults, length(infected[infected]))
+  activeInfected = sapply(1:nPeople, function(i) { isActiveInfected(i) })
+  trialResults = append(trialResults, length(infected[infected]) / nPeople)
 }
 # print(infectedStart)
 print(paste(mean(trialResults), round(sd(trialResults) * 100) / 100, sep=' +- '))
