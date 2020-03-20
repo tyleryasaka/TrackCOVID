@@ -107,7 +107,7 @@ server = function(input, output) {
       nTrials=currentResult()$nTrials
     ))
   }, height = 800, width = 800)
-  output$percentInfectedMean <- renderPrint(
+  output$percentInfectedMean <- renderText(
     {paste(
       'Average of ',
       currentResult()$nTrials,
@@ -117,7 +117,7 @@ server = function(input, output) {
       sep=''
     )}
   )
-  output$percentInfectedCurrent <- renderPrint(
+  output$percentInfectedCurrent <- renderText(
     {paste(
       'Selected Simulation: ',
       round(currentResult()$infected * 100),
