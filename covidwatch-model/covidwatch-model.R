@@ -2,27 +2,28 @@
 #### Config ####
 # ------------------------------------------------------- #
 # simulation settings
-config = list(
-  nTrials = 2,
-  toggleIntervention = T, # enable or disable the intervention (app) in the simulation
-  genPlot = T,
-
-  # model config
-  nPlaces = 5,
-  nPeople = 40,
-  totalTime = 20,
-  initialInfected = 0.05,
-  activeTime = 16,
-  infectionProb = 0.1, # probability of being infected when exposed
-  probDiscoverInfection = 0.1, # dice rolled each time frame
-  isolationCompliance = 0.75,
-
-  # intervention config
-  assumedTimeFromInfect = 20, # how far back in time to assume infection upon discovery
-  putativeInfectProb = 0.95, # the probability of infection on exposure as estimated by the app
-  riskToleranceThreshold = 0, # above this risk level, people stay home
-  interventionCompliance = 0.75
-)
+setConfig = function(input) {
+  return(list(
+    nTrials = 2,
+    toggleIntervention = input$toggleIntervention | T, # enable or disable the intervention (app) in the simulation
+    genPlot = T,
+    
+    # model config
+    nPlaces = 5,
+    nPeople = 10,
+    totalTime = 20,
+    initialInfected = input$initialInfected | 0.05,
+    activeTime = input$activeTime | 16,
+    infectionProb = input$infectionProb | 0.1, # probability of being infected when exposed
+    probDiscoverInfection = input$probDiscoverInfection | 0.8, # dice rolled each time frame
+    isolationCompliance = input$isolationCompliance | 0.75,
+    
+    # intervention config
+    assumedTimeFromInfect = input$assumedTimeFromInfect | 20, # how far back in time to assume infection upon discovery
+    putativeInfectProb = input$putativeInfectProb | 0.95, # the probability of infection on exposure as estimated by the app
+    interventionCompliance = input$interventionCompliance | 0.75
+  ))
+}
 
 # ------------------------------------------------------- #
 #### Libraries ####
@@ -42,7 +43,38 @@ ui <- fluidPage(
     ),
     fluidRow(
       align = "center",
-      textOutput("percent_infected", inline=T)
+      checkboxInput("toggleIntervention", "Use Intervention", value = config$toggleIntervention)
+    ),
+    fluidRow(
+      column(
+        3,
+        sliderInput("initialInfected", h3("Initial Infected"), min = 0, max = 1, value = config$initialInfected),
+        sliderInput("activeTime", h3("Active Time"), min = 0, max = 20, value = config$activeTime)
+      ),
+      column(
+        3,
+        sliderInput("infectionProb", h3("Transmission Rate"), min = 0, max = 1, value = config$infectionProb),
+        sliderInput("probDiscoverInfection", h3("Discovery Rate"), min = 0, max = 1, value = config$probDiscoverInfection)
+      ),
+      column(
+        3,
+        sliderInput("isolationCompliance", h3("Isolation Compliance"), min = 0, max = 1, value = config$isolationCompliance)
+      )
+    ),
+    fluidRow(
+      column(
+        3,
+        sliderInput("assumedTimeFromInfect", h3("Estimated Time from Infection"), min = 0, max = 20, value = config$assumedTimeFromInfect),
+        sliderInput("putativeInfectProb", h3("Estimated Transmission Rate"), min = 0, max = 1, value = config$putativeInfectProb)
+      ),
+      column(
+        3,
+        sliderInput("interventionCompliance", h3("Intervention Compliance"), min = 0, max = 1, value = config$interventionCompliance)
+      )
+    ),
+    fluidRow(
+      align = "center",
+      textOutput("percent_infected")
     ),
     fluidRow(
       align = "center",
@@ -50,12 +82,6 @@ ui <- fluidPage(
     ),
     width = 12
   )
-  
-  # sidebarLayout(
-  #   sidebarPanel(
-  #     textOutput("percent_infected")
-  #   )
-  # )
 )
 
 # ------------------------------------------------------- #
@@ -176,8 +202,8 @@ flagInfection = function(personIndex, t, context, config) {
 # ------------------------------------------------------- #
 #### Model ####
 # ------------------------------------------------------- #
-
-server <- function(input, output) {
+modelFn = function(input) {
+  config = setConfig(input)
   trialResults = c()
   for (q in 1:config$nTrials) {
     # infection model
@@ -194,7 +220,7 @@ server <- function(input, output) {
       infectedTime = ifelse(infected, 0, NA),
       exposeEvents = c(),
       placeProbabilities = matrix(nrow=config$nPeople, ncol=config$nPlaces),
-
+      
       # intervention model
       # the exposure network is a "layered" directed graph; represents data maintanined in the app network
       # each layer in the graph is a point in time
@@ -265,7 +291,7 @@ server <- function(input, output) {
     trialResults = append(trialResults, length(context$infected[context$infected]) / config$nPeople)
   }
   # print(infectedStart)
-  percent_infected = paste(mean(trialResults), round(sd(trialResults) * 100) / 100, sep=' +- ')
+  percent_infected = paste(round(mean(trialResults) * 100), '%', sep='')
   print(percent_infected)
   
   if (config$genPlot) {
@@ -279,8 +305,9 @@ server <- function(input, output) {
       '#cf1111',
       '#076adb'
     )
-    output$plot1 <- renderPlot({
-      plot(
+    
+    return(list(
+      plot=plot(
         context$exposureNetwork,
         layout=function(g) { return(layout_on_grid(g, width=config$nPlaces)) },
         vertex.color=eventColors, #86bdfc
@@ -288,10 +315,21 @@ server <- function(input, output) {
         edge.width=0.5,
         edge.color=edgeColors,
         label.font=2
-      )
-    }, height = 800, width = 800)
-    output$percent_infected <- renderPrint({percent_infected})
+      ),
+      infected=percent_infected,
+      nTrials=config$nTrials
+    ))
   }
+}
+
+server <- function(input, output) {
+  result = reactive(modelFn(input))
+  output$plot1 <- renderPlot({
+    result()$item
+  }, height = 800, width = 800)
+  output$percent_infected <- renderPrint(
+    {paste('Average of ',result()$nTrials,' simulations: ', result()$infected,' infected', sep='')}
+  )
 }
 
 shinyApp(ui, server)
