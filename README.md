@@ -1,1 +1,1 @@
-# coronawatch
+# covid-watch
