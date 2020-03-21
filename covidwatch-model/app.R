@@ -18,7 +18,7 @@ ui = fluidPage(
     fluidRow(
       align = "center",
       checkboxInput("toggleIntervention", "Use Intervention", value = initialConfig$toggleIntervention),
-      selectInput("nTrials", "# of Simulations", 1:initialConfig$maxNTrials, selected = initialConfig$nTrials)
+      selectInput("nTrials", "# of Simulations", 2:initialConfig$maxNTrials, selected = initialConfig$nTrials)
     ),
     fluidRow(
       column(
@@ -54,12 +54,6 @@ ui = fluidPage(
         uiOutput('selectSim')
       )
     ),
-    # fluidRow(
-    #   align = "center",
-    #   
-    #   
-    #   
-    # ),
     fluidRow(
       align = "center",
       plotOutput('plot1')
