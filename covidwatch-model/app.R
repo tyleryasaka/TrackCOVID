@@ -21,10 +21,6 @@ ui = fluidPage(
       selectInput("nTrials", "# of Simulations", 1:initialConfig$maxNTrials, selected = initialConfig$nTrials)
     ),
     fluidRow(
-      align = "center",
-      h3('Model Parameters')
-    ),
-    fluidRow(
       column(
         3,
         sliderInput("initialInfected", h3("Initial Infected Proportion"), min = 0, max = 1, value = initialConfig$initialInfected),
@@ -32,11 +28,13 @@ ui = fluidPage(
       ),
       column(
         3,
-        sliderInput("activeTime", h3("Active Time"), min = 0, max = 20, value = initialConfig$activeTime)
+        sliderInput("activeTime", h3("Infected Duration"), min = 0, max = 20, value = initialConfig$activeTime),
+        sliderInput("assumedTimeFromInfect", h3("Estimated Time from Infection"), min = 0, max = 20, value = initialConfig$assumedTimeFromInfect)
       ),
       column(
         3,
-        sliderInput("infectionProb", h3("Transmission Rate"), min = 0, max = 1, value = initialConfig$infectionProb)
+        sliderInput("infectionProb", h3("Transmission Rate"), min = 0, max = 1, value = initialConfig$infectionProb),
+        sliderInput("interventionCompliance", h3("Intervention Compliance"), min = 0, max = 1, value = initialConfig$interventionCompliance)
       ),
       column(
         3,
@@ -45,29 +43,23 @@ ui = fluidPage(
     ),
     fluidRow(
       align = "center",
-      h3('Intervention Parameters')
-    ),
-    fluidRow(
       column(
-        3,
-        sliderInput("assumedTimeFromInfect", h3("Estimated Time from Infection"), min = 0, max = 20, value = initialConfig$assumedTimeFromInfect)
+        6,
+        verbatimTextOutput("percentInfectedMean"),
+        actionButton("refresh", "Run Again with the Same Parameters", style="margin:10px 0")
       ),
       column(
-        3,
-        sliderInput("putativeInfectProb", h3("Estimated Transmission Rate"), min = 0, max = 1, value = initialConfig$putativeInfectProb)
-      ),
-      column(
-        3,
-        sliderInput("interventionCompliance", h3("Intervention Compliance"), min = 0, max = 1, value = initialConfig$interventionCompliance)
+        6,
+        verbatimTextOutput("percentInfectedCurrent"),
+        uiOutput('selectSim')
       )
     ),
-    fluidRow(
-      align = "center",
-      verbatimTextOutput("percentInfectedMean"),
-      uiOutput('selectSim'),
-      verbatimTextOutput("percentInfectedCurrent"),
-      actionButton("refresh", "Run Again with the Same Parameters", style="margin:10px 0")
-    ),
+    # fluidRow(
+    #   align = "center",
+    #   
+    #   
+    #   
+    # ),
     fluidRow(
       align = "center",
       plotOutput('plot1')

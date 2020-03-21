@@ -19,7 +19,6 @@ initialConfig = list(
   
   # intervention config
   assumedTimeFromInfect = 20, # how far back in time to assume infection upon discovery
-  putativeInfectProb = 0.95, # the probability of infection on exposure as estimated by the app
   interventionCompliance = 0.75
 )
 
@@ -55,7 +54,6 @@ updatePersonAtHome = function(personIndex, t, context, config) {
   if (isActiveInfected(personIndex, context, config, t) & context$infectionKnowledge[personIndex]) {
     return(booleanProb(config$isolationCompliance))
   } else if (t > 1 & config$toggleIntervention & flaggedRisk(personIndex, t, context, config)) {
-    # again this assumes 100% compliance
     return(booleanProb(config$interventionCompliance))
   } else {
     return(F)
@@ -160,9 +158,8 @@ setConfig = function(input) {
     isolationCompliance = input$isolationCompliance,
     
     # intervention config
-    assumedTimeFromInfect = input$assumedTimeFromInfect | initialConfig$assumedTimeFromInfect,
-    putativeInfectProb = input$putativeInfectProb | initialConfig$putativeInfectProb,
-    interventionCompliance = input$interventionCompliance | initialConfig$interventionCompliance
+    assumedTimeFromInfect = input$assumedTimeFromInfect,
+    interventionCompliance = input$interventionCompliance
   ))
 }
 
