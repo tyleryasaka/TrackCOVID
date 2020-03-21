@@ -9,17 +9,17 @@ initialConfig = list(
   
   # model config
   nPlaces = 5,
-  nPeople = 10,
+  nPeople = 40,
   totalTime = 20,
   initialInfected = 0.05,
   activeTime = 16,
-  infectionProb = 0.1, # probability of being infected when exposed
+  infectionProb = 0.2, # probability of being infected when exposed
   probDiscoverInfection = 0.8, # dice rolled each time frame
   isolationCompliance = 0.75,
   
   # intervention config
   assumedTimeFromInfect = 20, # how far back in time to assume infection upon discovery
-  interventionCompliance = 0.75
+  interventionUsage = 0.9
 )
 
 # ------------------------------------------------------- #
@@ -53,8 +53,8 @@ booleanProb = function(probTrue, n=1) {
 updatePersonAtHome = function(personIndex, t, context, config) {
   if (isActiveInfected(personIndex, context, config, t) & context$infectionKnowledge[personIndex]) {
     return(booleanProb(config$isolationCompliance))
-  } else if (t > 1 & config$toggleIntervention & flaggedRisk(personIndex, t, context, config)) {
-    return(booleanProb(config$interventionCompliance))
+  } else if (t > 1 & config$toggleIntervention & context$usesIntervention[personIndex] & flaggedRisk(personIndex, t, context, config)) {
+    return(T)
   } else {
     return(F)
   }
@@ -134,9 +134,11 @@ updateInfectionKnowledge = function(personIndex, t, context, config) {
 
 flagInfection = function(personIndex, t, context, config) {
   # person assumes they have had infection for some time
-  for (u in max(t - config$assumedTimeFromInfect, 1):t) {
-    flaggedLocation = context$locationHistory[u, personIndex]
-    context$flaggedExposeEvents = append(context$flaggedExposeEvents, getVertexIndex(flaggedLocation, u, config))
+  if (context$usesIntervention[personIndex]) {
+    for (u in max(t - config$assumedTimeFromInfect, 1):t) {
+      flaggedLocation = context$locationHistory[u, personIndex]
+      context$flaggedExposeEvents = append(context$flaggedExposeEvents, getVertexIndex(flaggedLocation, u, config))
+    }
   }
   return(context$flaggedExposeEvents[!is.na(context$flaggedExposeEvents)])
 }
@@ -159,7 +161,7 @@ setConfig = function(input) {
     
     # intervention config
     assumedTimeFromInfect = input$assumedTimeFromInfect,
-    interventionCompliance = input$interventionCompliance
+    interventionUsage = input$interventionUsage
   ))
 }
 
@@ -197,7 +199,8 @@ modelFn = function(input, toggleDummy) {
       # These may or may not be true expose events
       # This represents the information that is available in the network
       flaggedExposeEvents = c(),
-      infectedMovements = c() # for visualization
+      infectedMovements = c(), # for visualization
+      usesIntervention = booleanProb(config$interventionUsage, n=config$nPeople)
     )
     
     for (personIndex in 1:config$nPeople) {

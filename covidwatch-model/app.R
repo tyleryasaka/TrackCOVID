@@ -34,7 +34,7 @@ ui = fluidPage(
       column(
         3,
         sliderInput("infectionProb", h3("Transmission Rate"), min = 0, max = 1, value = initialConfig$infectionProb),
-        sliderInput("interventionCompliance", h3("Intervention Compliance"), min = 0, max = 1, value = initialConfig$interventionCompliance)
+        sliderInput("interventionUsage", h3("Intervention Usage Proportion"), min = 0, max = 1, value = initialConfig$interventionUsage)
       ),
       column(
         3,
