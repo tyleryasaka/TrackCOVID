@@ -4,10 +4,12 @@
 library(shiny)
 library(igraph)
 library(rsconnect)
+library(shinythemes)
 
 source('./covidwatch-model.R')
 
 ui = fluidPage(
+  theme = shinytheme("slate"),
   mainPanel(
     fluidRow(
       align = "center",
