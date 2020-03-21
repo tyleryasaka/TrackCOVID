@@ -15,10 +15,10 @@ initialConfig = list(
   activeTime = 16,
   infectionProb = 0.2, # probability of being infected when exposed
   probDiscoverInfection = 0.8, # dice rolled each time frame
-  isolationCompliance = 0.75,
+  isolationCompliance = 0.9,
   
   # intervention config
-  assumedTimeFromInfect = 20, # how far back in time to assume infection upon discovery
+  assumedTimeFromInfect = 3, # how far back in time to assume infection upon discovery
   interventionUsage = 0.9
 )
 
@@ -186,6 +186,7 @@ modelFn = function(input, toggleDummy) {
       infectedTime = ifelse(infected, 0, NA),
       exposeEvents = c(),
       placeProbabilities = matrix(nrow=config$nPeople, ncol=config$nPlaces),
+      exposedPlaces = c(),
       
       # intervention model
       # the exposure network is a "layered" directed graph; represents data maintanined in the app network
@@ -208,7 +209,7 @@ modelFn = function(input, toggleDummy) {
     }
     
     for (t in 1:config$totalTime) {
-      exposedPlaces = c()
+      context$exposedPlaces = c()
       # add 1 vertex for each place for each layer; each layer represents a point in time
       context$exposureNetwork = addLayer(context, config, t)
       for (personIndex in 1:config$nPeople) {
