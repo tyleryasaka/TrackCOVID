@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
 var mongoose = require('mongoose')
@@ -6,10 +7,10 @@ const sha256 = require('js-sha256').sha256
 const maxDepth = 10
 
 const app = express()
-const port = 3000
+const port = process.env.PORT || 3000
 app.use(bodyParser.json())
 
-mongoose.connect('mongodb://localhost/checkpoints', { useNewUrlParser: true })
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/checkpoints', { useNewUrlParser: true })
 const db = mongoose.connection
 
 const checkpointSchema = new mongoose.Schema({
