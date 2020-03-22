@@ -3,6 +3,7 @@ import { AsyncStorage } from 'react-native'
 
 const checkpointsDBKey = 'CHECKPOINTS'
 const serverBaseUrl = 'https://covidwatch-server.herokuapp.com/checkpoints'
+const depth = 50
 
 async function getCheckpoints () {
   const checkpointsString = await AsyncStorage.getItem(checkpointsDBKey) || '[]'
@@ -13,9 +14,9 @@ async function setCheckpoints (checkpointsArr) {
   return AsyncStorage.setItem(checkpointsDBKey, JSON.stringify(checkpointsArr))
 }
 
-async function serverPOST (url = '', body) {
+async function serverRequest (method, url = '', body) {
   const response = await fetch(`${serverBaseUrl}/${url}`, {
-    method: 'POST',
+    method,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json'
@@ -29,7 +30,7 @@ async function addCheckpoint (checkpointKey) {
   const checkpoints = await getCheckpoints()
   if (checkpoints.length > 0) {
     const lastCheckpoint = checkpoints[checkpoints.length - 1]
-    await serverPOST(`${checkpointKey}/links/${lastCheckpoint.key}`)
+    await serverRequest('POST', `${checkpointKey}/links/${lastCheckpoint.key}`)
   }
   const checkpointObj = {
     key: checkpointKey,
@@ -40,8 +41,13 @@ async function addCheckpoint (checkpointKey) {
   return checkpointObj
 }
 
+async function getCheckpointStatus (checkpointKey) {
+  const response = (await serverRequest('GET', `${checkpointKey}/${depth}`))
+  return !response.error && response.exposures.length > 0
+}
+
 async function hostCheckpoint () {
-  const newCheckpointKey = (await serverPOST()).checkpoint.key
+  const newCheckpointKey = (await serverRequest('POST')).checkpoint.key
   return addCheckpoint(newCheckpointKey)
 }
 
@@ -49,7 +55,20 @@ function joinCheckpoint (checkpointKey) {
   return addCheckpoint(checkpointKey)
 }
 
+async function getExposureStatus () {
+  const twoWeeksAgo = Date.now() - 604800000
+  const checkpoints = await getCheckpoints()
+  const recentCheckpoints = checkpoints.filter(checkpoint => {
+    return checkpoint.time > twoWeeksAgo
+  })
+  const statuses = await Promise.all(recentCheckpoints.map(checkpoint => {
+    return getCheckpointStatus(checkpoint.key)
+  }))
+  return statuses.some(status => status)
+}
+
 module.exports = {
   hostCheckpoint,
-  joinCheckpoint
+  joinCheckpoint,
+  getExposureStatus
 }

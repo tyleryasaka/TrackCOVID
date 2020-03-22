@@ -4,7 +4,7 @@ const bodyParser = require('body-parser')
 var mongoose = require('mongoose')
 const sha256 = require('js-sha256').sha256
 
-const maxDepth = 10
+const maxDepth = 100
 
 const app = express()
 const port = process.env.PORT || 3000

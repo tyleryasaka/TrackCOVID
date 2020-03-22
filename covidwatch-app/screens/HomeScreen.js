@@ -1,58 +1,62 @@
-import * as React from 'react'
-import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { Component } from 'react'
+import { Button, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import * as WebBrowser from 'expo-web-browser'
+import API from '../api'
 
-import { MonoText } from '../components/StyledText'
-
-export default function HomeScreen () {
-  return (
-    <View style={styles.container}>
-      <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-        <View style={styles.welcomeContainer}>
-          <Image
-            source={
-              __DEV__
-                ? require('../assets/images/robot-dev.png')
-                : require('../assets/images/robot-prod.png')
-            }
-            style={styles.welcomeImage}
-          />
-        </View>
-
-        <View style={styles.getStartedContainer}>
-          <DevelopmentModeNotice />
-
-          <Text style={styles.getStartedText}>Open up the code for this screen:</Text>
-
-          <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
-            <MonoText>screens/HomeScreen.js</MonoText>
-          </View>
-
-          <Text style={styles.getStartedText}>
-            Change any of the text, save the file, and your app will automatically reload.
-          </Text>
-        </View>
-
-        <View style={styles.helpContainer}>
-          <TouchableOpacity onPress={handleHelpPress} style={styles.helpLink}>
-            <Text style={styles.helpLinkText}>Help, it didn’t automatically reload!</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-
-      <View style={styles.tabBarInfoContainer}>
-        <Text style={styles.tabBarInfoText}>This is a tab bar. You can edit it in:</Text>
-
-        <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-          <MonoText style={styles.codeHighlightText}>navigation/BottomTabNavigator.js</MonoText>
-        </View>
-      </View>
-    </View>
-  )
+const initialState = {
+  exposureStatus: false,
+  loaded: false
 }
 
-HomeScreen.navigationOptions = {
+class ExposuresScreen extends Component {
+  constructor () {
+    super()
+    this.state = initialState
+  }
+
+  componentDidMount () {
+    API.getExposureStatus().then(exposureStatus => {
+      this.setState({ exposureStatus, loaded: true })
+    })
+  }
+
+  reportExposure () {
+    console.log('report')
+  }
+
+  render () {
+    const { exposureStatus, loaded } = this.state
+    const statusMessageLoading = 'Loading your status...'
+    const statusMessageNegative = 'No transmission paths from infected individuals to you have been discovered at this time. However, everyone is at risk and individuals should follow the directives of the CDC as well as local, state, and federal governments.'
+    const statusMessagePositive = 'A possible transmission path from an infected individual to you has been discovered. You should take precautionary measures to protect yourself and others, according to the directives of the CDC  as well as local, state, and federal governments.'
+    const statusMessage = loaded
+      ? (exposureStatus
+        ? statusMessagePositive
+        : statusMessageNegative)
+      : statusMessageLoading
+
+    return (
+      <View style={styles.container}>
+        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+          <View style={styles.welcomeContainer}>
+            <View style={styles.getStartedContainer}>
+              <Text style={styles.getStartedText}>
+                {statusMessage}
+              </Text>
+              <Text style={styles.getStartedText}>
+                If you or someone you have been in close contact with have received a positive COVID-19 test, you should report it using the button below. Your identity will remain anonymous.
+              </Text>
+              <Button title='Report positive status' onPress={this.reportExposure.bind(this)} />
+            </View>
+          </View>
+        </ScrollView>
+      </View>
+    )
+  }
+}
+
+ExposuresScreen.navigationOptions = {
   header: null
 }
 
@@ -132,6 +136,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4
   },
   getStartedText: {
+    marginTop: 20,
     fontSize: 17,
     color: 'rgba(96,100,109, 1)',
     lineHeight: 24,
@@ -177,3 +182,5 @@ const styles = StyleSheet.create({
     color: '#2e78b7'
   }
 })
+
+export default ExposuresScreen
