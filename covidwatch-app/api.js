@@ -67,8 +67,20 @@ async function getExposureStatus () {
   return statuses.some(status => status)
 }
 
+async function reportPositive () {
+  const twoWeeksAgo = Date.now() - 604800000
+  const checkpoints = await getCheckpoints()
+  const recentCheckpoints = checkpoints.filter(checkpoint => {
+    return checkpoint.time > twoWeeksAgo
+  })
+  await Promise.all(recentCheckpoints.map(checkpoint => {
+    return serverRequest('POST', `${checkpoint.key}/exposure`)
+  }))
+}
+
 module.exports = {
   hostCheckpoint,
   joinCheckpoint,
-  getExposureStatus
+  getExposureStatus,
+  reportPositive
 }

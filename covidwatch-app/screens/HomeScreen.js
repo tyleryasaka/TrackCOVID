@@ -21,8 +21,9 @@ class ExposuresScreen extends Component {
     })
   }
 
-  reportExposure () {
-    console.log('report')
+  async reportPositive () {
+    await API.reportPositive()
+    console.log('done')
   }
 
   render () {
@@ -47,7 +48,7 @@ class ExposuresScreen extends Component {
               <Text style={styles.getStartedText}>
                 If you or someone you have been in close contact with have received a positive COVID-19 test, you should report it using the button below. Your identity will remain anonymous.
               </Text>
-              <Button title='Report positive status' onPress={this.reportExposure.bind(this)} />
+              <Button title='Report positive status' onPress={this.reportPositive.bind(this)} />
             </View>
           </View>
         </ScrollView>
