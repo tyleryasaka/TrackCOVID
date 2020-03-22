@@ -51,7 +51,7 @@ async function findExposures (checkpointKey, depth) {
 
 app.post('/checkpoints', (req, res) => {
   const checkpoint = new Checkpoint({
-    key: sha256(String(Math.random())),
+    key: sha256(String(Math.random())).substring(0, 32),
     links: [],
     exposed: false
   })
