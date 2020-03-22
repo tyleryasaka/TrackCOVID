@@ -1,7 +1,7 @@
 # covidwatch-app (COVID Watch P2P)
 
 - [Private](#Private)
-- [Peer to Peer](#Peer to Peer)
+- [Peer to Peer](#Peer-to-Peer)
 
 ## Private
 
