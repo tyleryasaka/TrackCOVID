@@ -4,6 +4,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 import QRCode from 'react-native-qrcode-svg'
 import { BarCodeScanner } from 'expo-barcode-scanner'
 import API from '../api'
+import { StatusContext } from '../status-context'
 
 const initialState = {
   mode: 'home',
@@ -15,8 +16,8 @@ const initialState = {
 }
 
 class CheckpointsScreen extends Component {
-  constructor () {
-    super()
+  constructor (props) {
+    super(props)
     this.state = initialState
   }
 
@@ -52,6 +53,7 @@ class CheckpointsScreen extends Component {
 
   render () {
     const { mode, checkpointKey, checkpointTime, hasPermission, scanned, joinError } = this.state
+    const { status } = this.context
     if (mode === 'home') {
       return (
         <View style={styles.container}>
@@ -117,6 +119,8 @@ class CheckpointsScreen extends Component {
     }
   }
 }
+
+CheckpointsScreen.contextType = StatusContext
 
 const styles = StyleSheet.create({
   container: {

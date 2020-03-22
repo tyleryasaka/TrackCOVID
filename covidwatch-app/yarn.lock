@@ -2788,6 +2788,13 @@ expo-asset@~8.0.0:
     path-browserify "^1.0.0"
     url-parse "^1.4.4"
 
+expo-background-fetch@~8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/expo-background-fetch/-/expo-background-fetch-8.0.0.tgz#f66b37616d7f0ad0a180b4ae8e866daf9692a73b"
+  integrity sha512-gcwHEk571fXDwRHQekKb11Z6LfItUtxbzO82UZ5MiKdA7adLMxb9hsYkpre79JLem/dpktOAO/yJiZp0YnEstQ==
+  dependencies:
+    expo-task-manager "~8.0.0"
+
 expo-barcode-scanner@~8.0.0:
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/expo-barcode-scanner/-/expo-barcode-scanner-8.0.0.tgz#f574191621907aa286cf47f6757031cc112720a5"
@@ -2857,6 +2864,11 @@ expo-sqlite@~8.0.0:
     "@expo/websql" "^1.0.1"
     "@types/websql" "^0.0.27"
     lodash "^4.17.15"
+
+expo-task-manager@~8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/expo-task-manager/-/expo-task-manager-8.0.0.tgz#cf79e11fe2a48217f59896419aff401cdd776c28"
+  integrity sha512-gvb4cRzoZW7xpvX5z34gGhGTyr2LipLgqkbn+/hpyF1gKwySGiWjJOn20/VtjVXSCywTLCgxXbLbg+HzegCenQ==
 
 expo-web-browser@~8.0.0:
   version "8.0.0"

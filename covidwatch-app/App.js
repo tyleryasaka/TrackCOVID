@@ -5,11 +5,34 @@ import * as Font from 'expo-font'
 import { Ionicons } from '@expo/vector-icons'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
-
 import BottomTabNavigator from './navigation/BottomTabNavigator'
 import useLinking from './navigation/useLinking'
+import { StatusContext } from './status-context'
+import API from './api'
 
 const Stack = createStackNavigator()
+
+const pollingTime = 30 // seconds
+
+function useInterval (callback, delay) {
+  const savedCallback = React.useRef()
+
+  // Remember the latest callback.
+  React.useEffect(() => {
+    savedCallback.current = callback
+  }, [callback])
+
+  // Set up the interval.
+  React.useEffect(() => {
+    function tick () {
+      savedCallback.current()
+    }
+    if (delay !== null) {
+      let id = setInterval(tick, delay)
+      return () => clearInterval(id)
+    }
+  }, [delay])
+}
 
 export default function App (props) {
   const [isLoadingComplete, setLoadingComplete] = React.useState(false)
@@ -43,17 +66,31 @@ export default function App (props) {
     loadResourcesAndDataAsync()
   }, [])
 
+  const [statusObj, setStatusObj] = React.useState({ status: false, loaded: false })
+
+  API.getExposureStatus().then(exposureStatus => {
+    setStatusObj({ status: exposureStatus, loaded: true })
+  })
+
+  useInterval(() => {
+    API.getExposureStatus().then(exposureStatus => {
+      setStatusObj({ status: exposureStatus, loaded: true })
+    })
+  }, 1000 * pollingTime)
+
   if (!isLoadingComplete && !props.skipLoadingScreen) {
     return null
   } else {
     return (
       <View style={styles.container}>
         {Platform.OS === 'ios' && <StatusBar barStyle='default' />}
-        <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
-          <Stack.Navigator>
-            <Stack.Screen name='Root' component={BottomTabNavigator} />
-          </Stack.Navigator>
-        </NavigationContainer>
+        <StatusContext.Provider value={statusObj}>
+          <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
+            <Stack.Navigator>
+              <Stack.Screen name='Root' component={BottomTabNavigator} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </StatusContext.Provider>
       </View>
     )
   }

@@ -3,6 +3,7 @@ import { Button, Image, Platform, StyleSheet, Text, TouchableOpacity, View } fro
 import { ScrollView } from 'react-native-gesture-handler'
 import * as WebBrowser from 'expo-web-browser'
 import API from '../api'
+import { StatusContext } from '../status-context'
 
 const initialState = {
   exposureStatus: false,
@@ -15,24 +16,17 @@ class ExposuresScreen extends Component {
     this.state = initialState
   }
 
-  componentDidMount () {
-    API.getExposureStatus().then(exposureStatus => {
-      this.setState({ exposureStatus, loaded: true })
-    })
-  }
-
   async reportPositive () {
     await API.reportPositive()
-    console.log('done')
   }
 
   render () {
-    const { exposureStatus, loaded } = this.state
+    const { status, loaded } = this.context
     const statusMessageLoading = 'Loading your status...'
     const statusMessageNegative = 'No transmission paths from infected individuals to you have been discovered at this time. However, everyone is at risk and individuals should follow the directives of the CDC as well as local, state, and federal governments.'
     const statusMessagePositive = 'A possible transmission path from an infected individual to you has been discovered. You should take precautionary measures to protect yourself and others, according to the directives of the CDC  as well as local, state, and federal governments.'
     const statusMessage = loaded
-      ? (exposureStatus
+      ? (status
         ? statusMessagePositive
         : statusMessageNegative)
       : statusMessageLoading
@@ -60,6 +54,8 @@ class ExposuresScreen extends Component {
 ExposuresScreen.navigationOptions = {
   header: null
 }
+
+ExposuresScreen.contextType = StatusContext
 
 function DevelopmentModeNotice () {
   if (__DEV__) {
