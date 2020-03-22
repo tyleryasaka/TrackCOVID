@@ -68,9 +68,11 @@ export default function App (props) {
 
   const [statusObj, setStatusObj] = React.useState({ status: false, loaded: false })
 
-  API.getExposureStatus().then(exposureStatus => {
-    setStatusObj({ status: exposureStatus, loaded: true })
-  })
+  React.useEffect(() => {
+    API.getExposureStatus().then(exposureStatus => {
+      setStatusObj({ status: exposureStatus, loaded: true })
+    })
+  }, [])
 
   useInterval(() => {
     API.getExposureStatus().then(exposureStatus => {

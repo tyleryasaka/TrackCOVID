@@ -1,32 +1,35 @@
-import * as React from 'react'
+import React, { Component } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import * as WebBrowser from 'expo-web-browser'
 import { RectButton, ScrollView } from 'react-native-gesture-handler'
+import StatusBanner from '../components/status-banner'
 
-export default function LinksScreen () {
-  return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      <OptionButton
-        icon='md-school'
-        label='Read the Expo documentation'
-        onPress={() => WebBrowser.openBrowserAsync('https://docs.expo.io')}
-      />
-
-      <OptionButton
-        icon='md-compass'
-        label='Read the React Navigation documentation'
-        onPress={() => WebBrowser.openBrowserAsync('https://reactnavigation.org')}
-      />
-
-      <OptionButton
-        icon='ios-chatboxes'
-        label='Ask a question on the forums'
-        onPress={() => WebBrowser.openBrowserAsync('https://forums.expo.io')}
-        isLastOption
-      />
-    </ScrollView>
-  )
+class InfoScreen extends Component {
+  render () {
+    return (
+      <View style={styles.container} contentContainerStyle={styles.contentContainer}>
+        <StatusBanner />
+        <ScrollView>
+          <OptionButton
+            icon='md-medkit'
+            label='CDC COVID-19'
+            onPress={() => WebBrowser.openBrowserAsync('https://www.cdc.gov/coronavirus/2019-ncov/index.html')}
+          />
+          <OptionButton
+            icon='md-globe'
+            label='WHO COVID-19'
+            onPress={() => WebBrowser.openBrowserAsync('https://www.who.int/emergencies/diseases/novel-coronavirus-2019/advice-for-public')}
+          />
+          <OptionButton
+            icon='md-code'
+            label='Learn more about COVID Watch app'
+            onPress={() => WebBrowser.openBrowserAsync('https://github.com/tyleryasaka/covid-watch')}
+          />
+        </ScrollView>
+      </View>
+    )
+  }
 }
 
 function OptionButton ({ icon, label, onPress, isLastOption }) {
@@ -72,3 +75,5 @@ const styles = StyleSheet.create({
     marginTop: 1
   }
 })
+
+export default InfoScreen

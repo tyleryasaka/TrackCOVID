@@ -2,8 +2,8 @@ import * as React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import TabBarIcon from '../components/TabBarIcon';
 import CheckpointsScreen from '../screens/CheckpointsScreen';
-import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
+import HomeScreen from '../screens/ExposuresScreen';
+import LinksScreen from '../screens/InfoScreen';
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
@@ -21,7 +21,7 @@ export default function BottomTabNavigator({ navigation, route }) {
         component={CheckpointsScreen}
         options={{
           title: 'Checkpoints',
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-code-working" />,
+          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-checkmark" />,
         }}
       />
       <BottomTab.Screen
@@ -29,11 +29,11 @@ export default function BottomTabNavigator({ navigation, route }) {
         component={HomeScreen}
         options={{
           title: 'Exposures',
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-code-working" />,
+          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-warning" />,
         }}
       />
       <BottomTab.Screen
-        name="About"
+        name="Info"
         component={LinksScreen}
         options={{
           title: 'Info',
@@ -52,7 +52,7 @@ function getHeaderTitle(route) {
       return 'Host or Join a Checkpoint';
     case 'Exposure':
       return 'My Exposure Status';
-    case 'About':
+    case 'Info':
       return 'More Info';
   }
 }

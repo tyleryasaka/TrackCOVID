@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
-import { Platform, StyleSheet, Text, View, Button } from 'react-native'
+import { Platform, StyleSheet, Text, View, Button, Alert } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import QRCode from 'react-native-qrcode-svg'
 import { BarCodeScanner } from 'expo-barcode-scanner'
 import API from '../api'
 import { StatusContext } from '../status-context'
+import StatusBanner from '../components/status-banner'
 
 const initialState = {
   mode: 'home',
@@ -23,6 +24,22 @@ class CheckpointsScreen extends Component {
 
   async reset () {
     this.setState(initialState)
+  }
+
+  async endHost () {
+    Alert.alert(
+      'End this checkpoint?',
+      'Once the checkpoint is ended, no one else will be able to join.',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => {},
+          style: 'cancel'
+        },
+        { text: 'Yes, end', onPress: () => this.reset() }
+      ],
+      { cancelable: false }
+    )
   }
 
   async becomeHost () {
@@ -53,13 +70,16 @@ class CheckpointsScreen extends Component {
 
   render () {
     const { mode, checkpointKey, checkpointTime, hasPermission, scanned, joinError } = this.state
-    const { status } = this.context
     if (mode === 'home') {
       return (
         <View style={styles.container}>
+          <StatusBanner />
           <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
             <View style={styles.getStartedContainer}>
               <Button title='Host a checkpoint' onPress={this.becomeHost.bind(this)} />
+              <Text style={styles.getStartedText}>
+                OR
+              </Text>
               <Button title='Join a checkpoint' onPress={this.joinCheckpoint.bind(this)} />
             </View>
           </ScrollView>
@@ -69,15 +89,15 @@ class CheckpointsScreen extends Component {
       return (
         <View style={styles.container}>
           <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-            <View style={styles.getStartedContainer}>
-              <Text style={styles.getStartedText}>
+            <View style={styles.container2}>
+              <Text style={{ marginBottom: 20 }}>
                 You are now hosting a checkpoint. Others may check in by using the QR code below.
               </Text>
               <QRCode value={checkpointKey} size={250} />
               <Text style={styles.getStartedText}>
-                Checkpoint created {checkpointTime}
+                Checkpoint created {new Date(checkpointTime).toDateString()}
               </Text>
-              <Button title='End checkpoint' onPress={this.reset.bind(this)} />
+              <Button title='End checkpoint' onPress={this.endHost.bind(this)} />
             </View>
           </ScrollView>
         </View>
@@ -93,6 +113,7 @@ class CheckpointsScreen extends Component {
             onBarCodeScanned={this.handleBarCodeScanned.bind(this)}
             style={StyleSheet.absoluteFillObject}
           />
+          <Button title='Cancel' onPress={this.reset.bind(this)} />
         </View>
       )
     } else if (mode === 'join') {
@@ -149,8 +170,11 @@ const styles = StyleSheet.create({
     marginTop: 3,
     marginLeft: -10
   },
-  getStartedContainer: {
+  container2: {
     alignItems: 'center',
+    marginHorizontal: 50
+  },
+  getStartedContainer: {
     marginHorizontal: 50
   },
   homeScreenFilename: {
@@ -165,6 +189,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4
   },
   getStartedText: {
+    marginTop: 30,
+    marginBottom: 30,
     fontSize: 17,
     color: 'rgba(96,100,109, 1)',
     lineHeight: 24,
