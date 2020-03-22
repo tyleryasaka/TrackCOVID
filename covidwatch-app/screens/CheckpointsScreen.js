@@ -2,35 +2,63 @@ import React, { Component } from 'react'
 import { Platform, StyleSheet, Text, View, Button } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import QRCode from 'react-native-qrcode-svg'
+import { BarCodeScanner } from 'expo-barcode-scanner'
 import API from '../api'
+
+const initialState = {
+  mode: 'home',
+  checkpointKey: null,
+  checkpointTime: null,
+  hasPermission: null,
+  scanned: false,
+  joinError: false
+}
 
 class CheckpointsScreen extends Component {
   constructor () {
     super()
-    this.state = {
-      mode: 'home',
-      checkpointKey: null
-    }
+    this.state = initialState
+  }
+
+  async reset () {
+    this.setState(initialState)
   }
 
   async becomeHost () {
-    const { newCheckpointKey, time } = await API.hostCheckpoint()
+    const { key, time } = await API.hostCheckpoint()
     this.setState({
       mode: 'host',
-      checkpointKey: newCheckpointKey,
+      checkpointKey: key,
       checkpointTime: time
     })
-    console.log(newCheckpointKey)
+  }
+
+  async joinCheckpoint () {
+    const { status } = await BarCodeScanner.requestPermissionsAsync()
+    this.setState({
+      hasPermission: status === 'granted',
+      mode: 'join'
+    })
+  }
+
+  async handleBarCodeScanned ({ type, data }) {
+    if (data && (data.length === 32)) {
+      await API.joinCheckpoint(data)
+      this.setState({ scanned: true })
+    } else {
+      this.setState({ scanned: true, joinError: true })
+    }
   }
 
   render () {
-    const { mode, checkpointKey, checkpointTime } = this.state
+    const { mode, checkpointKey, checkpointTime, hasPermission, scanned, joinError } = this.state
     if (mode === 'home') {
       return (
         <View style={styles.container}>
           <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
             <View style={styles.getStartedContainer}>
               <Button title='Host a checkpoint' onPress={this.becomeHost.bind(this)} />
+              <Button title='Join a checkpoint' onPress={this.joinCheckpoint.bind(this)} />
             </View>
           </ScrollView>
         </View>
@@ -47,6 +75,41 @@ class CheckpointsScreen extends Component {
               <Text style={styles.getStartedText}>
                 Checkpoint created {checkpointTime}
               </Text>
+              <Button title='End checkpoint' onPress={this.reset.bind(this)} />
+            </View>
+          </ScrollView>
+        </View>
+      )
+    } else if (mode === 'join' && !scanned) {
+      return (
+        <View style={{
+          flex: 1,
+          flexDirection: 'column',
+          justifyContent: 'flex-end'
+        }}>
+          <BarCodeScanner
+            onBarCodeScanned={this.handleBarCodeScanned.bind(this)}
+            style={StyleSheet.absoluteFillObject}
+          />
+        </View>
+      )
+    } else if (mode === 'join') {
+      let responseText = 'You have checked in successfully'
+      if (hasPermission === null) {
+        responseText = 'Requesting for camera permission'
+      } else if (hasPermission === false) {
+        responseText = 'No access to camera'
+      } else if (joinError) {
+        responseText = 'The QR code could not be read. Please try again.'
+      }
+      return (
+        <View style={styles.container}>
+          <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+            <View style={styles.getStartedContainer}>
+              <Text style={styles.getStartedText}>
+                {responseText}
+              </Text>
+              <Button title='Done' onPress={this.reset.bind(this)} />
             </View>
           </ScrollView>
         </View>

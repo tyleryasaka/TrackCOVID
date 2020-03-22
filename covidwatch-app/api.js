@@ -25,15 +25,14 @@ async function serverPOST (url = '', body) {
   return response.json()
 }
 
-async function hostCheckpoint () {
-  const newCheckpoint = (await serverPOST()).checkpoint
+async function addCheckpoint (checkpointKey) {
   const checkpoints = await getCheckpoints()
   if (checkpoints.length > 0) {
     const lastCheckpoint = checkpoints[checkpoints.length - 1]
-    await serverPOST(`${newCheckpoint.key}/links/${lastCheckpoint.key}`)
+    await serverPOST(`${checkpointKey}/links/${lastCheckpoint.key}`)
   }
   const checkpointObj = {
-    key: newCheckpoint.key,
+    key: checkpointKey,
     time: Date.now()
   }
   checkpoints.push(checkpointObj)
@@ -41,8 +40,13 @@ async function hostCheckpoint () {
   return checkpointObj
 }
 
-async function joinCheckpoint (checkpointKey) {
-  console.log(checkpointKey)
+async function hostCheckpoint () {
+  const newCheckpointKey = (await serverPOST()).checkpoint.key
+  return addCheckpoint(newCheckpointKey)
+}
+
+function joinCheckpoint (checkpointKey) {
+  return addCheckpoint(checkpointKey)
 }
 
 module.exports = {
