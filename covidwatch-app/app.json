@@ -26,6 +26,8 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": "",
+    "githubUrl": "https://github.com/tyleryasaka/covid-watch/tree/master/covidwatch-app"
   }
 }
