@@ -22,6 +22,7 @@
     "expo-asset": "~8.0.0",
     "expo-constants": "~8.0.0",
     "expo-font": "~8.0.0",
+    "expo-secure-store": "~8.0.0",
     "expo-web-browser": "~8.0.0",
     "react": "~16.9.0",
     "react-dom": "~16.9.0",

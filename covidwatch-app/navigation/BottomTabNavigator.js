@@ -16,18 +16,26 @@ export default function BottomTabNavigator({ navigation, route }) {
   return (
     <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME}>
       <BottomTab.Screen
-        name="Home"
+        name="Checkpoints"
         component={HomeScreen}
         options={{
-          title: 'Get Started',
+          title: 'Checkpoints',
           tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-code-working" />,
         }}
       />
       <BottomTab.Screen
-        name="Links"
+        name="Exposure"
+        component={HomeScreen}
+        options={{
+          title: 'Exposures',
+          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-code-working" />,
+        }}
+      />
+      <BottomTab.Screen
+        name="About"
         component={LinksScreen}
         options={{
-          title: 'Resources',
+          title: 'About',
           tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-book" />,
         }}
       />
@@ -39,9 +47,11 @@ function getHeaderTitle(route) {
   const routeName = route.state?.routes[route.state.index]?.name ?? INITIAL_ROUTE_NAME;
 
   switch (routeName) {
-    case 'Home':
-      return 'How to get started';
-    case 'Links':
-      return 'Links to learn more';
+    case 'Checkpoints':
+      return 'Host or Join a Checkpoint';
+    case 'Exposure':
+      return 'My Exposure Status';
+    case 'About':
+      return 'About COVID Watch';
   }
 }
