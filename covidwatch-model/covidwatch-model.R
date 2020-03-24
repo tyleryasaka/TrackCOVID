@@ -51,13 +51,14 @@ booleanProb = function(probTrue, n=1) {
 }
 
 updatePersonAtHome = function(personIndex, t, context, config) {
-  if (isActiveInfected(personIndex, context, config, t) & context$infectionKnowledge[personIndex]) {
-    return(booleanProb(config$isolationCompliance))
-  } else if (t > 1 & config$toggleIntervention & context$usesIntervention[personIndex] & flaggedRisk(personIndex, t, context, config)) {
-    return(T)
-  } else {
-    return(F)
-  }
+  atHomeForInfection = isActiveInfected(personIndex, context, config, t) &
+    context$infectionKnowledge[personIndex] &
+    booleanProb(config$isolationCompliance)
+  atHomeForIntervention = t > 1 &
+    config$toggleIntervention &
+    context$usesIntervention[personIndex] &
+    flaggedRisk(personIndex, t, context, config)
+  return(atHomeForInfection | atHomeForIntervention)
 }
 
 updatePersonLocation = function(personIndex, context, config) {

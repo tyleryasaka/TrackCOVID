@@ -13,11 +13,11 @@ ui = fluidPage(
   mainPanel(
     fluidRow(
       align = "center",
-      titlePanel("Infection Spread With and Without Intervention")
+      titlePanel("Infection Spread With and Without Peer to Peer Contact Tracing")
     ),
     fluidRow(
       align = "center",
-      checkboxInput("toggleIntervention", "Use Intervention", value = initialConfig$toggleIntervention),
+      checkboxInput("toggleIntervention", "Use Peer to Peer Contact Tracing", value = initialConfig$toggleIntervention),
       selectInput("nTrials", "# of Simulations", 2:initialConfig$maxNTrials, selected = initialConfig$nTrials)
     ),
     fluidRow(
@@ -28,13 +28,13 @@ ui = fluidPage(
       ),
       column(
         3,
-        sliderInput("activeTime", h3("Infected Duration"), min = 0, max = 20, value = initialConfig$activeTime),
+        sliderInput("activeTime", h3("Infectious Period"), min = 0, max = 20, value = initialConfig$activeTime),
         sliderInput("assumedTimeFromInfect", h3("Estimated Discovery Time"), min = 0, max = 20, value = initialConfig$assumedTimeFromInfect)
       ),
       column(
         3,
         sliderInput("infectionProb", h3("Transmission Rate"), min = 0, max = 1, value = initialConfig$infectionProb),
-        sliderInput("interventionUsage", h3("Intervention Usage Proportion"), min = 0, max = 1, value = initialConfig$interventionUsage)
+        sliderInput("interventionUsage", h3("Adoption Rate"), min = 0, max = 1, value = initialConfig$interventionUsage)
       ),
       column(
         3,
