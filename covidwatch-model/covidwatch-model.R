@@ -13,7 +13,7 @@ initialConfig = list(
   totalTime = 20,
   initialInfected = 0.05,
   activeTime = 8,
-  infectionProb = 0.3, # probability of being infected when exposed
+  infectionProb = 0.25, # probability of being infected when exposed
   diagnosisPeriod = 2,
   isolationCompliance = 1,
   

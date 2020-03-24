@@ -1,6 +1,8 @@
 library(ggplot2)
 # source('./covidwatch-model.R')
 
+filename = "./output/infection-curve-1.tiff"
+
 config.default = list(
   nTrials = 10,
   maxNTrials = 20,
@@ -12,9 +14,9 @@ config.default = list(
   totalTime = 20,
   initialInfected = 0.05,
   activeTime = 8,
-  infectionProb = 0.3,
+  infectionProb = 0.25,
   diagnosisPeriod = 2,
-  isolationCompliance = 0.8,
+  isolationCompliance = 1,
   
   # intervention config
   estimatedDiagnosisPeriod = 2,
@@ -58,9 +60,10 @@ curve.combined = rbind(
 
 scenarios = c('No adoption', '25% adoption', '50% adoption', '75% adoption')
 
-tiff("infection-curve-1.tiff", units="in", width=5, height=3.5, res=300)
+tiff(filename, units="in", width=5, height=3.5, res=300)
 ggplot(curve.combined, aes(x=time, y=active, group=factor(group), color=factor(scenario, scenarios))) +
   geom_line() +
+  scale_colour_manual(values=c('#EF476F', '#FFD166', '#06D6A0', '#118AB2')) +
   ylim(0,1) +
   labs(x="Time",
        y="Proportion of population with active infection",
