@@ -4,7 +4,7 @@ library(ggplot2)
 config.default = list(
   nTrials = 10,
   maxNTrials = 20,
-  toggleIntervention = F, # enable or disable the intervention (app) in the simulation
+  toggleIntervention = F,
   
   # model config
   nPlaces = 6,
@@ -12,12 +12,12 @@ config.default = list(
   totalTime = 20,
   initialInfected = 0.05,
   activeTime = 8,
-  infectionProb = 0.3, # probability of being infected when exposed
-  probDiscoverInfection = 0.5, # dice rolled each time frame
+  infectionProb = 0.3,
+  diagnosisPeriod = 2,
   isolationCompliance = 0.8,
   
   # intervention config
-  assumedTimeFromInfect = 3, # how far back in time to assume infection upon discovery
+  estimatedDiagnosisPeriod = 2,
   estimatedActiveTime = 8,
   interventionUsage = 0.5
 )

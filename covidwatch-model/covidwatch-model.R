@@ -14,11 +14,12 @@ initialConfig = list(
   initialInfected = 0.05,
   activeTime = 8,
   infectionProb = 0.3, # probability of being infected when exposed
-  probDiscoverInfection = 0.5, # dice rolled each time frame
-  isolationCompliance = 0.8,
+  diagnosisPeriod = 2,
+  isolationCompliance = 1,
   
   # intervention config
-  assumedTimeFromInfect = 3, # how far back in time to assume infection upon discovery
+  estimatedDiagnosisPeriod = 2, # how far back in time to assume infection upon discovery
+  estimatedActiveTime = 8,
   interventionUsage = 0.5
 )
 
@@ -37,8 +38,9 @@ flaggedRisk = function(personIndex, t, context, config) {
   lastEvent = getVertexIndex(context$peopleLocations[personIndex], t, config)
   exposureTable = distances(context$exposureNetwork, to=lastEvent, mode = 'out')
   isRisk = F
-  for (flaggedEvent in unique(context$flaggedExposeEvents)) {
-    exposeDistance = exposureTable[context$flaggedExposeEvents[flaggedEvent]]
+  eventsInRange = subset(context$flaggedExposeEvents, (t - context$flaggedExposeEvents$time) < config$estimatedActiveTime)
+  for (flaggedEvent in unique(eventsInRange$v)) {
+    exposeDistance = exposureTable[flaggedEvent]
     if (!(exposeDistance %in% c(0, Inf))) {
       isRisk = T
     }
@@ -125,23 +127,20 @@ logExposeEvents = function(context, config) {
   return(newEvents)
 }
 
-updateInfectionKnowledge = function(personIndex, t, context, config) {
-  # person may discover their infection with some probability
-  if (!context$infectionKnowledge[personIndex]) {
-    context$infectionKnowledge[personIndex] = booleanProb(config$probDiscoverInfection)
-  }
-  return(context$infectionKnowledge)
+isAwareInfection = function(personIndex, t, context, config) {
+  return(t - context$infectedTime[personIndex] >= config$diagnosisPeriod)
 }
 
 flagInfection = function(personIndex, t, context, config) {
   # person assumes they have had infection for some time
-  if (context$usesIntervention[personIndex]) {
-    for (u in max(t - config$assumedTimeFromInfect, 1):t) {
+  if (context$usesIntervention[personIndex] & !context$hasFlaggedInfection[personIndex]) {
+    for (u in max(t - config$estimatedDiagnosisPeriod, 1):t) {
       flaggedLocation = context$locationHistory[u, personIndex]
-      context$flaggedExposeEvents = append(context$flaggedExposeEvents, getVertexIndex(flaggedLocation, u, config))
+      context$flaggedExposeEvents = rbind(context$flaggedExposeEvents, list(time=t, v=getVertexIndex(flaggedLocation, u, config)))
+      context$hasFlaggedInfection[personIndex] = T
     }
   }
-  return(context$flaggedExposeEvents[!is.na(context$flaggedExposeEvents)])
+  return(context$flaggedExposeEvents)
 }
 
 setConfig = function(input) {
@@ -154,14 +153,15 @@ setConfig = function(input) {
     nPlaces = initialConfig$nPlaces,
     nPeople = initialConfig$nPeople,
     totalTime = initialConfig$totalTime,
-    initialInfected = input$initialInfected,
+    initialInfected = initialConfig$initialInfected,
     activeTime = input$activeTime,
     infectionProb = input$infectionProb,
-    probDiscoverInfection = input$probDiscoverInfection,
-    isolationCompliance = input$isolationCompliance,
+    diagnosisPeriod = input$diagnosisPeriod,
+    isolationCompliance = initialConfig$isolationCompliance,
     
     # intervention config
-    assumedTimeFromInfect = input$assumedTimeFromInfect,
+    estimatedDiagnosisPeriod = input$estimatedDiagnosisPeriod,
+    estimatedActiveTime = input$estimatedActiveTime,
     interventionUsage = input$interventionUsage
   ))
 }
@@ -191,6 +191,7 @@ modelFn = function(input, toggleDummy = F) {
       lastMovedTime = rep(1, config$nPeople),
       peopleAtHome = rep(NA, config$nPeople),
       infectedTime = ifelse(infected, 0, NA),
+      hasFlaggedInfection = rep(F, config$nPeople),
       exposeEvents = c(),
       placeProbabilities = matrix(nrow=config$nPeople, ncol=config$nPlaces),
       exposedPlaces = c(),
@@ -206,7 +207,7 @@ modelFn = function(input, toggleDummy = F) {
       infectionKnowledge = rep(F, config$nPeople),
       # These may or may not be true expose events
       # This represents the information that is available in the network
-      flaggedExposeEvents = c(),
+      flaggedExposeEvents = data.frame(time=integer(), v=double()),
       infectedMovements = c(), # for visualization
       usesIntervention = booleanProb(config$interventionUsage, n=config$nPeople)
     )
@@ -237,8 +238,7 @@ modelFn = function(input, toggleDummy = F) {
         if (!context$peopleAtHome[personIndex] & isActiveInfected(personIndex, context, config, t)) {
           # if person is infected and active and not at home, they have exposed everyone at this location/point in time
           context$exposedPlaces = append(context$exposedPlaces, context$peopleLocations[personIndex])
-          context$infectionKnowledge = updateInfectionKnowledge(personIndex, t, context, config)
-          if (context$infectionKnowledge[personIndex]) {
+          if (isAwareInfection(personIndex, t, context, config)) {
             context$flaggedExposeEvents = flagInfection(personIndex, t, context, config)
           }
         }
