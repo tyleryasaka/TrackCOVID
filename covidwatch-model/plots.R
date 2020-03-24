@@ -72,7 +72,7 @@ ggplot(curve.combined, aes(x=time, y=active, group=factor(group), color=factor(s
   ylim(0,1) +
   labs(x="Time",
        y="Proportion of population with active infection",
-       color="App Adoption") +
+       color="App adoption") +
   theme(axis.title=element_text(size=10))
 dev.off()
 
