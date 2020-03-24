@@ -5,6 +5,7 @@ library(shiny)
 library(igraph)
 library(rsconnect)
 library(shinythemes)
+library(ggplot2)
 
 source('./covidwatch-model.R')
 
@@ -45,8 +46,8 @@ ui = fluidPage(
       align = "center",
       column(
         6,
-        verbatimTextOutput("percentInfectedMean"),
-        actionButton("refresh", "Run Again with the Same Parameters", style="margin:10px 0")
+        verbatimTextOutput("percentInfectedMean")
+        # actionButton("refresh", "Run Again with the Same Parameters", style="margin:10px 0")
       ),
       column(
         6,
@@ -56,7 +57,14 @@ ui = fluidPage(
     ),
     fluidRow(
       align = "center",
-      plotOutput('plot1')
+      column(
+        6,
+        plotOutput('plot2')
+      ),
+      column(
+        6,
+        plotOutput('plot1')
+      )
     ),
     width = 12
   )
@@ -70,7 +78,9 @@ server = function(input, output) {
   observeEvent(input$refresh, {
     values$toggleDummy <- !values$toggleDummy
   })
-  simulationResults = reactive(modelFn(input, values$toggleDummy))
+  modelOut = reactive(modelFn(input, values$toggleDummy))
+  simulationResults = reactive(modelOut()$simulationResults)
+  infectionCurve = reactive(modelOut()$infectionCurve)
   currentResult = reactive(simulationResults()[[values$currentSim]])
   output$plot1 <- renderPlot({
     return(list(
@@ -83,7 +93,9 @@ server = function(input, output) {
           '#86bdfc'
         ),
         vertex.size=rep(sqrt(currentResult()$placePopularities * 100), currentResult()$totalTime),
+        vertex.label=NA,
         edge.width=0.5,
+        edge.arrow.size=0.5,
         edge.color=ifelse(
           currentResult()$infectedMovements,
           '#cf1111',
@@ -94,7 +106,13 @@ server = function(input, output) {
       infected=currentResult()$infected,
       nTrials=currentResult()$nTrials
     ))
-  }, height = 800, width = 800)
+  })
+  output$plot2 = renderPlot({
+    ggplot(infectionCurve(), aes(x=time, y=active, group=factor(trial))) +
+      geom_line(color='#cf1111') +
+      ylim(0,1) +
+      labs(title="Active Infections Over Time",x="Time", y = "Proportion of population with active infection")
+  })
   output$percentInfectedMean <- renderText(
     {paste(
       'Average of ',

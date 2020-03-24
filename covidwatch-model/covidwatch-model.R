@@ -8,18 +8,18 @@ initialConfig = list(
   toggleIntervention = F, # enable or disable the intervention (app) in the simulation
   
   # model config
-  nPlaces = 5,
+  nPlaces = 6,
   nPeople = 40,
   totalTime = 20,
   initialInfected = 0.05,
-  activeTime = 16,
-  infectionProb = 0.2, # probability of being infected when exposed
-  probDiscoverInfection = 0.8, # dice rolled each time frame
-  isolationCompliance = 0.9,
+  activeTime = 8,
+  infectionProb = 0.3, # probability of being infected when exposed
+  probDiscoverInfection = 0.5, # dice rolled each time frame
+  isolationCompliance = 0.8,
   
   # intervention config
   assumedTimeFromInfect = 3, # how far back in time to assume infection upon discovery
-  interventionUsage = 0.9
+  interventionUsage = 0.5
 )
 
 # ------------------------------------------------------- #
@@ -172,9 +172,15 @@ setConfig = function(input) {
 modelFn = function(input, toggleDummy) {
   config = setConfig(input)
   simulationResults = list()
+  infectionCurve = data.frame()
+    # matrix(nrow=as.numeric(config$nTrials), ncol=as.numeric(config$totalTime))
   for (q in 1:config$nTrials) {
     # infection model
-    infected = booleanProb(config$initialInfected, n=config$nPeople)
+    infectedN = ceiling(config$initialInfected * config$nPeople)
+    infected = rep(F, nPeople)
+    for (i in 1:nPeople) {
+      infected[i] = (i <= infectedN)
+    }
     context = list(
       infected = infected,
       infectedStart = length(infected[infected]),
@@ -208,7 +214,7 @@ modelFn = function(input, toggleDummy) {
     for (personIndex in 1:config$nPeople) {
       context$placeProbabilities[personIndex,] = getPlaceProbabilities(personIndex, context, config)
     }
-    
+
     for (t in 1:config$totalTime) {
       context$exposedPlaces = c()
       # add 1 vertex for each place for each layer; each layer represents a point in time
@@ -249,8 +255,9 @@ modelFn = function(input, toggleDummy) {
         }
       }
       context$exposeEvents = append(context$exposeEvents, logExposeEvents(context, config))
+      activeInfected = sapply(1:config$nPeople, function(i) { isActiveInfected(i, context, config, t) })
+      infectionCurve = rbind(infectionCurve, list(trial=q, time=t, active=length(activeInfected[activeInfected]) / nPeople))
       if (config$nTrials == 1) {
-        activeInfected = sapply(1:config$nPeople, function(i) { isActiveInfected(i, context, config, t) })
         print(paste('t:', t, ', # active:', length(context$activeInfected[context$activeInfected])))
         print(paste('t:', t, ', # infected:', length(context$infected[context$infected])))
         print(paste('t:', t, ', # at home:', length(context$peopleAtHome[context$peopleAtHome])))
@@ -271,5 +278,8 @@ modelFn = function(input, toggleDummy) {
       dummyOutput=toggleDummy
     )
   }
-  return(simulationResults)
+  return(list(
+    infectionCurve=infectionCurve,
+    simulationResults=simulationResults
+  ))
 }
