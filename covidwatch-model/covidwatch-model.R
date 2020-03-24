@@ -169,7 +169,7 @@ setConfig = function(input) {
 # ------------------------------------------------------- #
 #### Model ####
 # ------------------------------------------------------- #
-modelFn = function(input, toggleDummy) {
+modelFn = function(input, toggleDummy = F) {
   config = setConfig(input)
   simulationResults = list()
   infectionCurve = data.frame()
