@@ -26,7 +26,7 @@ ui = fluidPage(
       column(
         3,
         sliderInput("activeTime", h3("Infectious Period"), min = 0, max = 20, value = initialConfig$activeTime),
-        sliderInput("estimatedActiveTime", h3("Estimated Infectious Period"), min = 0, max = 20, value = initialConfig$estimatedDiagnosisPeriod)
+        sliderInput("estimatedActiveTime", h3("Estimated Infectious Period"), min = 0, max = 20, value = initialConfig$estimatedActiveTime)
       ),
       column(
         3,
