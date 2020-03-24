@@ -1,5 +1,5 @@
 library(ggplot2)
-source('./covidwatch-model.R')
+# source('./covidwatch-model.R')
 
 config.default = list(
   nTrials = 10,
@@ -18,6 +18,7 @@ config.default = list(
   
   # intervention config
   assumedTimeFromInfect = 3, # how far back in time to assume infection upon discovery
+  estimatedActiveTime = 8,
   interventionUsage = 0.5
 )
 
@@ -56,14 +57,13 @@ curve.combined = rbind(
 )
 
 scenarios = c('No adoption', '25% adoption', '50% adoption', '75% adoption')
+
+tiff("infection-curve-1.tiff", units="in", width=5, height=3.5, res=300)
 ggplot(curve.combined, aes(x=time, y=active, group=factor(group), color=factor(scenario, scenarios))) +
   geom_line() +
   ylim(0,1) +
   labs(x="Time",
        y="Proportion of population with active infection",
-       color="App Adoption")
-
-# ggplot(curve.default, aes(x=time, y=active, group=factor(trial))) +
-#   geom_line(color='#cf1111') +
-#   ylim(0,1) +
-#   labs(title="Active Infections Over Time",x="Time", y = "Proportion of population with active infection")
+       color="App Adoption") +
+  theme(axis.title=element_text(size=10))
+dev.off()
