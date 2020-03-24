@@ -15,7 +15,7 @@ initialConfig = list(
   activeTime = 8,
   infectionProb = 0.25, # probability of being infected when exposed
   diagnosisPeriod = 2,
-  isolationCompliance = 1,
+  isolationCompliance = 0.8,
   
   # intervention config
   estimatedDiagnosisPeriod = 2, # how far back in time to assume infection upon discovery
@@ -36,7 +36,7 @@ flaggedRisk = function(personIndex, t, context, config) {
   # This is how the app would assess each person's risk
   # Or at least a simplified version of it
   lastEvent = getVertexIndex(context$peopleLocations[personIndex], t, config)
-  exposureTable = distances(context$exposureNetwork, to=lastEvent, mode = 'out')
+  exposureTable = distances(context$appExposureNetwork, to=lastEvent, mode = 'out')
   isRisk = F
   eventsInRange = subset(context$flaggedExposeEvents, (t - context$flaggedExposeEvents$time) < config$estimatedActiveTime)
   for (flaggedEvent in unique(eventsInRange$v)) {
@@ -95,27 +95,27 @@ isExposed = function(personIndex, context) {
   )
 }
 
-addLayer = function(context, config, t) {
-  context$exposureNetwork = add.vertices(context$exposureNetwork, config$nPlaces)
-  nVertices = vcount(context$exposureNetwork)
+addLayer = function(network, context, config, t) {
+  network = add.vertices(network, config$nPlaces)
+  nVertices = vcount(network)
   for (p in 1:config$nPlaces) {
     v = nVertices - config$nPlaces + p
-    context$exposureNetwork = set_vertex_attr(context$exposureNetwork, 't', index=v, t)
-    context$exposureNetwork = set_vertex_attr(context$exposureNetwork, 'place', index=v, p)
+    network = set_vertex_attr(network, 't', index=v, t)
+    network = set_vertex_attr(network, 'place', index=v, p)
   }
-  return(context$exposureNetwork)
+  return(network)
 }
 
 getVertexIndex = function(location, t, config) {
   return((t - 1) * config$nPlaces + location)
 }
 
-logMovement = function(personIndex, currentMoveTime, previousLocation, previousMoveTime, context, config) {
+logMovement = function(network, personIndex, currentMoveTime, previousLocation, previousMoveTime, context, config) {
   currentLocation = context$peopleLocations[personIndex]
   fromIndex = getVertexIndex(previousLocation, previousMoveTime, config)
   toIndex = getVertexIndex(currentLocation, currentMoveTime, config)
-  context$exposureNetwork = add_edges(context$exposureNetwork, c(fromIndex, toIndex))
-  return(context$exposureNetwork)
+  network = add_edges(network, c(fromIndex, toIndex))
+  return(network)
 }
 
 logExposeEvents = function(context, config) {
@@ -197,6 +197,7 @@ modelFn = function(input, toggleDummy = F) {
       exposeEvents = c(),
       placeProbabilities = matrix(nrow=config$nPeople, ncol=config$nPlaces),
       exposedPlaces = c(),
+      movementNetwork = graph.empty(n=0, directed=T),
       
       # intervention model
       # the exposure network is a "layered" directed graph; represents data maintanined in the app network
@@ -205,7 +206,7 @@ modelFn = function(input, toggleDummy = F) {
       # edges point only forward in time, from one place to another (can also point to same place in next time frame)
       # the edges represent movement of people across time
       # edges are allowed to skip layers. This happens when people stay home for that time frame.
-      exposureNetwork = graph.empty(n=0, directed=T),
+      appExposureNetwork = graph.empty(n=0, directed=T),
       infectionKnowledge = rep(F, config$nPeople),
       # These may or may not be true expose events
       # This represents the information that is available in the network
@@ -221,7 +222,8 @@ modelFn = function(input, toggleDummy = F) {
     for (t in 1:config$totalTime) {
       context$exposedPlaces = c()
       # add 1 vertex for each place for each layer; each layer represents a point in time
-      context$exposureNetwork = addLayer(context, config, t)
+      context$movementNetwork = addLayer(context$movementNetwork, context, config, t)
+      context$appExposureNetwork = addLayer(context$appExposureNetwork, context, config, t)
       for (personIndex in 1:config$nPeople) {
         # update locations (simulate movement)
         context$peopleAtHome[personIndex] = updatePersonAtHome(personIndex, t, context, config)
@@ -233,7 +235,10 @@ modelFn = function(input, toggleDummy = F) {
           context$peopleLocations[personIndex] = updatePersonLocation(personIndex, context, config)
           context$lastMovedTime[personIndex] = t
           # update exposure network
-          context$exposureNetwork = logMovement(personIndex, t, previousLocation, previousMoveTime, context, config)
+          context$movementNetwork = logMovement(context$movementNetwork, personIndex, t, previousLocation, previousMoveTime, context, config)
+          if (context$usesIntervention[personIndex]) {
+            context$appExposureNetwork = logMovement(context$appExposureNetwork, personIndex, t, previousLocation, previousMoveTime, context, config)
+          }
           context$infectedMovements = append(context$infectedMovements, isActiveInfected(personIndex, context, config, t))
         }
         context$locationHistory[t,personIndex] = ifelse(personMoved, context$peopleLocations[personIndex], NA)
@@ -275,7 +280,8 @@ modelFn = function(input, toggleDummy = F) {
     allInfected = length(context$infected[context$infected]) / config$nPeople
 
     simulationResults[[q]] = list(
-      exposureNetwork=context$exposureNetwork,
+      movementNetwork=context$movementNetwork,
+      appExposureNetwork=context$appExposureNetwork,
       exposeEvents=context$exposeEvents,
       infectedMovements=context$infectedMovements,
       placePopularities=context$placePopularities,

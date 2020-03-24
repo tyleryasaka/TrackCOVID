@@ -83,7 +83,7 @@ server = function(input, output) {
   output$plot1 <- renderPlot({
     return(list(
       plot=plot(
-        currentResult()$exposureNetwork,
+        currentResult()$movementNetwork,
         layout=function(g) { return(layout_on_grid(g, width=currentResult()$nPlaces)) },
         vertex.color=ifelse(
           currentResult()$exposeEvents,
