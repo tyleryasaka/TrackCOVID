@@ -1,7 +1,8 @@
 library(ggplot2)
 # source('./covidwatch-model.R')
 
-filename = "./output/infection-curve-1.tiff"
+figure1file = "./output/infection-curve-1.tiff"
+figure2file = "./output/infection-curve-2.tiff"
 
 config.default = list(
   nTrials = 10,
@@ -40,7 +41,12 @@ curve.default = modelFn(config.default)$infectionCurve
 curve.intervention.25 = modelFn(config.intervention.25)$infectionCurve
 curve.intervention.50 = modelFn(config.intervention.50)$infectionCurve
 curve.intervention.75 = modelFn(config.intervention.75)$infectionCurve
+curve.intervention.25.participate = modelFn(config.intervention.25)$infectionCurveParticipate
+curve.intervention.25.abstain = modelFn(config.intervention.25)$infectionCurveAbstain
 
+# ------------------------------------------------------- #
+#### Figure 1 ####
+# ------------------------------------------------------- #
 curve.default$scenario = 'No adoption'
 curve.intervention.25$scenario = '25% adoption'
 curve.intervention.50$scenario = '50% adoption'
@@ -57,10 +63,9 @@ curve.combined = rbind(
   curve.intervention.50,
   curve.intervention.75
 )
-
 scenarios = c('No adoption', '25% adoption', '50% adoption', '75% adoption')
 
-tiff(filename, units="in", width=5, height=3.5, res=300)
+tiff(figure1file, units="in", width=5, height=3.5, res=300)
 ggplot(curve.combined, aes(x=time, y=active, group=factor(group), color=factor(scenario, scenarios))) +
   geom_line() +
   scale_colour_manual(values=c('#EF476F', '#FFD166', '#06D6A0', '#118AB2')) +
@@ -68,5 +73,31 @@ ggplot(curve.combined, aes(x=time, y=active, group=factor(group), color=factor(s
   labs(x="Time",
        y="Proportion of population with active infection",
        color="App Adoption") +
+  theme(axis.title=element_text(size=10))
+dev.off()
+
+# ------------------------------------------------------- #
+#### Figure 2 ####
+# ------------------------------------------------------- #
+curve.intervention.25.participate$scenario = 'Adopted'
+curve.intervention.25.abstain$scenario = 'Did not adopt'
+
+curve.intervention.25.participate$group = paste(curve.intervention.25.participate$trial, curve.intervention.25.participate$scenario)
+curve.intervention.25.abstain$group = paste(curve.intervention.25.abstain$trial, curve.intervention.25.abstain$scenario)
+
+curve.combined = rbind(
+  curve.intervention.25.participate,
+  curve.intervention.25.abstain
+)
+scenarios = c('Adopted', 'Did not adopt')
+
+tiff(figure2file, units="in", width=5, height=3.5, res=300)
+ggplot(curve.combined, aes(x=time, y=active, group=factor(group), color=factor(scenario, scenarios))) +
+  geom_line() +
+  scale_colour_manual(values=c('#118AB2', '#EF476F')) +
+  ylim(0,1) +
+  labs(x="Time",
+       y="Proportion of population with active infection",
+       color="Cohort") +
   theme(axis.title=element_text(size=10))
 dev.off()

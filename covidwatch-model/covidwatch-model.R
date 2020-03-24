@@ -173,6 +173,8 @@ modelFn = function(input, toggleDummy = F) {
   config = setConfig(input)
   simulationResults = list()
   infectionCurve = data.frame()
+  infectionCurveParticipate = data.frame()
+  infectionCurveAbstain = data.frame()
     # matrix(nrow=as.numeric(config$nTrials), ncol=as.numeric(config$totalTime))
   for (q in 1:config$nTrials) {
     # infection model
@@ -255,8 +257,14 @@ modelFn = function(input, toggleDummy = F) {
         }
       }
       context$exposeEvents = append(context$exposeEvents, logExposeEvents(context, config))
-      activeInfected = sapply(1:config$nPeople, function(i) { isActiveInfected(i, context, config, t) })
-      infectionCurve = rbind(infectionCurve, list(trial=q, time=t, active=length(activeInfected[activeInfected]) / nPeople))
+      activeInfectedParticipate = sapply(1:config$nPeople, function(i) { isActiveInfected(i, context, config, t) & context$usesIntervention[personIndex] })
+      activeInfectedAbstain = sapply(1:config$nPeople, function(i) { isActiveInfected(i, context, config, t) & !context$usesIntervention[personIndex] })
+      nActiveInfectedParticipate = length(activeInfectedParticipate[activeInfectedParticipate])
+      nActiveInfectedAbstain = length(activeInfectedAbstain[activeInfectedAbstain])
+      nActiveInfectedTotal = nActiveInfectedParticipate + nActiveInfectedAbstain
+      infectionCurve = rbind(infectionCurve, list(trial=q, time=t, active=nActiveInfectedTotal / nPeople))
+      infectionCurveParticipate = rbind(infectionCurve, list(trial=q, time=t, active=nActiveInfectedParticipate / nPeople))
+      infectionCurveAbstain = rbind(infectionCurve, list(trial=q, time=t, active=nActiveInfectedAbstain / nPeople))
       if (config$nTrials == 1) {
         print(paste('t:', t, ', # active:', length(context$activeInfected[context$activeInfected])))
         print(paste('t:', t, ', # infected:', length(context$infected[context$infected])))
@@ -280,6 +288,8 @@ modelFn = function(input, toggleDummy = F) {
   }
   return(list(
     infectionCurve=infectionCurve,
+    infectionCurveParticipate=infectionCurveParticipate,
+    infectionCurveAbstain=infectionCurveAbstain,
     simulationResults=simulationResults
   ))
 }
