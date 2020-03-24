@@ -90,6 +90,8 @@ server = function(input, output) {
           '#ed4e4e',
           '#86bdfc'
         ),
+        xlab = "Location",
+        ylab = "Time",
         vertex.size=rep(sqrt(currentResult()$placePopularities * 100), currentResult()$totalTime),
         vertex.label=NA,
         edge.width=0.5,
