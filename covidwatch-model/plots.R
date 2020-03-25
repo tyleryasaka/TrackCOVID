@@ -47,10 +47,10 @@ curve.intervention.25.abstain = modelFn(config.intervention.25)$infectionCurveAb
 # ------------------------------------------------------- #
 #### Figure 1 ####
 # ------------------------------------------------------- #
-curve.default$scenario = 'No adoption'
-curve.intervention.25$scenario = '25% adoption'
-curve.intervention.50$scenario = '50% adoption'
-curve.intervention.75$scenario = '75% adoption'
+curve.default$scenario = 'None'
+curve.intervention.25$scenario = '25%'
+curve.intervention.50$scenario = '50%'
+curve.intervention.75$scenario = '75%'
 
 curve.default$group = paste(curve.default$trial, curve.default$scenario)
 curve.intervention.25$group = paste(curve.intervention.25$trial, curve.intervention.25$scenario)
@@ -63,17 +63,17 @@ curve.combined = rbind(
   curve.intervention.50,
   curve.intervention.75
 )
-scenarios = c('No adoption', '25% adoption', '50% adoption', '75% adoption')
+scenarios = c('None', '25%', '50%', '75%')
 
-tiff(figure1file, units="in", width=5, height=3.5, res=300)
+tiff(figure1file, units="in", width=5, height=3, res=300)
 ggplot(curve.combined, aes(x=time, y=active, group=factor(group), color=factor(scenario, scenarios))) +
   geom_line() +
   scale_colour_manual(values=c('#EF476F', '#FFD166', '#06D6A0', '#118AB2')) +
   ylim(0,1) +
   labs(x="Time",
-       y="Proportion of population with active infection",
-       color="App adoption") +
-  theme(axis.title=element_text(size=10))
+       y="Proportion of population infected",
+       color="Adoption rate")
+  # theme(axis.title=element_text(size=8))
 dev.off()
 
 # ------------------------------------------------------- #
