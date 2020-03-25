@@ -68,7 +68,7 @@ scenarios = c('None', '25%', '50%', '75%')
 tiff(figure1file, units="in", width=5, height=3, res=300)
 ggplot(curve.combined, aes(x=time, y=active, group=factor(group), color=factor(scenario, scenarios))) +
   geom_line() +
-  scale_colour_manual(values=c('#EF476F', '#FFD166', '#06D6A0', '#118AB2')) +
+  scale_colour_manual(values=c('#EF476F', '#FFD166', '#06D6A0', '#4577ff')) +
   ylim(0,1) +
   labs(x="Time",
        y="Proportion of population infected",
