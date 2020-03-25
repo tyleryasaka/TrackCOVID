@@ -1,13 +1,20 @@
 # covid-watch
+A Peer to Peer Contact Tracing Smartphone Application
 
 ## Network Simulation Model
-Infection Spread With and Without Intervention
+Peer to Peer Contact Tracing With and Without Intervention
 
-https://tyleryasaka.shinyapps.io/covidwatch/
+Web interface for the simulation: https://tyleryasaka.shinyapps.io/covidwatch/
+
+See [covidwatch-model](covidwatch-model) for source code.
 
 ## Server
-See [covidwatch-server](covidwatch-server)
+See [covidwatch-server](covidwatch-server) for source code.
 
 ## App
 
-See [covidwatch-app](covidwatch-app)
+Android users may try out the prototype at https://expo.io/@tyleryasaka/covidwatch.
+
+I am currently unable to distribute a prototype for the iPhone, but it has been tested and works equally well on iPhones.
+
+See [covidwatch-app](covidwatch-app) for source code and details.
