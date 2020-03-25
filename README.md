@@ -1,6 +1,8 @@
 # covid-watch
 A Peer to Peer Contact Tracing Smartphone Application
 
+[Whitepaper](Peer%20to%20Peer%20Contact%20Tracing.pdf)
+
 ## Network Simulation Model
 Peer to Peer Contact Tracing With and Without Intervention
 
