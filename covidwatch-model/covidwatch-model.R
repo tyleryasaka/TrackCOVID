@@ -14,11 +14,11 @@ initialConfig = list(
   initialInfected = 0.05,
   activeTime = 8,
   infectionProb = 0.25, # probability of being infected when exposed
-  diagnosisPeriod = 2,
-  isolationCompliance = 0.8,
+  diagnosisPeriod = 3,
+  isolationCompliance = 1,
   
   # intervention config
-  estimatedDiagnosisPeriod = 2, # how far back in time to assume infection upon discovery
+  estimatedDiagnosisPeriod = 3, # how far back in time to assume infection upon discovery
   estimatedActiveTime = 8,
   interventionUsage = 0.5
 )
@@ -54,7 +54,7 @@ booleanProb = function(probTrue, n=1) {
 
 updatePersonAtHome = function(personIndex, t, context, config) {
   atHomeForInfection = isActiveInfected(personIndex, context, config, t) &
-    context$infectionKnowledge[personIndex] &
+    isAwareInfection(personIndex, t, context, config) &
     booleanProb(config$isolationCompliance)
   atHomeForIntervention = t > 1 &
     config$toggleIntervention &
@@ -207,7 +207,6 @@ modelFn = function(input, toggleDummy = F) {
       # the edges represent movement of people across time
       # edges are allowed to skip layers. This happens when people stay home for that time frame.
       appExposureNetwork = graph.empty(n=0, directed=T),
-      infectionKnowledge = rep(F, config$nPeople),
       # These may or may not be true expose events
       # This represents the information that is available in the network
       flaggedExposeEvents = data.frame(time=integer(), v=double()),
@@ -242,9 +241,11 @@ modelFn = function(input, toggleDummy = F) {
           context$infectedMovements = append(context$infectedMovements, isActiveInfected(personIndex, context, config, t))
         }
         context$locationHistory[t,personIndex] = ifelse(personMoved, context$peopleLocations[personIndex], NA)
-        if (!context$peopleAtHome[personIndex] & isActiveInfected(personIndex, context, config, t)) {
+        if (isActiveInfected(personIndex, context, config, t)) {
           # if person is infected and active and not at home, they have exposed everyone at this location/point in time
-          context$exposedPlaces = append(context$exposedPlaces, context$peopleLocations[personIndex])
+          if (!context$peopleAtHome[personIndex]) {
+            context$exposedPlaces = append(context$exposedPlaces, context$peopleLocations[personIndex])
+          }
           if (isAwareInfection(personIndex, t, context, config)) {
             context$flaggedExposeEvents = flagInfection(personIndex, t, context, config)
           }

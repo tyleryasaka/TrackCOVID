@@ -16,11 +16,11 @@ config.default = list(
   initialInfected = 0.05,
   activeTime = 8,
   infectionProb = 0.25,
-  diagnosisPeriod = 2,
+  diagnosisPeriod = 3,
   isolationCompliance = 1,
   
   # intervention config
-  estimatedDiagnosisPeriod = 2,
+  estimatedDiagnosisPeriod = 3,
   estimatedActiveTime = 8,
   interventionUsage = 0.5
 )
