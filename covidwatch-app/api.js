@@ -3,7 +3,7 @@ import { AsyncStorage } from 'react-native'
 
 const checkpointsDBKey = 'CHECKPOINTS'
 const serverBaseUrl = 'https://covidwatch-server.herokuapp.com/checkpoints'
-const depth = 50
+const depth = 3
 
 async function getCheckpoints () {
   const checkpointsString = await AsyncStorage.getItem(checkpointsDBKey) || '[]'
