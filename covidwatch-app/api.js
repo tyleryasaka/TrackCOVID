@@ -4,6 +4,9 @@ import { AsyncStorage } from 'react-native'
 const checkpointsDBKey = 'CHECKPOINTS'
 const serverBaseUrl = 'https://covidwatch-server.herokuapp.com/checkpoints'
 const depth = 3
+const oneDay = 1000 * 60 * 60 * 24
+const safetyPeriod = 14 * oneDay
+const estimatedDiagnosisDelay = 2 * oneDay
 
 async function getCheckpoints () {
   const checkpointsString = await AsyncStorage.getItem(checkpointsDBKey) || '[]'
@@ -56,10 +59,9 @@ function joinCheckpoint (checkpointKey) {
 }
 
 async function getExposureStatus () {
-  const twoWeeksAgo = Date.now() - 604800000
   const checkpoints = await getCheckpoints()
   const recentCheckpoints = checkpoints.filter(checkpoint => {
-    return checkpoint.time > twoWeeksAgo
+    return Date.now() - checkpoint.time <= safetyPeriod
   })
   const statuses = await Promise.all(recentCheckpoints.map(checkpoint => {
     return getCheckpointStatus(checkpoint.key)
@@ -68,10 +70,9 @@ async function getExposureStatus () {
 }
 
 async function reportPositive () {
-  const twoWeeksAgo = Date.now() - 604800000
   const checkpoints = await getCheckpoints()
   const recentCheckpoints = checkpoints.filter(checkpoint => {
-    return checkpoint.time > twoWeeksAgo
+    return Date.now() - checkpoint.time <= estimatedDiagnosisDelay
   })
   await Promise.all(recentCheckpoints.map(checkpoint => {
     return serverRequest('POST', `${checkpoint.key}/exposure`)
