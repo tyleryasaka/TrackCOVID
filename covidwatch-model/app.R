@@ -15,7 +15,7 @@ ui = fluidPage(
   mainPanel(
     fluidRow(
       align = "center",
-      titlePanel("Infection Spread With and Without Peer-to-Peer Contact Tracing")
+      titlePanel("Epidemic simulation with and without peer-to-peer contact tracing")
     ),
     fluidRow(
       align = "center",

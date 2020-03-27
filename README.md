@@ -2,7 +2,7 @@
 A Peer-to-Peer, Privacy-Preserving Contact Tracing Smartphone Application
 
 ## Network Simulation Model
-Infection Spread With and Without Peer-to-Peer Contact Tracing
+Epidemic simulation with and without peer-to-peer contact tracing
 
 Web interface for the simulation: https://tyleryasaka.shinyapps.io/covidwatch/
 
