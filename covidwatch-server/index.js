@@ -3,23 +3,33 @@ const express = require('express')
 const bodyParser = require('body-parser')
 var mongoose = require('mongoose')
 const sha256 = require('js-sha256').sha256
+const AdminBro = require('admin-bro')
+const AdminBroExpress = require('admin-bro-expressjs')
+const bcrypt = require('bcrypt')
 
 const maxDepth = 100
 
+AdminBro.registerAdapter(require('admin-bro-mongoose'))
 const app = express()
 const port = process.env.PORT || 3000
-app.use(bodyParser.json())
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/checkpoints', { useNewUrlParser: true })
-const db = mongoose.connection
+app.use(bodyParser.json())
 
 const checkpointSchema = new mongoose.Schema({
   key: String,
   links: [String],
   exposed: Boolean
 })
-
+const userSchema = new mongoose.Schema({
+  email: { type: String, required: true },
+  encryptedPassword: { type: String, required: true },
+  role: { type: String, enum: ['admin', 'restricted'], required: true }
+})
 const Checkpoint = mongoose.model('Checkpoint', checkpointSchema)
+const User = mongoose.model('User', userSchema)
+
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/checkpoints', { useNewUrlParser: true })
+const db = mongoose.connection
 
 async function findExposures (checkpointKey, depth) {
   return new Promise(function (resolve) {
@@ -122,6 +132,80 @@ app.post('/checkpoints/:key/links/:target', (req, res) => {
     }
   })
 })
+
+const adminBro = new AdminBro({
+  resources: [
+    {},
+    {
+      resource: User,
+      options: {
+        properties: {
+          encryptedPassword: {
+            isVisible: false
+          },
+          password: {
+            type: 'string',
+            isVisible: {
+              list: false, edit: true, filter: false, show: false
+            }
+          },
+          role: {
+            type: 'string',
+            isVisible: {
+              list: true, edit: false, filter: true, show: true
+            }
+          }
+        },
+        actions: {
+          new: {
+            isAccessible: ({ currentAdmin }) => currentAdmin && currentAdmin.role === 'admin',
+            before: async (request) => {
+              if (request.payload.password) {
+                request.payload = {
+                  ...request.payload,
+                  encryptedPassword: await bcrypt.hash(request.payload.password, 10),
+                  password: undefined
+                }
+              }
+              return request
+            }
+          },
+          edit: {
+            isAccessible: ({ currentAdmin, record }) => currentAdmin && (currentAdmin.role === 'admin' || currentAdmin._id === record.param('_id')),
+            before: async (request) => {
+              if (request.payload.password) {
+                request.payload = {
+                  ...request.payload,
+                  encryptedPassword: await bcrypt.hash(request.payload.password, 10),
+                  password: undefined
+                }
+              }
+              return request
+            }
+          },
+          delete: {
+            isAccessible: ({ currentAdmin }) => currentAdmin && currentAdmin.role === 'admin'
+          }
+        }
+      }
+    }
+  ],
+  rootPath: '/admin'
+})
+const router = AdminBroExpress.buildAuthenticatedRouter(adminBro, {
+  authenticate: async (email, password) => {
+    const user = await User.findOne({ email })
+    if (user) {
+      const matched = await bcrypt.compare(password, user.encryptedPassword)
+      if (matched) {
+        return user
+      }
+    }
+    return false
+  },
+  cookiePassword: process.env['COOKIE_PASSWORD']
+})
+app.use(adminBro.options.rootPath, router)
 
 db.on('error', console.error.bind(console, 'connection error:'))
 db.once('open', function () {
