@@ -134,6 +134,11 @@ app.post('/checkpoints/:key/links/:target', (req, res) => {
 })
 
 const adminBro = new AdminBro({
+  branding: {
+    companyName: 'COVID Watch P2P Server Admin',
+    softwareBrothers: false,
+    logo: false
+  },
   resources: [
     {
       resource: User,
@@ -152,7 +157,7 @@ const adminBro = new AdminBro({
           role: {
             type: 'string',
             isVisible: {
-              list: true, edit: false, filter: true, show: true
+              list: true, edit: true, filter: true, show: true
             }
           }
         },
@@ -173,11 +178,15 @@ const adminBro = new AdminBro({
           edit: {
             isAccessible: ({ currentAdmin, record }) => currentAdmin && (currentAdmin.role === 'admin' || currentAdmin._id === record.param('_id')),
             before: async (request) => {
+              console.log(request)
+              const currentRole = request.session.adminUser.role
+              const newRole = (currentRole === 'restricted') ? 'restricted' : request.payload.role
               if (request.payload.password) {
                 request.payload = {
                   ...request.payload,
                   encryptedPassword: await bcrypt.hash(request.payload.password, 10),
-                  password: undefined
+                  password: undefined,
+                  role: newRole
                 }
               }
               return request
