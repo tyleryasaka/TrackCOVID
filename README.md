@@ -1,5 +1,5 @@
 # COVID Watch P2P
-A Peer-to-Peer, Privacy-Preserving Contact Tracing Smartphone Application
+A peer-to-peer, privacy-preserving contact tracing smartphone application
 
 ## Network Simulation Model
 Epidemic simulation with and without peer-to-peer contact tracing

@@ -19,7 +19,7 @@ ui = fluidPage(
     ),
     fluidRow(
       align = "center",
-      checkboxInput("toggleIntervention", "Use Peer to Peer Contact Tracing", value = initialConfig$toggleIntervention),
+      checkboxInput("toggleIntervention", "Toggle peer-to-peer contact tracing", value = initialConfig$toggleIntervention),
       selectInput("nTrials", "# of Simulations", 2:initialConfig$maxNTrials, selected = initialConfig$nTrials)
     ),
     fluidRow(
