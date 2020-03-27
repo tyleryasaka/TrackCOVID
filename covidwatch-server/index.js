@@ -135,10 +135,10 @@ app.post('/checkpoints/:key/links/:target', (req, res) => {
 
 const adminBro = new AdminBro({
   resources: [
-    {},
     {
       resource: User,
       options: {
+        parent: null,
         properties: {
           encryptedPassword: {
             isVisible: false
