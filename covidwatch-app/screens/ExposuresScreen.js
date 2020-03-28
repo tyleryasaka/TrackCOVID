@@ -1,19 +1,33 @@
 import React, { Component } from 'react'
-import { Alert, Button, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Button, Platform, StyleSheet, Text, View, Switch } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-import * as WebBrowser from 'expo-web-browser'
 import API from '../api'
 import { StatusContext } from '../status-context'
+import StatusBanner from '../components/status-banner'
 
 const initialState = {
   exposureStatus: false,
-  loaded: false
+  loaded: false,
+  useConfirmed: null
 }
 
 class ExposuresScreen extends Component {
   constructor () {
     super()
     this.state = initialState
+  }
+
+  componentDidMount () {
+    API.getUseConfirmed().then(useConfirmed => {
+      this.setState({ useConfirmed })
+    })
+  }
+
+  async toggleUseConfirmed () {
+    const { useConfirmed } = this.state
+    await API.setUseConfirmed(!useConfirmed)
+    const updatedVal = await API.getUseConfirmed()
+    this.setState({ useConfirmed: updatedVal })
   }
 
   async reportPositive () {
@@ -39,6 +53,7 @@ class ExposuresScreen extends Component {
 
   render () {
     const { status, loaded } = this.context
+    const { useConfirmed } = this.state
     const statusMessageLoading = 'Loading your status...'
     const statusMessageNegative = 'No transmission paths from infected individuals to you have been discovered at this time. However, everyone is at risk and individuals should follow the directives of the CDC as well as local, state, and federal governments.'
     const statusMessagePositive = 'A possible transmission path from an infected individual to you has been discovered. You should take precautionary measures to protect yourself and others, according to the directives of the CDC  as well as local, state, and federal governments.'
@@ -50,9 +65,15 @@ class ExposuresScreen extends Component {
 
     return (
       <View style={styles.container}>
+        <StatusBanner onExposuresTab />
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
             <View style={styles.getStartedContainer}>
+              <Text>Use only confirmed diagnoses?</Text>
+              <Switch
+                value={useConfirmed}
+                onValueChange={this.toggleUseConfirmed.bind(this)}
+              />
               <Text style={styles.getStartedText}>
                 {statusMessage}
               </Text>
@@ -119,7 +140,7 @@ const styles = StyleSheet.create({
   },
   getStartedText: {
     marginTop: 20,
-    fontSize: 17,
+    fontSize: 14,
     color: 'rgba(96,100,109, 1)',
     lineHeight: 24,
     textAlign: 'center'

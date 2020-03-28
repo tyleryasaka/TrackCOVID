@@ -95,5 +95,6 @@ module.exports = {
   joinCheckpoint,
   getExposureStatus,
   reportPositive,
+  getUseConfirmed,
   setUseConfirmed
 }
