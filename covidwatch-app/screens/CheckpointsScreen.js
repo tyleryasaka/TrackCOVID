@@ -119,7 +119,7 @@ class CheckpointsScreen extends Component {
     } else if (mode === 'join') {
       let responseText = 'You have checked in successfully'
       if (hasPermission === null) {
-        responseText = 'Requesting for camera permission'
+        responseText = 'Requesting camera permission'
       } else if (hasPermission === false) {
         responseText = 'No access to camera'
       } else if (joinError) {

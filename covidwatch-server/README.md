@@ -1,5 +1,15 @@
 # covidwatch-server
 
+## Admin Interface
+Demo: https://covidwatch-server.herokuapp.com/admin
+
+Login with:
+- Username: `user`
+- password: `pass`
+
+
+## Development
+
 ### setup
 `npm install`
 
