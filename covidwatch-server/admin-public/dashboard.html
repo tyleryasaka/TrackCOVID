@@ -13,19 +13,19 @@
             }
           }
         }
-        xhttp.open("GET", "/api/admin/status", true)
+        xhttp.open("GET", "/admin-api/status", true)
         xhttp.send()
       }
     </script>
   </head>
   <body onload="checkStatus()">
     <h1>COVID Watch P2P: Confirmation Code Admin</h2>
-    <form action="/api/admin/logout" method="get">
+    <form action="/admin-api/logout" method="get">
       <input type="submit" value="Logout">
     </form>
 
     <h2>Confirmation codes</h2>
-    <form action="/api/admin/confirmcode/generate" method="post" target="_blank">
+    <form action="/admin-api/confirmcode/generate" method="post" target="_blank">
       <p>Click the button to generate a new confirmation code.</p>
       <p>This will open a new tab with a QR confirmation code. You can print the page and deliver it to the patient.</p>
       <input type="submit" value="New confirmation code">
