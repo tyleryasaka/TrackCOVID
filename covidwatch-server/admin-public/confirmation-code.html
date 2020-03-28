@@ -1,0 +1,18 @@
+<html>
+  <head>
+    <script src="/admin/qrcode.min.js"></script>
+    <script>
+      function renderConfirmcode() {
+        var urlParams = new URLSearchParams(window.location.search)
+        var confirmcode = urlParams.get('code')
+        console.log(confirmcode)
+        new QRCode(document.getElementById('qrcode'), confirmcode)
+      }
+    </script>
+  </head>
+  <body onload="renderConfirmcode()">
+    <h2>COVID Watch P2P</h2>
+    <p>This is your confirmation code. You may scan this with the app to confirm your diagnosis.</p>
+    <div id="qrcode"></div>
+  </body>
+</html>
