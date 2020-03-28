@@ -37,6 +37,9 @@ app.use(passport.session())
 passport.use(User.createStrategy())
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
+app.get('/admin', function (req, res) {
+  res.redirect('/admin/dashboard.html')
+})
 app.use('/admin-api/', adminApiRouter)
 
 db.on('error', console.error.bind(console, 'connection error:'))

@@ -13,10 +13,6 @@ function ensureAuthenticated (req, res, next) {
   }
 }
 
-adminApiRouter.get('/', function (req, res) {
-  res.redirect('/admin/dashboard.html')
-})
-
 adminApiRouter.post('/login', passport.authenticate('local', { failureRedirect: '/admin/login.html' }), function (req, res) {
   res.redirect('/admin/dashboard.html')
 })
