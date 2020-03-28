@@ -13,7 +13,7 @@ function ensureAuthenticated (req, res, next) {
   }
 }
 
-adminApiRouter.get('/admin', function (req, res) {
+adminApiRouter.get('/', function (req, res) {
   res.redirect('/admin/dashboard.html')
 })
 
