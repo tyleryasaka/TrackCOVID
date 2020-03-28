@@ -13,6 +13,10 @@ function ensureAuthenticated (req, res, next) {
   }
 }
 
+adminApiRouter.get('/admin', function (req, res) {
+  res.redirect('/admin/dashboard.html')
+})
+
 adminApiRouter.post('/login', passport.authenticate('local', { failureRedirect: '/admin/login.html' }), function (req, res) {
   res.redirect('/admin/dashboard.html')
 })
@@ -23,7 +27,7 @@ adminApiRouter.get('/logout', function (req, res) {
 })
 
 adminApiRouter.get('/status', function (req, res) {
-  res.send({ isLoggedIn: Boolean(req.user) })
+  res.send({ isLoggedIn: req.isAuthenticated() })
 })
 
 adminApiRouter.post('/confirmcode/generate', ensureAuthenticated, (req, res) => {
