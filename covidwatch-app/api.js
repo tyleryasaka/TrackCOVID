@@ -80,14 +80,16 @@ async function getExposureStatus () {
   return statuses.some(status => status)
 }
 
-async function reportPositive () {
+async function reportPositive (confirmcode) {
   const checkpoints = await getCheckpoints()
   const recentCheckpoints = checkpoints.filter(checkpoint => {
     return Date.now() - checkpoint.time <= estimatedDiagnosisDelay
   })
-  await Promise.all(recentCheckpoints.map(checkpoint => {
-    return serverRequest('POST', `exposures/${checkpoint.key}`)
-  }))
+  const checkpointKeys = recentCheckpoints.map(({ key }) => key)
+  await serverRequest('POST', 'exposures', {
+    keys: checkpointKeys,
+    confirmcode
+  })
 }
 
 module.exports = {

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Alert, Button, Platform, StyleSheet, Text, View, Switch } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
+import { BarCodeScanner } from 'expo-barcode-scanner'
 import API from '../api'
 import { StatusContext } from '../status-context'
 import StatusBanner from '../components/status-banner'
@@ -8,7 +9,9 @@ import StatusBanner from '../components/status-banner'
 const initialState = {
   exposureStatus: false,
   loaded: false,
-  useConfirmed: null
+  useConfirmed: null,
+  hasPermission: null,
+  mode: 'default'
 }
 
 class ExposuresScreen extends Component {
@@ -30,6 +33,14 @@ class ExposuresScreen extends Component {
     this.setState({ useConfirmed: updatedVal })
   }
 
+  showReportPrompt () {
+    this.setState({ mode: 'report-prompt' })
+  }
+
+  exitReportPrompt () {
+    this.setState({ mode: 'default' })
+  }
+
   async reportPositive () {
     Alert.alert(
       'Report positive for COVID-19?',
@@ -43,7 +54,8 @@ class ExposuresScreen extends Component {
         { text: 'Yes, report positive',
           onPress: () => {
             API.reportPositive().then(() => {
-            // user feedback
+              this.setState({ mode: 'default' })
+              Alert.alert('Your diagnosis was reported successfully. Thank you.')
             })
           } }
       ],
@@ -51,9 +63,28 @@ class ExposuresScreen extends Component {
     )
   }
 
+  async scanConfirmcode () {
+    const { status } = await BarCodeScanner.requestPermissionsAsync()
+    this.setState({
+      hasPermission: status === 'granted',
+      mode: 'scan-confirmcode'
+    })
+  }
+
+  async handleBarCodeScanned ({ type, data }) {
+    if (data && (data.length === 32)) {
+      this.setState({ mode: 'default' })
+      await API.reportPositive(data)
+      Alert.alert('Your diagnosis was reported successfully. Thank you.')
+    } else {
+      this.setState({ mode: 'default' })
+      Alert.alert('The code you scanned could not be read.')
+    }
+  }
+
   render () {
     const { status, loaded } = this.context
-    const { useConfirmed } = this.state
+    const { useConfirmed, mode, hasPermission } = this.state
     const statusMessageLoading = 'Loading your status...'
     const statusMessageNegative = 'No transmission paths from infected individuals to you have been discovered at this time. However, everyone is at risk and individuals should follow the directives of the CDC as well as local, state, and federal governments.'
     const statusMessagePositive = 'A possible transmission path from an infected individual to you has been discovered. You should take precautionary measures to protect yourself and others, according to the directives of the CDC  as well as local, state, and federal governments.'
@@ -63,30 +94,72 @@ class ExposuresScreen extends Component {
         : statusMessageNegative)
       : statusMessageLoading
 
-    return (
-      <View style={styles.container}>
-        <StatusBanner onExposuresTab />
-        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-          <View style={styles.welcomeContainer}>
-            <View style={styles.getStartedContainer}>
-              <Text>Use only confirmed diagnoses?</Text>
-              <Switch
-                value={useConfirmed}
-                onValueChange={this.toggleUseConfirmed.bind(this)}
+    const scanView = () => (
+      (hasPermission === null)
+        ? (
+          <Text>Requesting camera permission</Text>
+        ) : (hasPermission === false)
+          ? (
+            <Text>No access to camera</Text>
+          ) : (
+            <View style={{
+              flex: 1,
+              flexDirection: 'column',
+              justifyContent: 'flex-end'
+            }}>
+              <BarCodeScanner
+                onBarCodeScanned={this.handleBarCodeScanned.bind(this)}
+                style={StyleSheet.absoluteFillObject}
               />
-              <Text style={styles.getStartedText}>
-                {statusMessage}
-              </Text>
-              <Text style={styles.getStartedText}>
-                If you or someone you have been in close contact with have received a positive COVID-19 test, you should report it using the button below. You will remain anonymous.
-              </Text>
-              <View style={{ marginTop: 20 }} />
-              <Button title='Report positive status' onPress={this.reportPositive.bind(this)} />
+              <Button title='Cancel' onPress={this.showReportPrompt.bind(this)} />
             </View>
-          </View>
-        </ScrollView>
-      </View>
+          )
     )
+
+    return (mode === 'default')
+      ? (
+        <View style={styles.container}>
+          <StatusBanner onExposuresTab />
+          <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+            <View style={styles.welcomeContainer}>
+              <View style={styles.getStartedContainer}>
+                <Text>Use only confirmed diagnoses?</Text>
+                <Switch
+                  value={useConfirmed}
+                  onValueChange={this.toggleUseConfirmed.bind(this)}
+                />
+                <Text style={styles.getStartedText}>
+                  {statusMessage}
+                </Text>
+                <Text style={styles.getStartedText}>
+                  If you or someone you have been in close contact with have received a positive COVID-19 test, you should report it using the button below. You will remain anonymous.
+                </Text>
+                <View style={{ marginTop: 20 }} />
+                <Button title='Report positive status' onPress={this.showReportPrompt.bind(this)} />
+              </View>
+            </View>
+          </ScrollView>
+        </View>
+      ) : (mode === 'scan-confirmcode')
+        ? (scanView())
+        : (
+          <View style={styles.container}>
+            <StatusBanner onExposuresTab />
+            <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+              <View style={styles.welcomeContainer}>
+                <View style={styles.getStartedContainer}>
+                  <Text>Do you have a confirmation code to scan?</Text>
+                  <View style={{ marginTop: 25 }} />
+                  <Button title='Yes, scan code' onPress={this.scanConfirmcode.bind(this)} />
+                  <View style={{ marginTop: 25 }} />
+                  <Button title='No confirmation code' onPress={this.reportPositive.bind(this)} />
+                  <View style={{ marginTop: 60 }} />
+                  <Button color='#787878' title='Cancel' onPress={this.exitReportPrompt.bind(this)} />
+                </View>
+              </View>
+            </ScrollView>
+          </View>
+        )
   }
 }
 
