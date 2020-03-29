@@ -60,7 +60,6 @@ function markExposed (key, isConfirmed) {
   })
 }
 
-// TODO do this in transaction with marking confirmed
 async function checkConfirmcode (code) {
   return new Promise(function (resolve) {
     Confirmcode.findOne({ code }, function (err, confirmcode) {
