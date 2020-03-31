@@ -1,0 +1,26 @@
+{
+  "name": "covidwatch-js",
+  "version": "0.0.0",
+  "description": "Javascript wrapper library for implementing a COVID Watch P2P frontend user interface.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tyleryasaka/covid-watch.git"
+  },
+  "author": "Tyler M Yasaka",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tyleryasaka/covid-watch/issues"
+  },
+  "homepage": "https://github.com/tyleryasaka/covid-watch#readme",
+  "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.9.0"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.9.2"
+  }
+}
