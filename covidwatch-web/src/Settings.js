@@ -1,4 +1,6 @@
 import React from 'react'
+import Grid from '@material-ui/core/Grid'
+import StatusAlert from './StatusAlert'
 
 const initialState = {}
 
@@ -12,8 +14,16 @@ class Settings extends React.Component {
   }
 
   render () {
+    const { status } = this.props
     return (
-      <h1>Settings</h1>
+      <Grid
+        container
+        direction='column'
+        justify='center'
+        alignItems='center'
+      >
+        <StatusAlert status={status} />
+      </Grid>
     )
   }
 }

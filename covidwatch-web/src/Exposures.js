@@ -11,6 +11,7 @@ import QRReader from 'react-qr-reader'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import ReportProblemIcon from '@material-ui/icons/ReportProblem'
 import CropFreeIcon from '@material-ui/icons/CropFree'
+import StatusAlert from './StatusAlert'
 import theme from './theme'
 import API from './api'
 
@@ -100,6 +101,7 @@ class Exposures extends React.Component {
               justify='center'
               alignItems='center'
             >
+              <StatusAlert status={status} onExposuresTab />
               <Typography style={{ marginTop: 25 }}>
                 Your risk level: <span style={{ color: theme.palette.primary.main }}>{riskLevel}</span>
               </Typography>
