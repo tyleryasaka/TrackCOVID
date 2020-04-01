@@ -16,7 +16,7 @@ apiRouter.use(function (req, res, next) {
 async function findExposures (checkpointKey, depth) {
   return new Promise(function (resolve) {
     Checkpoint.findOne({ key: checkpointKey }, async function (err, checkpoint) {
-      if (err) {
+      if (err || !checkpoint) {
         resolve({ error: true, exposures: [] })
       } else {
         let elevatedRisk = false
@@ -111,7 +111,9 @@ apiRouter.get('/checkpoints/:key', (req, res) => {
   const { key } = req.params
   Checkpoint.findOne({ key }, function (err, checkpoint) {
     if (err || !checkpoint) {
-      console.error(err)
+      if (err) {
+        console.error(err)
+      }
       res.send({ error: true })
     } else {
       const promise = findExposures(checkpoint.key, maxDepth)
