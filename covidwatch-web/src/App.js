@@ -86,7 +86,7 @@ class App extends React.Component {
             </Toolbar>
           </Container>
         </AppBar>
-        <Container maxWidth='sm'>
+        <Container maxWidth='sm' style={{ marginBottom: 76 }}>
           <CurrentPage status={status} statusLoaded={statusLoaded} />
         </Container>
         <BottomNavigation
