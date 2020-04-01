@@ -7,6 +7,12 @@ const maxDepth = 3
 
 const apiRouter = express.Router()
 
+apiRouter.use(function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', process.env['WEB_CLIENT_DOMAIN'])
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+  next()
+})
+
 async function findExposures (checkpointKey, depth) {
   return new Promise(function (resolve) {
     Checkpoint.findOne({ key: checkpointKey }, async function (err, checkpoint) {
