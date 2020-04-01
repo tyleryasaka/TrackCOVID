@@ -13,6 +13,12 @@ const User = require('./models/user')
 const app = express()
 const port = process.env.PORT || 8000
 
+app.use(function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', process.env['WEB_CLIENT_DOMAIN'])
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+  next()
+})
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
