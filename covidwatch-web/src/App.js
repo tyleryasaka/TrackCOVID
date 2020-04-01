@@ -81,7 +81,7 @@ class App extends React.Component {
                 <MenuIcon />
               </IconButton>
               <Typography variant='h6' component='h1' style={{ flexGrow: 1 }}>
-                COVIDTracker (beta)
+                TrackCOVID (beta)
               </Typography>
             </Toolbar>
           </Container>

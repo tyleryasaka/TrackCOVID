@@ -78,7 +78,7 @@ class Checkpoints extends React.Component {
         >
           <StatusAlert status={status} />
           <Typography style={{ marginTop: 25, marginBottom: 25 }}>
-            Welcome to COVIDTracker. To participate in the effort to track the spread of the SARS-COV-2 virus, please host or join a checkpoint whenever you interact with others in a way that could transmit the virus.
+            Welcome to TrackCOVID. To participate in the effort to track the spread of the SARS-COV-2 virus, please host or join a checkpoint whenever you interact with others in a way that could transmit the virus.
           </Typography>
           <Button onClick={this.becomeHost.bind(this)} variant='contained' color='secondary' aria-label='add' style={{ marginTop: 50 }}>
             <HomeIcon />
