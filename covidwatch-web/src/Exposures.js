@@ -89,6 +89,9 @@ class Exposures extends React.Component {
         ? riskLevelPositive
         : riskLevelNegative)
       : riskLevelLoading
+    const riskLevelColor = status
+      ? 'error'
+      : 'primary'
     return (
       <Grid
         container
@@ -103,7 +106,7 @@ class Exposures extends React.Component {
             >
               <StatusAlert status={status} onExposuresTab />
               <Typography style={{ marginTop: 25 }}>
-                Your risk level: <span style={{ color: theme.palette.primary.main }}>{riskLevel}</span>
+                Your risk level: <span style={{ color: theme.palette[riskLevelColor].main }}>{riskLevel}</span>
               </Typography>
               <Typography style={{ marginTop: 15 }}>
                 {statusMessage}
