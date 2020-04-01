@@ -13,8 +13,10 @@
     "@material-ui/icons": "^4.9.1",
     "clsx": "latest",
     "covidwatch-js": "file:../covidwatch-js",
+    "qrcode.react": "^1.0.0",
     "react": "latest",
     "react-dom": "latest",
+    "react-qr-reader": "^2.2.1",
     "react-scripts": "latest"
   },
   "browserslist": {
