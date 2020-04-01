@@ -1,12 +1,13 @@
-const CovidWatch = require('covidwatch-js')
-const {
+import CovidWatch from 'covidwatch-js'
+import {
   safetyPeriod,
-  estimatedDiagnosisDelay
-} = require('covidwatch-js/config')
+  estimatedDiagnosisDelay,
+  serverBaseUrl as defaultServerBaseUrl
+} from 'covidwatch-js/config'
 
 const checkpointsDBKey = 'CHECKPOINTS'
 const useConfirmedDBKey = 'USECONFIRMED'
-const serverBaseUrl = process.env['REACT_APP_SERVER_BASE_URL']
+const serverBaseUrl = process.env['REACT_APP_SERVER_BASE_URL'] || defaultServerBaseUrl
 
 function getCheckpoints () {
   const localStorage = window.localStorage
