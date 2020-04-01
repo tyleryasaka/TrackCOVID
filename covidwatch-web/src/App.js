@@ -9,7 +9,13 @@ import CropFree from '@material-ui/icons/CropFree'
 import Face from '@material-ui/icons/Face'
 import Settings from '@material-ui/icons/Settings'
 import MenuIcon from '@material-ui/icons/Menu'
+import InfoIcon from '@material-ui/icons/Info'
 import AppBar from '@material-ui/core/AppBar'
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
 import CheckpointsPage from './Checkpoints'
 import ExposuresPage from './Exposures'
 import SettingsPage from './Settings'
@@ -18,13 +24,18 @@ import API from './api'
 const oneSecond = 1000
 const pollingTime = 30 * oneSecond
 
+function ListItemLink (props) {
+  return <ListItem button component='a' {...props} />
+}
+
 class App extends React.Component {
   constructor () {
     super()
     this.state = {
       currentTab: 'checkpoints',
       status: false,
-      statusLoaded: false
+      statusLoaded: false,
+      isDrawerOpen: false
     }
   }
 
@@ -41,8 +52,16 @@ class App extends React.Component {
     this.setState({ currentTab: newVal })
   }
 
+  openDrawer () {
+    this.setState({ isDrawerOpen: true })
+  }
+
+  closeDrawer () {
+    this.setState({ isDrawerOpen: false })
+  }
+
   render () {
-    const { currentTab, status, statusLoaded } = this.state
+    const { currentTab, status, statusLoaded, isDrawerOpen } = this.state
     const CurrentPage = (currentTab === 'checkpoints')
       ? CheckpointsPage
       : (currentTab === 'status')
@@ -57,6 +76,7 @@ class App extends React.Component {
                 edge='start'
                 color='inherit'
                 aria-label='open drawer'
+                onClick={this.openDrawer.bind(this)}
               >
                 <MenuIcon />
               </IconButton>
@@ -83,6 +103,19 @@ class App extends React.Component {
           <BottomNavigationAction label='Status' value='status' icon={<Face />} />
           <BottomNavigationAction label='Settings' value='settings' icon={<Settings />} />
         </BottomNavigation>
+        <SwipeableDrawer
+          open={isDrawerOpen}
+          onClose={this.closeDrawer.bind(this)}
+        >
+          <List component='nav' aria-label='settings'>
+            <ListItemLink style={{ width: 250 }} href='https://github.com/tyleryasaka/covid-watch' target='_blank'>
+              <ListItemIcon>
+                <InfoIcon />
+              </ListItemIcon>
+              <ListItemText primary='About' />
+            </ListItemLink>
+          </List>
+        </SwipeableDrawer>
       </div>
     )
   }
