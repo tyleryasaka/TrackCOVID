@@ -13,13 +13,28 @@ import AppBar from '@material-ui/core/AppBar'
 import CheckpointsPage from './Checkpoints'
 import ExposuresPage from './Exposures'
 import SettingsPage from './Settings'
+import API from './api'
+
+const oneSecond = 1000
+const pollingTime = 30 * oneSecond
 
 class App extends React.Component {
   constructor () {
     super()
     this.state = {
-      currentTab: 'checkpoints'
+      currentTab: 'checkpoints',
+      status: false,
+      statusLoaded: false
     }
+  }
+
+  componentDidMount () {
+    const updateStatus = async () => {
+      const exposureStatus = await API.getExposureStatus()
+      this.setState({ status: exposureStatus, statusLoaded: true })
+    }
+    updateStatus()
+    setInterval(updateStatus, pollingTime)
   }
 
   onChangeTab (event, newVal) {
@@ -27,7 +42,7 @@ class App extends React.Component {
   }
 
   render () {
-    const { currentTab } = this.state
+    const { currentTab, status, statusLoaded } = this.state
     const CurrentPage = (currentTab === 'checkpoints')
       ? CheckpointsPage
       : (currentTab === 'status')
@@ -46,13 +61,13 @@ class App extends React.Component {
                 <MenuIcon />
               </IconButton>
               <Typography variant='h6' component='h1' style={{ flexGrow: 1 }}>
-                COVIDWatch.App
+                COVIDTracker (beta)
               </Typography>
             </Toolbar>
           </Container>
         </AppBar>
         <Container maxWidth='sm'>
-          <CurrentPage />
+          <CurrentPage status={status} statusLoaded={statusLoaded} />
         </Container>
         <BottomNavigation
           value={currentTab}
@@ -70,16 +85,6 @@ class App extends React.Component {
         </BottomNavigation>
       </div>
     )
-    // return (
-    //   <Container maxWidth='sm'>
-    //     <Box my={4}>
-    //       <Typography variant='h4' component='h1' gutterBottom>
-    //         Create React App v4-beta example
-    //       </Typography>
-    //       <Copyright />
-    //     </Box>
-    //   </Container>
-    // )
   }
 }
 
