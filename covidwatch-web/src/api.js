@@ -7,7 +7,6 @@ const {
 const checkpointsDBKey = 'CHECKPOINTS'
 const useConfirmedDBKey = 'USECONFIRMED'
 const serverBaseUrl = process.env['REACT_APP_SERVER_BASE_URL']
-console.log(serverBaseUrl)
 
 function getCheckpoints () {
   const localStorage = window.localStorage
@@ -48,7 +47,7 @@ const {
   reportPositive
 } = covidWatch
 
-module.exports = {
+export default {
   hostCheckpoint,
   joinCheckpoint,
   getExposureStatus,

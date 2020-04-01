@@ -5,7 +5,6 @@
       function renderConfirmcode() {
         var urlParams = new URLSearchParams(window.location.search)
         var confirmcode = urlParams.get('code')
-        console.log(confirmcode)
         new QRCode(document.getElementById('qrcode'), confirmcode)
       }
     </script>
