@@ -9,17 +9,34 @@ function ensureAuthenticated (req, res, next) {
   if (req.isAuthenticated()) {
     return next()
   } else {
-    res.redirect('/admin/login.html')
+    res.redirect('/admin')
   }
 }
 
-adminApiRouter.post('/login', passport.authenticate('local', { failureRedirect: '/admin/login.html' }), function (req, res) {
-  res.redirect('/admin/dashboard.html')
+adminApiRouter.use('/js/', express.static('admin-public/js'))
+adminApiRouter.get('/', function (req, res) {
+  if (req.isAuthenticated()) {
+    res.sendfile('admin-public/dashboard.html')
+  } else {
+    res.sendfile('admin-public/login.html')
+  }
+})
+adminApiRouter.get('/confirmation-code', ensureAuthenticated, function (req, res) {
+  res.sendfile('admin-public/confirmation-code.html')
 })
 
 adminApiRouter.get('/logout', function (req, res) {
   req.logout()
-  res.redirect('/admin/login.html')
+  res.redirect('/admin')
+})
+
+adminApiRouter.post('/login', passport.authenticate('local', { failureRedirect: '/admin' }), function (req, res) {
+  res.redirect('/admin')
+})
+
+adminApiRouter.get('/logout', function (req, res) {
+  req.logout()
+  res.redirect('/admin')
 })
 
 adminApiRouter.get('/status', function (req, res) {
@@ -36,7 +53,7 @@ adminApiRouter.post('/confirmcode/generate', ensureAuthenticated, (req, res) => 
       console.error(err)
       res.send({ error: true })
     } else {
-      res.redirect(`/admin/confirmation-code.html?code=${confirmcode.code}`)
+      res.redirect(`/admin/confirmation-code?code=${confirmcode.code}`)
     }
   })
 })

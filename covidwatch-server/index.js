@@ -39,7 +39,6 @@ app.use(session({ keys: [process.env.SESSION_KEY] }))
 app.use(flash())
 app.use('/api/', apiRouter)
 app.use('/public-checkpoint/', storefrontApiRouter)
-app.use('/admin/', express.static('admin-public'))
 app.use('/public/', express.static('landing-public'))
 app.use('/app/static', express.static('app-public/static'))
 
@@ -66,10 +65,7 @@ app.use(passport.session())
 passport.use(User.createStrategy())
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
-app.get('/admin', function (req, res) {
-  res.redirect('/admin/dashboard.html')
-})
-app.use('/admin-api/', adminApiRouter)
+app.use('/admin/', adminApiRouter)
 
 db.on('error', console.error.bind(console, 'connection error:'))
 db.once('open', function () {

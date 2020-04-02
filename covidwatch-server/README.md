@@ -1,7 +1,7 @@
 # TrackCOVID Server
 
 ## Admin Interface
-Demo: https://covidwatch-server.herokuapp.com/admin
+Demo: https://trackcovid.net/admin
 
 Login with:
 - Username: `user`
