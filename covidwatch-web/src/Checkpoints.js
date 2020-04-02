@@ -9,6 +9,9 @@ import StopIcon from '@material-ui/icons/Stop'
 import QRCode from 'qrcode.react'
 import QRReader from 'react-qr-reader'
 import API from './api'
+import {
+  checkpointKeyLength
+} from 'covidwatch-js/config'
 
 const initialState = {
   mode: 'home',
@@ -26,7 +29,7 @@ class Checkpoints extends React.Component {
     const urlParams = new URLSearchParams(window.location.search)
     const checkpointKey = urlParams.get('checkpoint')
     if (checkpointKey) {
-      if (checkpointKey.length === 32) {
+      if (checkpointKey.length === checkpointKeyLength) {
         API.joinCheckpoint(checkpointKey).then(checkpointObj => {
           if (!checkpointObj) {
             this.setState({ mode: 'scan-error' })
@@ -68,11 +71,18 @@ class Checkpoints extends React.Component {
 
   async handleScan (data) {
     if (data) {
-      if (data.length === 32) {
+      if (data.length === checkpointKeyLength) {
         await API.joinCheckpoint(data)
         this.setState({ mode: 'scan-succes' })
       } else {
-        this.setState({ mode: 'scan-error' })
+        // QR code may be a url
+        const urlSplit = data.split('?checkpoint=')
+        if ((urlSplit.length === 2) && (urlSplit[1].length === checkpointKeyLength)) {
+          await API.joinCheckpoint(urlSplit[1])
+          this.setState({ mode: 'scan-succes' })
+        } else {
+          this.setState({ mode: 'scan-error' })
+        }
       }
     }
   }
@@ -83,6 +93,7 @@ class Checkpoints extends React.Component {
 
   render () {
     const { mode, checkpointKey, checkpointTime } = this.state
+    const qrValue = `${window.location.href}?checkpoint=${checkpointKey}`
     let content
     if (mode === 'home') {
       content = (
@@ -116,14 +127,14 @@ class Checkpoints extends React.Component {
           <Typography style={{ marginTop: 25, marginBottom: 25 }}>
             You are now hosting a checkpoint. Others may join using the QR code below.
           </Typography>
-          <QRCode value={checkpointKey} />
-          <Typography style={{ marginTop: 25 }}>
-            Checkpoint created {new Date(checkpointTime).toString()}
-          </Typography>
+          <QRCode value={qrValue} size={200} style={{ backgroundColor: '#fff', padding: 20 }} />
           <Button onClick={this.endHost.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 25 }}>
             <StopIcon />
             End checkpoint
           </Button>
+          <Typography style={{ marginTop: 25 }}>
+            Checkpoint created {new Date(checkpointTime).toString()}
+          </Typography>
         </Grid>
       )
     } else if (mode === 'join') {

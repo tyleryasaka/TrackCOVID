@@ -13,6 +13,9 @@ import ReportProblemIcon from '@material-ui/icons/ReportProblem'
 import CropFreeIcon from '@material-ui/icons/CropFree'
 import theme from './theme'
 import API from './api'
+import {
+  confirmcodeLength
+} from 'covidwatch-js/config'
 
 const initialState = {
   exposureStatus: false,
@@ -46,7 +49,7 @@ class Exposures extends React.Component {
 
   async handleScan (data) {
     if (data) {
-      if (data.length === 32) {
+      if (data.length === confirmcodeLength) {
         this.setState({ confirmcode: data })
         this.reportConfirmation()
       } else {

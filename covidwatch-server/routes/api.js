@@ -3,7 +3,8 @@ const sha256 = require('js-sha256').sha256
 const Checkpoint = require('../models/checkpoint')
 const Confirmcode = require('../models/confirmcode')
 
-const maxDepth = 3
+const maxDepth = Number(process.env['MAX_DEPTH'])
+const checkpointKeyLength = Number(process.env['CHECKPOINT_KEY_LENGTH'])
 
 const apiRouter = express.Router()
 
@@ -87,7 +88,7 @@ async function checkConfirmcode (code) {
 
 apiRouter.post('/checkpoints', (req, res) => {
   const checkpoint = new Checkpoint({
-    key: sha256(String(Math.random())).substring(0, 32),
+    key: sha256(String(Math.random())).substring(0, checkpointKeyLength),
     links: [],
     exposed: false
   })

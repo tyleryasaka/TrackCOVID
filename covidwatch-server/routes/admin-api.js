@@ -3,6 +3,8 @@ const sha256 = require('js-sha256').sha256
 const passport = require('passport')
 const Confirmcode = require('../models/confirmcode')
 
+const confirmcodeLength = Number(process.env['CONFIRMCODE_LENGTH'])
+
 const adminApiRouter = express.Router()
 
 function ensureAuthenticated (req, res, next) {
@@ -45,7 +47,7 @@ adminApiRouter.get('/status', function (req, res) {
 
 adminApiRouter.post('/confirmcode/generate', ensureAuthenticated, (req, res) => {
   const confirmcode = new Confirmcode({
-    code: sha256(String(Math.random())).substring(0, 32),
+    code: sha256(String(Math.random())).substring(0, confirmcodeLength),
     redeemed: false
   })
   confirmcode.save(function (err, confirmcode) {

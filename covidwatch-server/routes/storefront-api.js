@@ -5,10 +5,12 @@ const pdf = require('html-pdf')
 const fs = require('fs')
 const path = require('path')
 
+const checkpointKeyLength = Number(process.env['CHECKPOINT_KEY_LENGTH'])
+
 const storefrontApiRouter = express.Router()
 
 storefrontApiRouter.get('/', (req, res) => {
-  const key = sha256(String(Math.random())).substring(0, 32)
+  const key = sha256(String(Math.random())).substring(0, checkpointKeyLength)
   const checkpoint = new Checkpoint({
     key,
     links: [],
