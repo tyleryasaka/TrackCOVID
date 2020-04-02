@@ -7,7 +7,6 @@ import ListItemText from '@material-ui/core/ListItemText'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import CheckBoxOutlineBlankOutlinedIcon from '@material-ui/icons/CheckBoxOutlineBlankOutlined'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
-import StatusAlert from './StatusAlert'
 import API from './api'
 
 const initialState = {
@@ -42,7 +41,6 @@ class Settings extends React.Component {
         justify='center'
         alignItems='center'
       >
-        <StatusAlert status={status} />
         <Typography style={{ marginTop: 25 }}>
           Selecting "Use only confirmed diagnoses" will ignore possible transmission paths from unconfirmed reports.
         </Typography>

@@ -19,6 +19,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import CheckpointsPage from './Checkpoints'
 import ExposuresPage from './Exposures'
 import SettingsPage from './Settings'
+import StatusAlert from './StatusAlert'
 import API from './api'
 
 const oneSecond = 1000
@@ -87,6 +88,7 @@ class App extends React.Component {
           </Container>
         </AppBar>
         <Container maxWidth='sm' style={{ marginBottom: 76 }}>
+          <StatusAlert status={status} onExposuresTab={currentTab === 'status'} />
           <CurrentPage status={status} statusLoaded={statusLoaded} />
         </Container>
         <BottomNavigation

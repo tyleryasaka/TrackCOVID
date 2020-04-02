@@ -8,7 +8,6 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import StopIcon from '@material-ui/icons/Stop'
 import QRCode from 'qrcode.react'
 import QRReader from 'react-qr-reader'
-import StatusAlert from './StatusAlert'
 import API from './api'
 
 const initialState = {
@@ -84,7 +83,6 @@ class Checkpoints extends React.Component {
 
   render () {
     const { mode, checkpointKey, checkpointTime } = this.state
-    const { status } = this.props
     let content
     if (mode === 'home') {
       content = (
@@ -94,7 +92,6 @@ class Checkpoints extends React.Component {
           justify='center'
           alignItems='center'
         >
-          <StatusAlert status={status} />
           <Typography style={{ marginTop: 25, marginBottom: 25 }}>
             Welcome to TrackCOVID. To participate in the effort to track the spread of the SARS-COV-2 virus, please host or join a checkpoint whenever you interact with others in a way that could transmit the virus.
           </Typography>
