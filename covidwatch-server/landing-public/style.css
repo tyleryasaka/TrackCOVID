@@ -1,6 +1,8 @@
 .hero-bg {
   background: linear-gradient( rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8) ), url('/public/hero.jpg');
   background-size: cover;
+  background-position: right;
+  background-attachment: fixed;
   /* text-shadow: 0 0 10px #000; */
 }
 

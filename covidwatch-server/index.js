@@ -38,7 +38,7 @@ app.use(cookieParser())
 app.use(session({ keys: [process.env.SESSION_KEY] }))
 app.use(flash())
 app.use('/api/', apiRouter)
-app.use('/storefront-api/', storefrontApiRouter)
+app.use('/public-checkpoint/', storefrontApiRouter)
 app.use('/admin/', express.static('admin-public'))
 app.use('/public/', express.static('landing-public'))
 

@@ -7,7 +7,7 @@ const path = require('path')
 
 const storefrontApiRouter = express.Router()
 
-storefrontApiRouter.get('/checkpoint', (req, res) => {
+storefrontApiRouter.get('/', (req, res) => {
   const key = sha256(String(Math.random())).substring(0, 32)
   const checkpoint = new Checkpoint({
     key,
