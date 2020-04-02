@@ -22,6 +22,7 @@ app.use(function (req, res, next) {
 
 // https redirect
 if (process.env['REDIRECT_HTTPS'] === 'true') {
+  app.enable('trust proxy')
   app.use(function (req, res, next) {
     if (req.secure) {
       next()
