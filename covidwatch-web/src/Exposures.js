@@ -89,9 +89,14 @@ class Exposures extends React.Component {
   }
 
   async reportPositive (data) {
-    // TODO prompt for confirmation
-    await API.reportPositive(data)
-    this.setState({ mode: 'report-done', showReportConfirmation: false })
+    try {
+      await API.reportPositive(data)
+      this.setState({ mode: 'report-done', showReportConfirmation: false })
+    } catch (e) {
+      console.error(e)
+      this.reset()
+      window.alert('There was an unexpected error. Please leave feedback so the developer can fix this.')
+    }
   }
 
   render () {

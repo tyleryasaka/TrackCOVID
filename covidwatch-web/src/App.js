@@ -43,8 +43,13 @@ class App extends React.Component {
   componentDidMount () {
     this.checkConfirmcode()
     const updateStatus = async () => {
-      const exposureStatus = await API.getExposureStatus()
-      this.setState({ status: exposureStatus, statusLoaded: true })
+      try {
+        const exposureStatus = await API.getExposureStatus()
+        this.setState({ status: exposureStatus, statusLoaded: true })
+      } catch (e) {
+        console.error(e)
+        this.setState({ status: false, statusLoaded: false })
+      }
     }
     updateStatus()
     setInterval(updateStatus, pollingTime)

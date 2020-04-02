@@ -47,12 +47,17 @@ class CheckpointsScreen extends Component {
   }
 
   async becomeHost () {
-    const { key, time } = await API.hostCheckpoint()
-    this.setState({
-      mode: 'host',
-      checkpointKey: key,
-      checkpointTime: time
-    })
+    try {
+      const { key, time } = await API.hostCheckpoint()
+      this.setState({
+        mode: 'host',
+        checkpointKey: key,
+        checkpointTime: time
+      })
+    } catch (e) {
+      console.log(e)
+      Alert.alert('An unknown error occurred.')
+    }
   }
 
   async joinCheckpoint () {
@@ -65,14 +70,24 @@ class CheckpointsScreen extends Component {
 
   async handleBarCodeScanned ({ type, data }) {
     if (data && (data.length === checkpointKeyLength)) {
-      await API.joinCheckpoint(data)
-      this.setState({ scanned: true })
+      try {
+        await API.joinCheckpoint(data)
+        this.setState({ scanned: true })
+      } catch (e) {
+        console.log(e)
+        this.setState({ scanned: true, joinError: true })
+      }
     } else {
       // QR code may be a url
       const urlSplit = data.split('?checkpoint=')
       if ((urlSplit.length === 2) && (urlSplit[1].length === checkpointKeyLength)) {
-        await API.joinCheckpoint(urlSplit[1])
-        this.setState({ scanned: true })
+        try {
+          await API.joinCheckpoint(urlSplit[1])
+          this.setState({ scanned: true })
+        } catch (e) {
+          console.log(e)
+          this.setState({ scanned: true, joinError: true })
+        }
       } else {
         this.setState({ scanned: true, joinError: true })
       }

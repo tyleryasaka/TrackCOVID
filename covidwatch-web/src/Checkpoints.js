@@ -30,14 +30,16 @@ class Checkpoints extends React.Component {
     const checkpointKey = urlParams.get('checkpoint')
     if (checkpointKey) {
       if (checkpointKey.length === checkpointKeyLength) {
-        API.joinCheckpoint(checkpointKey).then(checkpointObj => {
-          if (!checkpointObj) {
-            this.setState({ mode: 'scan-error' })
-          } else {
+        try {
+          API.joinCheckpoint(checkpointKey).then(checkpointObj => {
             this.setState({ mode: 'scan-success' })
-          }
+            window.history.replaceState(null, null, window.location.pathname)
+          })
+        } catch (e) {
+          console.error(e)
+          this.setState({ mode: 'scan-error' })
           window.history.replaceState(null, null, window.location.pathname)
-        })
+        }
       } else {
         this.setState({ mode: 'scan-error' })
         window.history.replaceState(null, null, window.location.pathname)
@@ -50,12 +52,17 @@ class Checkpoints extends React.Component {
   }
 
   async becomeHost () {
-    const { key, time } = await API.hostCheckpoint()
-    this.setState({
-      mode: 'host',
-      checkpointKey: key,
-      checkpointTime: time
-    })
+    try {
+      const { key, time } = await API.hostCheckpoint()
+      this.setState({
+        mode: 'host',
+        checkpointKey: key,
+        checkpointTime: time
+      })
+    } catch (e) {
+      console.error(e)
+      window.alert('There was an unexpected error. Please leave feedback so the developer can fix this.')
+    }
   }
 
   async endHost () {
@@ -72,8 +79,13 @@ class Checkpoints extends React.Component {
   async handleScan (data) {
     if (data) {
       if (data.length === checkpointKeyLength) {
-        await API.joinCheckpoint(data)
-        this.setState({ mode: 'scan-success' })
+        try {
+          await API.joinCheckpoint(data)
+          this.setState({ mode: 'scan-success' })
+        } catch (e) {
+          console.error(e)
+          this.setState({ mode: 'scan-error' })
+        }
       } else {
         // QR code may be a url
         const urlSplit = data.split('?checkpoint=')

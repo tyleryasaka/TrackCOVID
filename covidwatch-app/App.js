@@ -68,17 +68,18 @@ export default function App (props) {
 
   const [statusObj, setStatusObj] = React.useState({ status: false, loaded: false })
 
-  React.useEffect(() => {
+  const statusUpdate = () => {
     API.getExposureStatus().then(exposureStatus => {
       setStatusObj({ status: exposureStatus, loaded: true })
+    }).catch((e) => {
+      console.log(e)
+      setStatusObj({ status: false, loaded: false })
     })
-  }, [])
+  }
 
-  useInterval(() => {
-    API.getExposureStatus().then(exposureStatus => {
-      setStatusObj({ status: exposureStatus, loaded: true })
-    })
-  }, 1000 * pollingTime)
+  React.useEffect(statusUpdate, [])
+
+  useInterval(statusUpdate, 1000 * pollingTime)
 
   if (!isLoadingComplete && !props.skipLoadingScreen) {
     return null

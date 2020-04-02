@@ -55,15 +55,21 @@ class ExposuresScreen extends Component {
           style: 'cancel'
         },
         { text: 'Yes, report positive',
-          onPress: () => {
-            API.reportPositive().then(() => {
-              this.setState({ mode: 'default' })
-              Alert.alert('Your diagnosis was reported successfully. Thank you.')
-            })
-          } }
+          onPress: this.onConfirmReportPositive.bind(this) }
       ],
       { cancelable: false }
     )
+  }
+
+  async onConfirmReportPositive () {
+    try {
+      await API.reportPositive()
+      this.setState({ mode: 'default' })
+      Alert.alert('Your diagnosis was reported successfully. Thank you.')
+    } catch (e) {
+      console.log(e)
+      Alert.alert('An unknown error occurred.')
+    }
   }
 
   async scanConfirmcode () {
@@ -84,8 +90,13 @@ class ExposuresScreen extends Component {
       const urlSplit = data.split('?confirm=')
       if ((urlSplit.length === 2) && (urlSplit[1].length === confirmcodeLength)) {
         this.setState({ mode: 'default' })
-        await API.reportPositive(urlSplit[1])
-        Alert.alert('Your diagnosis was reported successfully. Thank you.')
+        try {
+          await API.reportPositive(urlSplit[1])
+          Alert.alert('Your diagnosis was reported successfully. Thank you.')
+        } catch (e) {
+          console.log(e)
+          Alert.alert('The code you scanned could not be read.')
+        }
       } else {
         this.setState({ mode: 'default' })
         Alert.alert('The code you scanned could not be read.')
