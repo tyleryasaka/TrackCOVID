@@ -110,7 +110,7 @@ class App extends React.Component {
           onClose={this.closeDrawer.bind(this)}
         >
           <List component='nav' aria-label='settings'>
-            <ListItemLink style={{ width: 250 }} href='https://github.com/tyleryasaka/covid-watch' target='_blank'>
+            <ListItemLink style={{ width: 250 }} href='https://trackcovid.net' target='_blank'>
               <ListItemIcon>
                 <InfoIcon />
               </ListItemIcon>
