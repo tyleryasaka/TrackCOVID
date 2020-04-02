@@ -1,11 +1,12 @@
 import { AsyncStorage } from 'react-native'
-const CovidWatch = require('covidwatch-js')
-const {
+import {
   safetyPeriod,
   estimatedDiagnosisDelay,
-  serverBaseUrl
-} = require('covidwatch-js/config')
+  serverBaseUrl as urlPath
+} from 'covidwatch-js/config'
+import CovidWatch from 'covidwatch-js'
 
+const serverBaseUrl = `https://trackcovid.net${urlPath}`
 const checkpointsDBKey = 'CHECKPOINTS'
 const useConfirmedDBKey = 'USECONFIRMED'
 
