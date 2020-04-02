@@ -1,4 +1,4 @@
-# covidwatch-server
+# TrackCOVID Server
 
 ## Admin Interface
 Demo: https://covidwatch-server.herokuapp.com/admin

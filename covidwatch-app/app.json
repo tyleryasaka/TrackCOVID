@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "COVID Watch P2P",
+    "name": "TrackCOVID",
     "slug": "covidwatch",
     "privacy": "public",
     "sdkVersion": "36.0.0",

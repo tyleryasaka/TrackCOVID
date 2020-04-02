@@ -1,4 +1,4 @@
-# COVID Watch P2P
+# TrackCOVID
 A peer-to-peer, privacy-preserving contact tracing smartphone application
 
 ## App

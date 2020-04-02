@@ -23,7 +23,7 @@ class InfoScreen extends Component {
           />
           <OptionButton
             icon='md-code'
-            label='Learn more about COVID Watch app'
+            label='Learn more about TrackCOVID'
             onPress={() => WebBrowser.openBrowserAsync('https://github.com/tyleryasaka/covid-watch')}
           />
         </ScrollView>
