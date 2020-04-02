@@ -73,13 +73,13 @@ class Checkpoints extends React.Component {
     if (data) {
       if (data.length === checkpointKeyLength) {
         await API.joinCheckpoint(data)
-        this.setState({ mode: 'scan-succes' })
+        this.setState({ mode: 'scan-success' })
       } else {
         // QR code may be a url
         const urlSplit = data.split('?checkpoint=')
         if ((urlSplit.length === 2) && (urlSplit[1].length === checkpointKeyLength)) {
           await API.joinCheckpoint(urlSplit[1])
-          this.setState({ mode: 'scan-succes' })
+          this.setState({ mode: 'scan-success' })
         } else {
           this.setState({ mode: 'scan-error' })
         }
