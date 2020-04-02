@@ -32,7 +32,6 @@ class Settings extends React.Component {
   }
 
   render () {
-    const { status } = this.props
     const { useConfirmed } = this.state
     return (
       <Grid
