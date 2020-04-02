@@ -5,6 +5,9 @@ import { BarCodeScanner } from 'expo-barcode-scanner'
 import API from '../api'
 import { StatusContext } from '../status-context'
 import StatusBanner from '../components/status-banner'
+const {
+  confirmcodeLength
+} = require('covidwatch-js/config')
 
 const initialState = {
   exposureStatus: false,
@@ -72,7 +75,7 @@ class ExposuresScreen extends Component {
   }
 
   async handleBarCodeScanned ({ type, data }) {
-    if (data && (data.length === 32)) {
+    if (data && (data.length === confirmcodeLength)) {
       this.setState({ mode: 'default' })
       await API.reportPositive(data)
       Alert.alert('Your diagnosis was reported successfully. Thank you.')

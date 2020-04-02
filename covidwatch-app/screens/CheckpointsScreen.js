@@ -7,6 +7,10 @@ import API from '../api'
 import { StatusContext } from '../status-context'
 import StatusBanner from '../components/status-banner'
 
+const {
+  checkpointKeyLength
+} = require('covidwatch-js/config')
+
 const initialState = {
   mode: 'home',
   checkpointKey: null,
@@ -60,11 +64,18 @@ class CheckpointsScreen extends Component {
   }
 
   async handleBarCodeScanned ({ type, data }) {
-    if (data && (data.length === 32)) {
+    if (data && (data.length === checkpointKeyLength)) {
       await API.joinCheckpoint(data)
       this.setState({ scanned: true })
     } else {
-      this.setState({ scanned: true, joinError: true })
+      // QR code may be a url
+      const urlSplit = data.split('?checkpoint=')
+      if ((urlSplit.length === 2) && (urlSplit[1].length === checkpointKeyLength)) {
+        await API.joinCheckpoint(urlSplit[1])
+        this.setState({ scanned: true })
+      } else {
+        this.setState({ scanned: true, joinError: true })
+      }
     }
   }
 
