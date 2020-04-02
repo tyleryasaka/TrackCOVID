@@ -7,7 +7,9 @@ import {
 
 const checkpointsDBKey = 'CHECKPOINTS'
 const useConfirmedDBKey = 'USECONFIRMED'
-const serverBaseUrl = process.env['REACT_APP_SERVER_BASE_URL'] || defaultServerBaseUrl
+const serverBaseUrl = (process.env['REACT_APP_ENV'] === 'development')
+  ? 'http://localhost:8000/api/checkpoints'
+  : defaultServerBaseUrl
 
 function getCheckpoints () {
   const localStorage = window.localStorage
