@@ -5,7 +5,7 @@
       function renderConfirmcode() {
         var urlParams = new URLSearchParams(window.location.search)
         var confirmcode = urlParams.get('code')
-        new QRCode(document.getElementById('qrcode'), confirmcode)
+        new QRCode(document.getElementById('qrcode'), 'https://trackcovid.net/app?confirm=' + confirmcode)
       }
     </script>
   </head>
