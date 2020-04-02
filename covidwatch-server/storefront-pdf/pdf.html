@@ -1,0 +1,55 @@
+<html>
+  <head>
+    <title>Storefront Checkpoint</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      body {
+        font-family: Verdana, Geneva, sans-serif;
+      }
+      h1 {
+        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+        font-size: 20px;
+        text-align: center;
+        border-bottom: 1px solid #000;
+      }
+      p {
+        font-size: 12px;
+        text-align: center;
+      }
+      .section {
+        margin-top: 40px;
+      }
+      .main-container {
+        margin: 50px;
+      }
+      .qr-code {
+        width: 100px;
+        margin: auto;
+      }
+      #about {
+        margin-top: 400px;
+      }
+    </style>
+    <script>
+      function renderCodes() {
+        new QRCode(document.getElementById('web-url'), {
+          text: 'http://192.168.1.11:3000?checkpoint={{checkpointKey}}',
+          width: 128,
+          height: 128
+        })
+      }
+    </script>
+  </head>
+  <body onload="renderCodes()" class="uk-background-secondary">
+    <div class="main-container">
+      <h1>Join the effort to track the spread of COVID-19.</h1>
+      <div class="section">
+        <p>Check in anonymously by scanning the code below:</p>
+        <div id="web-url" class="qr-code"></div>
+      </div>
+      <p id="about">TrackCOVID is a community project which traces possible routes of COVID-19 transmission and alerts users if they are at elevated risk of exposure. TrackCOVID does not collect any personal data and your participation is anonymous. Learn more at <a href="https://github.com/tyleryasaka/covid-watch">https://github.com/tyleryasaka/covid-watch</a>.</p>
+    </div>
+    <script src="qrcode.min.js"></script>
+  </body>
+</html>
