@@ -31,7 +31,7 @@ https://trackcovid.net/admin
 
 The web app, above, is the best way to use TrackCOVID at the moment. However, I have developed a prototype for Android and iOS. (Web, Android, and iOS apps are equivalent in functionality.)
 
-Android users may try out the prototype at https://expo.io/@tyleryasaka/covidwatch.
+Android users may try out the prototype at https://expo.io/@tyleryasaka/trackcovid.
 
 I am currently unable to distribute a prototype for the iPhone, but the application has been tested and works on iOS devices.
 
