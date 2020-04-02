@@ -88,9 +88,10 @@ class Exposures extends React.Component {
     this.setState({ showReportConfirmation: true })
   }
 
-  async reportPositive (data) {
+  async reportPositive () {
+    const { confirmcode } = this.state
     try {
-      await API.reportPositive(data)
+      await API.reportPositive(confirmcode)
       this.setState({ mode: 'report-done', showReportConfirmation: false })
     } catch (e) {
       console.error(e)
