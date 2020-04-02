@@ -80,8 +80,16 @@ class ExposuresScreen extends Component {
       await API.reportPositive(data)
       Alert.alert('Your diagnosis was reported successfully. Thank you.')
     } else {
-      this.setState({ mode: 'default' })
-      Alert.alert('The code you scanned could not be read.')
+      // QR code may be a url
+      const urlSplit = data.split('?confirm=')
+      if ((urlSplit.length === 2) && (urlSplit[1].length === confirmcodeLength)) {
+        this.setState({ mode: 'default' })
+        await API.reportPositive(urlSplit[1])
+        Alert.alert('Your diagnosis was reported successfully. Thank you.')
+      } else {
+        this.setState({ mode: 'default' })
+        Alert.alert('The code you scanned could not be read.')
+      }
     }
   }
 
