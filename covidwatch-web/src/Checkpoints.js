@@ -14,15 +14,33 @@ import API from './api'
 const initialState = {
   mode: 'home',
   checkpointKey: null,
-  checkpointTime: null,
-  scanned: false,
-  joinError: false
+  checkpointTime: null
 }
 
 class Checkpoints extends React.Component {
   constructor () {
     super()
     this.state = initialState
+  }
+
+  componentDidMount () {
+    const urlParams = new URLSearchParams(window.location.search)
+    const checkpointKey = urlParams.get('checkpoint')
+    if (checkpointKey) {
+      if (checkpointKey.length === 32) {
+        API.joinCheckpoint(checkpointKey).then(checkpointObj => {
+          if (!checkpointObj) {
+            this.setState({ mode: 'scan-error' })
+          } else {
+            this.setState({ mode: 'scan-success' })
+          }
+          window.history.replaceState(null, null, window.location.pathname)
+        })
+      } else {
+        this.setState({ mode: 'scan-error' })
+        window.history.replaceState(null, null, window.location.pathname)
+      }
+    }
   }
 
   async reset () {
@@ -53,19 +71,19 @@ class Checkpoints extends React.Component {
     if (data) {
       if (data.length === 32) {
         await API.joinCheckpoint(data)
-        this.setState({ scanned: true })
+        this.setState({ mode: 'scan-succes' })
       } else {
-        this.setState({ scanned: true, joinError: true })
+        this.setState({ mode: 'scan-error' })
       }
     }
   }
 
   handleScanError () {
-    this.setState({ scanned: true, joinError: true })
+    this.setState({ mode: 'scan-error' })
   }
 
   render () {
-    const { mode, checkpointKey, checkpointTime, joinError, scanned } = this.state
+    const { mode, checkpointKey, checkpointTime } = this.state
     const { status } = this.props
     let content
     if (mode === 'home') {
@@ -112,62 +130,60 @@ class Checkpoints extends React.Component {
         </Grid>
       )
     } else if (mode === 'join') {
-      if (!scanned) {
-        content = joinError
-          ? (
-            <Grid
-              container
-              direction='column'
-              justify='center'
-              alignItems='center'
-            >
-              <Typography style={{ marginTop: 25, marginBottom: 25 }}>
-                The QR code could not be read. Please try again.
-              </Typography>
-              <Button onClick={this.reset.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 25 }}>
-                <ArrowBackIcon />
-                Back
-              </Button>
-            </Grid>
-          )
-          : (
-            <Grid
-              container
-              direction='column'
-              justify='center'
-              alignItems='center'
-            >
-              <QRReader
-                delay={300}
-                onError={this.handleScanError.bind(this)}
-                onScan={this.handleScan.bind(this)}
-                style={{ width: '100%' }}
-                facingMode='environment'
-              />
-              <Button onClick={this.reset.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 25 }}>
-                <ArrowBackIcon />
-                Back
-              </Button>
-            </Grid>
-          )
-      } else {
-        content = (
-          <Grid
-            container
-            direction='column'
-            justify='center'
-            alignItems='center'
-          >
-            <Typography style={{ marginTop: 25, marginBottom: 25 }}>
-              You have joined the checkpoint successfully.
-            </Typography>
-            <Button onClick={this.reset.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 25 }}>
-              <ArrowBackIcon />
-              Back
-            </Button>
-          </Grid>
-        )
-      }
+      content = (
+        <Grid
+          container
+          direction='column'
+          justify='center'
+          alignItems='center'
+        >
+          <QRReader
+            delay={300}
+            onError={this.handleScanError.bind(this)}
+            onScan={this.handleScan.bind(this)}
+            style={{ width: '100%' }}
+            facingMode='environment'
+          />
+          <Button onClick={this.reset.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 25 }}>
+            <ArrowBackIcon />
+            Back
+          </Button>
+        </Grid>
+      )
+    } else if (mode === 'scan-success') {
+      content = (
+        <Grid
+          container
+          direction='column'
+          justify='center'
+          alignItems='center'
+        >
+          <Typography style={{ marginTop: 25, marginBottom: 25 }}>
+            You have joined the checkpoint successfully.
+          </Typography>
+          <Button onClick={this.reset.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 25 }}>
+            <ArrowBackIcon />
+            Back
+          </Button>
+        </Grid>
+      )
+    } else if (mode === 'scan-error') {
+      content = (
+        <Grid
+          container
+          direction='column'
+          justify='center'
+          alignItems='center'
+        >
+          <Typography style={{ marginTop: 25, marginBottom: 25 }}>
+            The QR code could not be read. Please try again.
+          </Typography>
+          <Button onClick={this.reset.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 25 }}>
+            <ArrowBackIcon />
+            Back
+          </Button>
+        </Grid>
+      )
     }
     return content
   }

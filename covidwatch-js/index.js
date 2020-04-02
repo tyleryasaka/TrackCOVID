@@ -25,9 +25,11 @@ function CovidWatch (config) {
 
   async function addCheckpoint (checkpointKey) {
     const checkpoints = await getCheckpoints()
+    let err = false
     if (checkpoints.length > 0) {
       const lastCheckpoint = checkpoints[checkpoints.length - 1]
-      await serverRequest('POST', `links/${checkpointKey}/${lastCheckpoint.key}`)
+      const res = await serverRequest('POST', `links/${checkpointKey}/${lastCheckpoint.key}`)
+      err = res.error
     }
     const checkpointObj = {
       key: checkpointKey,
@@ -35,7 +37,7 @@ function CovidWatch (config) {
     }
     checkpoints.push(checkpointObj)
     await setCheckpoints(checkpoints)
-    return checkpointObj
+    return !err && checkpointObj
   }
 
   async function getCheckpointStatus (checkpointKey) {
