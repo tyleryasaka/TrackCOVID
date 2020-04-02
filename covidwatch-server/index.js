@@ -41,9 +41,13 @@ app.use('/api/', apiRouter)
 app.use('/public-checkpoint/', storefrontApiRouter)
 app.use('/admin/', express.static('admin-public'))
 app.use('/public/', express.static('landing-public'))
+app.use('/app/static', express.static('app-public/static'))
 
 app.get('/', function (req, res) {
   res.sendfile('landing-public/index.html')
+})
+app.get('/app/', function (req, res) {
+  res.sendfile('app-public/index.html')
 })
 
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/checkpoints', { useNewUrlParser: true })
