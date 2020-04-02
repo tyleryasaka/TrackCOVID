@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "TrackCOVID",
-    "slug": "covidwatch",
+    "slug": "trackcovid",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": [
@@ -25,7 +25,7 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "org.tyleryasaka.covidwatch",
+      "bundleIdentifier": "org.tyleryasaka.trackcovid",
       "buildNumber": "0.0.0",
       "supportsTablet": true
     },
