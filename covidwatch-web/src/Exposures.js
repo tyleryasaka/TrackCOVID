@@ -31,6 +31,21 @@ class Exposures extends React.Component {
     this.state = initialState
   }
 
+  componentDidMount () {
+    const urlParams = new URLSearchParams(window.location.search)
+    const confirmcode = urlParams.get('confirm')
+    if (confirmcode) {
+      if (confirmcode.length === confirmcodeLength) {
+        this.setState({ confirmcode })
+        window.history.replaceState(null, null, window.location.pathname)
+        this.reportConfirmation()
+      } else {
+        this.setState({ mode: 'scan-error' })
+        window.history.replaceState(null, null, window.location.pathname)
+      }
+    }
+  }
+
   async reset () {
     this.setState(initialState)
   }
@@ -53,7 +68,14 @@ class Exposures extends React.Component {
         this.setState({ confirmcode: data })
         this.reportConfirmation()
       } else {
-        this.setState({ mode: 'scan-error' })
+        // QR code may be a url
+        const urlSplit = data.split('?confirm=')
+        if ((urlSplit.length === 2) && (urlSplit[1].length === confirmcodeLength)) {
+          this.setState({ confirmcode: urlSplit[1] })
+          this.reportConfirmation()
+        } else {
+          this.setState({ mode: 'scan-error' })
+        }
       }
     }
   }

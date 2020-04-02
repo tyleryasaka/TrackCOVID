@@ -41,12 +41,21 @@ class App extends React.Component {
   }
 
   componentDidMount () {
+    this.checkConfirmcode()
     const updateStatus = async () => {
       const exposureStatus = await API.getExposureStatus()
       this.setState({ status: exposureStatus, statusLoaded: true })
     }
     updateStatus()
     setInterval(updateStatus, pollingTime)
+  }
+
+  checkConfirmcode () {
+    const urlParams = new URLSearchParams(window.location.search)
+    const confirmcode = urlParams.get('confirm')
+    if (confirmcode) {
+      this.setState({ currentTab: 'status' })
+    }
   }
 
   onChangeTab (event, newVal) {
