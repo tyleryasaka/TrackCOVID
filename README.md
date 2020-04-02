@@ -13,7 +13,7 @@ See [covidwatch-app](covidwatch-app) for source code and details.
 See [covidwatch-server](covidwatch-server) for source code.
 
 ## Admin interface
-Demo: https://covidwatch-server.herokuapp.com/admin
+Demo: https://trackcovid.net/admin
 
 Login with:
 - Username: `user`
