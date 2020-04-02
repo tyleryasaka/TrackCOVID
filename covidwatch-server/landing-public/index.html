@@ -1,0 +1,160 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+    <title>TrackCOVID (beta)</title>
+    <link rel="stylesheet" href="/public/style.css" />
+    <link rel="stylesheet" href="/public/bootstrap.min.css" />
+  </head>
+  <body class="bg-dark">
+    <nav class="site-header sticky-top py-1">
+      <div class="container d-flex flex-column flex-md-row justify-content-between">
+        <a class="py-2" href="#" aria-label="Product">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="d-block mx-auto" role="img" viewBox="0 0 24 24" focusable="false"><title>Product</title><circle cx="12" cy="12" r="10"/><path d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83m13.79-4l-5.74 9.94"/></svg>
+        </a>
+        <a class="py-2 d-none d-md-inline-block" href="#contact-tracing">Contact Tracing</a>
+        <a class="py-2 d-none d-md-inline-block" href="#privacy">Privacy</a>
+        <a class="py-2 d-none d-md-inline-block" href="#how-it-works">How it Works</a>
+        <a class="py-2 d-none d-md-inline-block" href="#start-tracking">Start Tracking</a>
+        <a class="py-2 d-none d-md-inline-block" href="#get-involved">Get Involved</a>
+        <a class="py-2 d-none d-md-inline-block" href="#contact">Contact</a>
+      </div>
+    </nav>
+
+    <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light hero-bg">
+      <div class="col-md-5 p-lg-5 mx-auto my-5 text-light">
+        <h1 class="display-4 font-weight-normal">TrackCOVID (beta)</h1>
+        <p class="lead font-weight-normal">Peer-to-peer, privacy-preserving contact tracing.</p>
+      </div>
+      <div class="product-device shadow-sm d-none d-md-block"></div>
+      <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
+    </div>
+
+    <div class="d-md-flex flex-md-equal w-100 my-md-3 pl-md-3" id="contact-tracing">
+      <div class="bg-dark mr-md-3 pt-3 px-3 pt-md-10 px-md-10 text-center text-white overflow-hidden">
+        <div class="my-3 py-3">
+          <h2 class="display-5">Contact Tracing</h2>
+          <p class="lead about-text">
+            Contact tracing is the process of tracking down people who may have been exposed to an infectious disease after someone has tested positive.
+            Those who may have been exposed are asked to self-isolate.
+            While manual contact tracing is not realistic for the COVID-19 pandemic, technology-based contact tracing is a promising solution.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-md-flex flex-md-equal w-100 my-md-3 pl-md-3" id="privacy">
+      <div class="bg-warning mr-md-3 pt-3 px-3 pt-md-10 px-md-10 text-center overflow-hidden">
+        <div class="my-3 p-3 text-dark">
+          <h2 class="display-5">Privacy</h2>
+          <p class="lead about-text">
+            Technology-based contact tracing exists and has already been used in some places.
+            However, existing solutions rely on tracking your location data.
+            Some people are not comfortable with this.
+            TrackCOVID is an alternative contact tracing solution that protects your privacy by not collecting any data about you.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-md-flex flex-md-equal w-100 my-md-3 pl-md-3" id="how-it-works">
+      <div class="bg-dark mr-md-3 pt-3 px-3 pt-md-10 px-md-10 text-center text-white overflow-hidden">
+        <div class="my-3 py-3">
+          <h2 class="display-5">How it Works</h2>
+          <img src="public/interactions.png" class="interactions" />
+          <p class="lead about-text my-3">
+            TrackCOVID works by creating an anonymous graph of interactions.
+            Every time you gather with others or go to a public place, you use the app to host or join a checkpoint which logs this interaction.
+            The checkpoint host is given a QR code. Others join by scanning this QR code.
+            You stay anonymous in this process. As you interact with others over time, your interactions are linked to each other, without any record of your identity.
+            If someone has receives a positive test for COVID-19, they can report it anonymously through the app.
+            Using the graph of interactions, it is possible for others to determine whether they may have been exposed without anyone's identity being revealed.
+            Those who may have been exposed notified of their elevated risk level through the app.
+          </p>
+          <a href="https://preprints.jmir.org/preprint/18936/accepted" target="_blank" class="btn btn-warning">Read the Paper</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-md-flex flex-md-equal w-100 my-md-3 pl-md-3" id="start-tracking">
+      <div class="bg-light mr-md-3 pt-3 px-3 pt-md-10 px-md-10 text-center text-white overflow-hidden">
+        <div class="my-3 py-3 text-dark">
+          <h2 class="display-5">Start Tracking</h2>
+          <p class="lead about-text my-3">TrackCOVID is currently in beta, but you can try out the web application today.</p>
+          <p class="lead about-text my-3">
+            Additionally, we have created a link which generates a public checkpoint as a printable PDF.
+            Public checkpoints should be generated once per location, per day, and can be posted at public places like stores and workplaces.
+            Public checkpoints can be easily and quickly scanned by anyone with a smartphone, without downloading an application.
+          </p>
+          <a class="btn btn-dark" href="https://trackcovid-13678.web.app/" target="_blank">Web app</a>
+          <a class="btn btn-warning" href="http://trackcovid.net/storefront-api/checkpoint" target="_blank">Public checkpoint generator</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-md-flex flex-md-equal w-100 my-md-3 pl-md-3" id="get-involved">
+      <div class="bg-dark mr-md-3 pt-3 px-3 pt-md-10 px-md-10 text-center text-white overflow-hidden">
+        <div class="my-3 py-3">
+          <h2 class="display-5">Get Involved</h2>
+          <p class="lead about-text my-3">
+            If you would like to get involved in any way or simply would like to be kept up-to-date on the project, you are welcome to fill out our interest form.
+            Developers and designers may also contribute directly to the project on GitHub.
+          </p>
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSfj8AxQ5hVYF2cvlZGv1yopOCLHn71NigqPjyFYSv6sEaQijg/viewform?usp=sf_link" target="_blank" class="btn btn-light">Interest form</a>
+          <a href="https://github.com/tyleryasaka/covid-watch/issues" target="_blank" class="btn btn-warning">GitHub project</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-md-flex flex-md-equal w-100 my-md-3 pl-md-3" id="contact">
+      <div class="bg-light mr-md-3 pt-3 px-3 pt-md-10 px-md-10 text-center overflow-hidden">
+        <div class="my-3 p-3 text-dark">
+          <h2 class="display-5">Contact</h2>
+          <p class="lead about-text">
+            Feel free to reach out to the creator of this project, Tyler Yasaka, with any feedback, ideas, or questions.
+            He can be reached by email at <a class="text-dark" href="mailto:contact@tyleryasaka.me">contact@tyleryasaka.me</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <footer class="container py-5">
+      <div class="row text-light">
+        <div class="col-12 col-md">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="d-block mb-2" role="img" viewBox="0 0 24 24" focusable="false"><title>Product</title><circle cx="12" cy="12" r="10"/><path d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83m13.79-4l-5.74 9.94"/></svg>
+          <small class="d-block mb-3 text-muted">TrackCOVID is an open source project.</small>
+        </div>
+        <div class="col-6 col-md">
+          <h5>App Demos</h5>
+          <ul class="list-unstyled text-small">
+            <li><a class="text-muted" href="https://trackcovid-13678.web.app/" target="_blank">Web</a></li>
+            <li><a class="text-muted" href="https://expo.io/@tyleryasaka/covidwatch" target="_blank">Android</a></li>
+            <li><a class="text-muted" href="https://covidwatch-server.herokuapp.com/admin/" target="_blank">Admin</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-md">
+          <h5>Social Media</h5>
+          <ul class="list-unstyled text-small">
+            <li><a class="text-muted" href="https://twitter.com/TrackCOVIDApp" target="_blank">Twitter</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-md">
+          <h5>Learn More</h5>
+          <ul class="list-unstyled text-small">
+            <li><a class="text-muted" href="https://preprints.jmir.org/preprint/18936/accepted" target="_blank">Peer-reviewed paper</a></li>
+            <li><a class="text-muted" href="https://github.com/tyleryasaka/covid-watch" target="_blank">GitHub project</a></li>
+            <li><a class="text-muted" href="https://tyleryasaka.shinyapps.io/covidwatch/" target="_blank">Simulation model</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-md">
+          <h5>COVID-19 Resources</h5>
+          <ul class="list-unstyled text-small">
+            <li><a class="text-muted" href="https://www.cdc.gov/coronavirus/2019-ncov/index.html" target="_blank">CDC</a></li>
+            <li><a class="text-muted" href="https://www.who.int/emergencies/diseases/novel-coronavirus-2019/advice-for-public" target="_blank">WHO</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

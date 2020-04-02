@@ -28,6 +28,11 @@ app.use(flash())
 app.use('/api/', apiRouter)
 app.use('/storefront-api/', storefrontApiRouter)
 app.use('/admin/', express.static('admin-public'))
+app.use('/public/', express.static('landing-public'))
+
+app.get('/', function (req, res) {
+  res.sendfile('landing-public/index.html')
+})
 
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/checkpoints', { useNewUrlParser: true })
 const db = mongoose.connection
