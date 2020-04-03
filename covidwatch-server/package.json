@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tyleryasaka/covid-watch.git"
+    "url": "git+https://github.com/tyleryasaka/TrackCOVID.git"
   },
   "author": "Tyler M Yasaka",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/tyleryasaka/covid-watch/issues"
+    "url": "https://github.com/tyleryasaka/TrackCOVID/issues"
   },
-  "homepage": "https://github.com/tyleryasaka/covid-watch#readme",
+  "homepage": "https://github.com/tyleryasaka/TrackCOVID#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
     "connect-flash": "^0.1.1",
