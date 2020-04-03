@@ -1,0 +1,45 @@
+<html>
+  <head>
+    <title>TrackCOVID (beta): Admin</title>
+    <link rel="stylesheet" href="/admin/public/css/dashboard.css" />
+    <link rel="stylesheet" href="/admin/public/css/bootstrap.min.css" />
+  </head>
+  <body class="">
+    <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+      <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">TrackCOVID Admin</a>
+      <ul class="navbar-nav px-3">
+        <li class="nav-item text-nowrap">
+          <a class="nav-link" href="/admin/logout">Sign out</a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a class="nav-link">
+                  <span data-feather="home"></span>
+                  Confirmation codes
+                </a>
+              </li>
+            </ul>
+        </nav>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">Confirmation codes</h2>
+          </div>
+          <form action="/admin/confirmcode/generate" method="post" target="_blank">
+            <p>Click the button to generate a new confirmation code.</p>
+            <p>This will open a new tab with a QR confirmation code. You can print the page and deliver it to the patient.</p>
+            <button type="submit" class="btn btn-large btn-warning">New confirmation code</button>
+          </form>
+        </main>
+      </div>
+    </div>
+
+  </body>
+</html>

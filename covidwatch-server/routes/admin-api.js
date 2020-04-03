@@ -15,16 +15,16 @@ function ensureAuthenticated (req, res, next) {
   }
 }
 
-adminApiRouter.use('/js/', express.static('admin-public/js'))
+adminApiRouter.use('/public/', express.static('admin/static'))
 adminApiRouter.get('/', function (req, res) {
   if (req.isAuthenticated()) {
-    res.sendfile('admin-public/dashboard.html')
+    res.sendfile('admin/dashboard.html')
   } else {
-    res.sendfile('admin-public/login.html')
+    res.sendfile('admin/login.html')
   }
 })
 adminApiRouter.get('/confirmation-code', ensureAuthenticated, function (req, res) {
-  res.sendfile('admin-public/confirmation-code.html')
+  res.sendfile('admin/confirmation-code.html')
 })
 
 adminApiRouter.get('/logout', function (req, res) {
