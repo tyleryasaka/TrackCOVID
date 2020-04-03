@@ -20,6 +20,8 @@ import CheckpointsPage from './Checkpoints'
 import ExposuresPage from './Exposures'
 import SettingsPage from './Settings'
 import StatusAlert from './StatusAlert'
+import theme from './theme'
+import logo from './logo.svg'
 import API from './api'
 
 const oneSecond = 1000
@@ -104,6 +106,10 @@ class App extends React.Component {
         <Container maxWidth='sm' style={{ marginBottom: 76 }}>
           <StatusAlert status={status} onExposuresTab={currentTab === 'status'} />
           <CurrentPage status={status} statusLoaded={statusLoaded} />
+          <Container style={{ padding: 10, backgroundColor: '#343434', width: '100%', marginTop: 50, textAlign: 'center', verticalAlign: 'middle', fontSize: 16, color: 'rgba(255, 255, 255, 0.7)', lineHeight: '24px' }}>
+            <img src={logo} alt='Logo' width={24} height={24} style={{ verticalAlign: 'middle', marginRight: 8, filter: 'grayscale(100%)', opacity: 0.75 }} />
+            <span style={{ verticalAlign: 'middle', lineHeight: '24px' }}>Track</span><span style={{ verticalAlign: 'middle', lineHeight: '24px' }}>COVID</span>
+          </Container>
         </Container>
         <BottomNavigation
           value={currentTab}
