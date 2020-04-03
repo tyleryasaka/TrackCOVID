@@ -29,7 +29,7 @@
       "buildNumber": "0.0.0",
       "supportsTablet": true
     },
-    "description": "Peer-to-peer, privacy-preserving contact tracing. Feel free to try out this Android prototype, but the best way to use COVIDTrack at the moment is through the web app. Learn more at https://trackcovid.net.",
+    "description": "Peer-to-peer, privacy-preserving contact tracing. Feel free to try out this Android prototype, but the best way to use TrackCOVID at the moment is through the web app. Learn more at https://trackcovid.net.",
     "githubUrl": "https://github.com/tyleryasaka/covid-watch/tree/master/covidwatch-app"
   }
 }
