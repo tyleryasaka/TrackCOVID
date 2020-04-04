@@ -1,5 +1,5 @@
 # TrackCOVID
-A peer-to-peer, privacy-preserving contact tracing smartphone application
+By tracking the spread of the virus, we can flatten the curve.
 
 This project is in beta.
 
