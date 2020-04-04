@@ -20,7 +20,6 @@ import CheckpointsPage from './Checkpoints'
 import ExposuresPage from './Exposures'
 import SettingsPage from './Settings'
 import StatusAlert from './StatusAlert'
-import theme from './theme'
 import logo from './logo.svg'
 import API from './api'
 
