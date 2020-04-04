@@ -15,7 +15,7 @@ https://trackcovid.net/app
 
 We have created a link which generates a public checkpoint as a printable PDF. Public checkpoints should be generated once per location, per day, and can be posted at public places like stores and workplaces. Public checkpoints can be easily and quickly scanned by anyone with a smartphone as they enter, without entering any information or downloading an application.
 
-https://trackcovid.net/public-checkpoint
+https://trackcovid.net/checkpoint
 
 ## Admin interface
 

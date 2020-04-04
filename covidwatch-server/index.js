@@ -52,7 +52,7 @@ app.use(cookieParser())
 app.use(session({ keys: [process.env.SESSION_KEY] }))
 app.use(flash())
 app.use('/api/', apiRouter)
-app.use('/public-checkpoint/', storefrontApiRouter)
+app.use('/checkpoint/', storefrontApiRouter)
 app.use('/public/', express.static('landing-public'))
 app.use('/app/static', express.static('app-public/static'))
 
