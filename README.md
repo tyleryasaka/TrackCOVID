@@ -52,3 +52,8 @@ This is a simplistic model which serves as a proof-of-concept that TrackCOVID's 
 Web interface for the simulation: https://tyleryasaka.shinyapps.io/covidwatch/
 
 See [covidwatch-model](covidwatch-model) for source code.
+
+## Contributors
+
+- [Ben Stedman](https://benstedman.com/): logo
+- [Tyler Yasaka](https://tyleryasaka.me/): development
