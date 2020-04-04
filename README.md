@@ -38,11 +38,6 @@ I am currently unable to distribute a prototype for the iPhone, but the applicat
 See [covidwatch-app](covidwatch-app) for source code and details.
 
 ## Server
-See [covidwatch-server](covidwatch-server) for source code.
-
-Login with:
-- Username: `user`
-- password: `pass`
 
 See [covidwatch-server](covidwatch-server) for source code.
 
