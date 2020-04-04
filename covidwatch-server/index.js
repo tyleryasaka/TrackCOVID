@@ -6,6 +6,8 @@ const passport = require('passport')
 const flash = require('connect-flash')
 const cookieParser = require('cookie-parser')
 const session = require('cookie-session')
+const Logger = require('r7insight_node')
+const morgan = require('morgan')
 const apiRouter = require('./routes/api')
 const adminApiRouter = require('./routes/admin-api')
 const storefrontApiRouter = require('./routes/storefront-api')
@@ -13,6 +15,18 @@ const User = require('./models/user')
 
 const app = express()
 const port = process.env.PORT || 8000
+
+const logToken = process.env['LOG_TOKEN']
+if (logToken) {
+  const logger = new Logger({ token: logToken, region: 'us' })
+
+  const logStream = {
+    write: function (message, encoding) {
+      logger.info(message.replace('\n', ''))
+    }
+  }
+  app.use(morgan('dev', { stream: logStream }))
+}
 
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', process.env['WEB_CLIENT_DOMAIN'])

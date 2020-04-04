@@ -28,8 +28,10 @@
     "html-pdf": "^2.2.0",
     "js-sha256": "^0.9.0",
     "mongoose": "^5.9.6",
+    "morgan": "^1.10.0",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
-    "passport-local-mongoose": "^6.0.1"
+    "passport-local-mongoose": "^6.0.1",
+    "r7insight_node": "^2.0.0"
   }
 }
