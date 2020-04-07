@@ -1,5 +1,8 @@
 # TrackCOVID
+
 By tracking the spread of the virus, we can flatten the curve.
+
+![logo](doc/logo.png)
 
 This project is in beta.
 
@@ -8,6 +11,8 @@ https://trackcovid.net
 
 Read the peer-reviewed paper in JMIR mHealth and uHealth:
 https://doi.org/10.2196/18936
+
+![network](doc/interactions.png)
 
 ## Web App
 
