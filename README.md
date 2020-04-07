@@ -28,7 +28,7 @@ https://trackcovid.net/checkpoint
 
 ## Admin interface
 
-The admin interface is a feature which would allow authorized users from laboratories and/or health care facilities to issue confirmation codes for diagnoses. The current admin interface is for demonstration purposes only, but it is functional. You can try generating a confirmation code and then use it to confirm your self-report in the app. The [paper](https://preprints.jmir.org/preprint/18936/accepted) provides more details on the use of confirmation codes.
+The admin interface is a feature which would allow authorized users from laboratories and/or health care facilities to issue confirmation codes for diagnoses. The current admin interface is for demonstration purposes only, but it is functional. You can try generating a confirmation code and then use it to confirm your self-report in the app. The [paper](https://doi.org/10.2196/18936) provides more details on the use of confirmation codes.
 
 Login with:
 - Username: `user`
@@ -51,7 +51,7 @@ See [covidwatch-app](covidwatch-app) for source code and details.
 See [covidwatch-server](covidwatch-server) for source code.
 
 ## Network Simulation Model
-This is a simplistic model which serves as a proof-of-concept that TrackCOVID's peer-to-peer contact tracing method has potential to impact the outcome of an epidemic, in the right circumstances (including sufficient user adoption). This model was described in the [paper](https://preprints.jmir.org/preprint/18936/accepted).
+This is a simplistic model which serves as a proof-of-concept that TrackCOVID's peer-to-peer contact tracing method has potential to impact the outcome of an epidemic, in the right circumstances (including sufficient user adoption). This model was described in the [paper](https://doi.org/10.2196/18936).
 
 Web interface for the simulation: https://tyleryasaka.shinyapps.io/covidwatch/
 
