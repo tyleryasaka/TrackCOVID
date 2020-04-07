@@ -3,7 +3,11 @@ By tracking the spread of the virus, we can flatten the curve.
 
 This project is in beta.
 
+Learn more:
 https://trackcovid.net
+
+Read the peer-reviewed paper in JMIR mHealth and uHealth:
+https://doi.org/10.2196/18936
 
 ## Web App
 
