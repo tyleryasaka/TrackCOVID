@@ -4,13 +4,12 @@ By tracking the spread of the virus, we can flatten the curve.
 
 ![logo](doc/logo.png)
 
-This project is in beta.
-
-Learn more:
+- Learn more:
 https://trackcovid.net
-
-Read the peer-reviewed paper in JMIR mHealth and uHealth:
+- Read the peer-reviewed paper in JMIR mHealth and uHealth:
 https://doi.org/10.2196/18936
+- Read my proposal for public checkpoints:
+https://tyleryasaka.me/2020/04/07/public-checkpoints/
 
 ![network](doc/interactions.png)
 
