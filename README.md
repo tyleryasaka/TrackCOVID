@@ -56,3 +56,4 @@ See [covidwatch-model](covidwatch-model) for source code.
 
 - [Ben Stedman](https://benstedman.com/): logo
 - [Tyler Yasaka](https://tyleryasaka.me/): development
+- You? (check out our [interest form](https://docs.google.com/forms/d/e/1FAIpQLSfj8AxQ5hVYF2cvlZGv1yopOCLHn71NigqPjyFYSv6sEaQijg/viewform?usp=sf_link) - I will respond to any comments, questions, or feedback)
