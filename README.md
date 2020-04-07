@@ -36,7 +36,7 @@ Login with:
 
 https://trackcovid.net/admin
 
-## Mobile App
+## Native Mobile Apps
 
 The web app, above, is the best way to use TrackCOVID at the moment. However, I have developed a prototype for Android and iOS. (Web, Android, and iOS apps are equivalent in functionality.)
 
