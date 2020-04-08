@@ -16,7 +16,8 @@ import {
 const initialState = {
   mode: 'home',
   checkpointKey: null,
-  checkpointTime: null
+  checkpointTime: null,
+  legacyMode: false
 }
 
 class Checkpoints extends React.Component {
@@ -100,11 +101,15 @@ class Checkpoints extends React.Component {
   }
 
   handleScanError () {
-    this.setState({ mode: 'scan-error' })
+    this.setState({ legacyMode: true })
+  }
+
+  openImageDialog () {
+    this.refs.checkpointQR.openImageDialog()
   }
 
   render () {
-    const { mode, checkpointKey, checkpointTime } = this.state
+    const { mode, checkpointKey, checkpointTime, legacyMode } = this.state
     const qrValue = `${window.location.href}?checkpoint=${checkpointKey}`
     let content
     if (mode === 'home') {
@@ -158,12 +163,22 @@ class Checkpoints extends React.Component {
           alignItems='center'
         >
           <QRReader
+            ref='checkpointQR'
             delay={300}
             onError={this.handleScanError.bind(this)}
             onScan={this.handleScan.bind(this)}
-            style={{ width: '100%' }}
+            style={{ width: legacyMode ? 0 : '100%' }}
             facingMode='environment'
+            legacyMode={legacyMode}
           />
+          { legacyMode && (
+            <Typography style={{ marginTop: 25 }}>
+              This app does not have permission to access your device's camera. Instead, you may take a picture of the QR code.
+            </Typography>
+          ) }
+          <Button onClick={this.openImageDialog.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 25 }}>
+            Take a picture
+          </Button>
           <Button onClick={this.reset.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 25 }}>
             <ArrowBackIcon />
             Back
