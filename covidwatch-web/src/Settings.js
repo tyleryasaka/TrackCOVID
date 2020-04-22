@@ -7,6 +7,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import CheckBoxOutlineBlankOutlinedIcon from '@material-ui/icons/CheckBoxOutlineBlankOutlined'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
+import { Translation } from 'react-i18next'
 import API from './api'
 
 const initialState = {
@@ -41,7 +42,7 @@ class Settings extends React.Component {
         alignItems='center'
       >
         <Typography style={{ marginTop: 25 }}>
-          Selecting "Use only confirmed diagnoses" will ignore possible transmission paths from unconfirmed reports.
+          <Translation>{t => t('aboutUseConfirmedDiagnoses')}</Translation>
         </Typography>
         <List component='nav' style={{ marginTop: 15, width: '100%' }} aria-label='settings'>
           <ListItem button onClick={this.toggleUseConfirmed.bind(this)}>
@@ -55,7 +56,7 @@ class Settings extends React.Component {
                   )
               }
             </ListItemIcon>
-            <ListItemText primary='Use only confirmed diagnoses' />
+            <ListItemText primary={<Translation>{t => t('useConfirmedDiagnosesButton')}</Translation>} />
           </ListItem>
         </List>
       </Grid>

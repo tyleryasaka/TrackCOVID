@@ -30,6 +30,8 @@ module.exports = {
     'reportConfirmationMessage': 'This will notify those that may have been exposed of their increased risk. You will remain anonymous. This cannot be undone.',
     'reportCompletedMessage': 'Your positive status was reported anonymously. Those at risk will be notified. Thank you.',
     'cancelReportButton': 'Never mind',
-    'confirmReportButton': 'Report now'
+    'confirmReportButton': 'Report now',
+    'aboutUseConfirmedDiagnoses': 'Selecting "Use only confirmed diagnoses" will ignore possible transmission paths from unconfirmed reports.',
+    'useConfirmedDiagnosesButton': 'Use only confirmed diagnoses'
   }
 }
