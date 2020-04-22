@@ -11,6 +11,7 @@ import QRReader from 'react-qr-reader'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import ReportProblemIcon from '@material-ui/icons/ReportProblem'
 import CropFreeIcon from '@material-ui/icons/CropFree'
+import { Translation } from 'react-i18next'
 import theme from './theme'
 import API from './api'
 import {
@@ -103,12 +104,12 @@ class Exposures extends React.Component {
   render () {
     const { status, statusLoaded } = this.props
     const { mode, showReportConfirmation } = this.state
-    const statusMessageLoading = 'Loading your status...'
-    const statusMessageNegative = 'No transmission paths from infected individuals to you have been discovered at this time. However, everyone is at risk and individuals should follow the directives of the CDC as well as local, state, and federal governments.'
-    const statusMessagePositive = 'A possible transmission path from an infected individual to you has been discovered. You should take precautionary measures to protect yourself and others, according to the directives of the CDC  as well as local, state, and federal governments.'
-    const riskLevelLoading = 'Loading...'
-    const riskLevelNegative = 'standard'
-    const riskLevelPositive = 'elevated'
+    const statusMessageLoading = (<Translation>{t => t('statusLoadingMessage')}</Translation>)
+    const statusMessageNegative = (<Translation>{t => t('statusNegativeMessage')}</Translation>)
+    const statusMessagePositive = (<Translation>{t => t('statusPositiveMessage')}</Translation>)
+    const riskLevelLoading = (<Translation>{t => t('statusLoadingMessage')}</Translation>)
+    const riskLevelNegative = (<Translation>{t => t('standardRiskLevelMessage')}</Translation>)
+    const riskLevelPositive = (<Translation>{t => t('elevatedRiskLevelMessage')}</Translation>)
     const statusMessage = statusLoaded
       ? (status
         ? statusMessagePositive
@@ -135,17 +136,17 @@ class Exposures extends React.Component {
               alignItems='center'
             >
               <Typography style={{ marginTop: 25 }}>
-                Your risk level: <span style={{ color: theme.palette[riskLevelColor].main }}>{riskLevel}</span>
+                <Translation>{t => t('yourRiskLevelMessage')}</Translation>: <span style={{ color: theme.palette[riskLevelColor].main }}>{riskLevel}</span>
               </Typography>
               <Typography style={{ marginTop: 15 }}>
                 {statusMessage}
               </Typography>
               <Typography style={{ marginTop: 25 }}>
-                If you or someone you have been in close contact with have received a positive test, you may report it using the button below. This will warn those who may have been exposed of their increased risk. You will remain anonymous.
+                <Translation>{t => t('aboutReportMessage')}</Translation>
               </Typography>
               <Button onClick={this.showReportPrompt.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 25 }}>
                 <ReportProblemIcon />
-                Anonymous Report
+                <Translation>{t => t('reportButton')}</Translation>
               </Button>
             </Grid>
           )) || ((mode === 'report-prompt') && (
@@ -156,14 +157,14 @@ class Exposures extends React.Component {
               alignItems='center'
             >
               <Typography style={{ marginTop: 25 }}>
-                Do you have a confirmation code to scan? Scanning a confirmation code will help those that may have been exposed, by letting them know that this is a legitimate risk.
+                <Translation>{t => t('aboutConfirmationCodeMessage')}</Translation>
               </Typography>
               <Button onClick={this.scanConfirmcode.bind(this)} variant='contained' color='secondary' aria-label='add' style={{ marginTop: 50 }}>
                 <CropFreeIcon />
-                Scan confirmation code
+                <Translation>{t => t('scanConfirmationCodeButton')}</Translation>
               </Button>
               <Button onClick={this.reportConfirmation.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 50 }}>
-                I don't have a code
+                <Translation>{t => t('scanWithoutConfirmationCodeButton')}</Translation>
               </Button>
             </Grid>
           )) || ((mode === 'scan-confirmcode') && (
@@ -184,7 +185,7 @@ class Exposures extends React.Component {
               )}
               <Button onClick={this.reset.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 25 }}>
                 <ArrowBackIcon />
-                Back
+                <Translation>{t => t('backButton')}</Translation>
               </Button>
             </Grid>
           )) || ((mode === 'scan-error') && (
@@ -195,11 +196,11 @@ class Exposures extends React.Component {
               alignItems='center'
             >
               <Typography style={{ marginTop: 25, marginBottom: 25 }}>
-                The QR code could not be read. Please try again.
+                <Translation>{t => t('scanErrorMessage')}</Translation>
               </Typography>
               <Button onClick={this.reset.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 25 }}>
                 <ArrowBackIcon />
-                Back
+                <Translation>{t => t('backButton')}</Translation>
               </Button>
             </Grid>
           )) || ((mode === 'report-done') && (
@@ -210,11 +211,11 @@ class Exposures extends React.Component {
               alignItems='center'
             >
               <Typography style={{ marginTop: 25, marginBottom: 25 }}>
-                Your positive status was reported anonymously. Those at risk will be notified. Thank you.
+                <Translation>{t => t('reportCompletedMessage')}</Translation>
               </Typography>
               <Button onClick={this.reset.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 25 }}>
                 <ArrowBackIcon />
-                Back
+                <Translation>{t => t('backButton')}</Translation>
               </Button>
             </Grid>
           ))
@@ -228,15 +229,15 @@ class Exposures extends React.Component {
           <DialogTitle id='alert-dialog-title'>Report positive status?</DialogTitle>
           <DialogContent>
             <DialogContentText id='alert-dialog-description'>
-              This will notify those that may have been exposed of their increased risk. You will remain anonymous. This cannot be undone.
+              <Translation>{t => t('reportConfirmationMessage')}</Translation>
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.reset.bind(this)} color='secondary'>
-              Never mind
+              <Translation>{t => t('cancelReportButton')}</Translation>
             </Button>
             <Button onClick={this.reportPositive.bind(this)} color='primary' autoFocus>
-              Report now
+              <Translation>{t => t('confirmReportButton')}</Translation>
             </Button>
           </DialogActions>
         </Dialog>

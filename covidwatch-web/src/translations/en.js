@@ -14,6 +14,22 @@ module.exports = {
     'takePictureButton': 'Take a picture',
     'backButton': 'Back',
     'joinSuccessfulMessage': 'You have joined the checkpoint successfully.',
-    'scanErrorMessage': 'The QR code could not be read. Please try again.'
+    'scanErrorMessage': 'The QR code could not be read. Please try again.',
+    'statusLoadingMessage': 'Loading your status...',
+    'statusNegativeMessage': 'No transmission paths from infected individuals to you have been discovered at this time. However, everyone is at risk and individuals should follow the directives of the CDC as well as local, state, and federal governments.',
+    'statusPositiveMessage': 'A possible transmission path from an infected individual to you has been discovered. You should take precautionary measures to protect yourself and others, according to the directives of the CDC  as well as local, state, and federal governments.',
+    'loadingMessage': 'Loading...',
+    'standardRiskLevelMessage': 'standard',
+    'elevatedRiskLevelMessage': 'elevated',
+    'yourRiskLevelMessage': 'Your risk level',
+    'aboutReportMessage': 'If you or someone you have been in close contact with have received a positive test, you may report it using the button below. This will warn those who may have been exposed of their increased risk. You will remain anonymous.',
+    'reportButton': 'Anonymous Report',
+    'aboutConfirmationCodeMessage': 'Do you have a confirmation code to scan? Scanning a confirmation code will help those that may have been exposed, by letting them know that this is a legitimate risk.',
+    'scanConfirmationCodeButton': 'Scan confirmation code',
+    'scanWithoutConfirmationCodeButton': "I don't have a code",
+    'reportConfirmationMessage': 'This will notify those that may have been exposed of their increased risk. You will remain anonymous. This cannot be undone.',
+    'reportCompletedMessage': 'Your positive status was reported anonymously. Those at risk will be notified. Thank you.',
+    'cancelReportButton': 'Never mind',
+    'confirmReportButton': 'Report now'
   }
 }
