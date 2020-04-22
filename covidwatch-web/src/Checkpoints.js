@@ -6,6 +6,7 @@ import AddIcon from '@material-ui/icons/Add'
 import HomeIcon from '@material-ui/icons/Home'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import StopIcon from '@material-ui/icons/Stop'
+import PrintIcon from '@material-ui/icons/Print'
 import QRCode from 'qrcode.react'
 import QRReader from 'react-qr-reader'
 import { Translation } from 'react-i18next'
@@ -146,6 +147,10 @@ class Checkpoints extends React.Component {
             <Translation>{t => t('hostingCheckpointMessage')}</Translation>
           </Typography>
           <QRCode value={qrValue} size={200} style={{ backgroundColor: '#fff', padding: 20 }} />
+          <Button onClick={() => window.print()} variant='contained' color='secondary' aria-label='add' style={{ marginTop: 25 }}>
+            <PrintIcon />
+            <Translation>{t => t('printCheckpointButton')}</Translation>
+          </Button>
           <Button onClick={this.endHost.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 25 }}>
             <StopIcon />
             <Translation>{t => t('endCheckpointButton')}</Translation>

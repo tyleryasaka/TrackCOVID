@@ -9,6 +9,7 @@ module.exports = {
     'joinCheckpointButton': 'Join a Checkpoint',
     'hostingCheckpointMessage': 'You are now hosting a checkpoint. Others may join using the QR code below.',
     'endCheckpointButton': 'End checkpoint',
+    'printCheckpointButton': 'Print',
     'checkpointCreatedMessage': 'Checkpoint created',
     'noCameraPermissionMessage': "This app does not have permission to access your device's camera. Instead, you may take a picture of the QR code.",
     'takePictureButton': 'Take a picture',

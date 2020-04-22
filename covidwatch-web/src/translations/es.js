@@ -1,6 +1,6 @@
 module.exports = {
   'translation': {
-    'aboutButton': 'Sobre',
+    'aboutButton': 'Acerca de..',
     'checkpointsTab': 'Punto de Chequeo',
     'statusTab': 'Estado',
     'settingsTab': 'Ajustes',
@@ -9,6 +9,7 @@ module.exports = {
     'joinCheckpointButton': 'Únase a un Punto de Chequeo',
     'hostingCheckpointMessage': 'Usted está ahora alojando un Punto de Chequeo. Otras personas pueden unirse usando el código QR de abajo.',
     'endCheckpointButton': 'Finalizar Punto de Chequeo',
+    'printCheckpointButton': 'Imprimir',
     'checkpointCreatedMessage': 'Punto de Chequeo creado',
     'noCameraPermissionMessage': 'Esta app no tiene permiso para acceder a la cámara de su teléfono. En su lugar , Usted puede tomar una fotografía del código QR.',
     'takePictureButton': 'Tome una Fotografía',
