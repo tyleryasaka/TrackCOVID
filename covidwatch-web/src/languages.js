@@ -1,4 +1,4 @@
 module.exports = [
   { id: 'en', name: 'English' },
-  { id: 'es', name: 'Spanish' }
+  { id: 'es', name: 'Español' }
 ]
