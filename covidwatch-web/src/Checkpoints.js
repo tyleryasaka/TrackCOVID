@@ -8,6 +8,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import StopIcon from '@material-ui/icons/Stop'
 import QRCode from 'qrcode.react'
 import QRReader from 'react-qr-reader'
+import { Translation } from 'react-i18next'
 import API from './api'
 import {
   checkpointKeyLength
@@ -121,15 +122,15 @@ class Checkpoints extends React.Component {
           alignItems='center'
         >
           <Typography style={{ marginTop: 25, marginBottom: 25 }}>
-            Welcome to TrackCOVID. To participate in the effort to track the spread of the SARS-COV-2 virus, please host or join a checkpoint whenever you interact with others in a way that could transmit the virus.
+            <Translation>{t => t('welcomeMessage')}</Translation>
           </Typography>
           <Button onClick={this.becomeHost.bind(this)} variant='contained' color='secondary' aria-label='add' style={{ marginTop: 50 }}>
             <HomeIcon />
-            Host a Checkpoint
+            <Translation>{t => t('hostCheckpointButton')}</Translation>
           </Button>
           <Button onClick={this.joinCheckpoint.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 50 }}>
             <AddIcon />
-            Join a Checkpoint
+            <Translation>{t => t('joinCheckpointButton')}</Translation>
           </Button>
         </Grid>
       )
@@ -142,15 +143,15 @@ class Checkpoints extends React.Component {
           alignItems='center'
         >
           <Typography style={{ marginTop: 25, marginBottom: 25 }}>
-            You are now hosting a checkpoint. Others may join using the QR code below.
+            <Translation>{t => t('hostingCheckpointMessage')}</Translation>
           </Typography>
           <QRCode value={qrValue} size={200} style={{ backgroundColor: '#fff', padding: 20 }} />
           <Button onClick={this.endHost.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 25 }}>
             <StopIcon />
-            End checkpoint
+            <Translation>{t => t('endCheckpointButton')}</Translation>
           </Button>
           <Typography style={{ marginTop: 25 }}>
-            Checkpoint created {new Date(checkpointTime).toString()}
+            <Translation>{t => t('checkpointCreatedMessage')}</Translation> {new Date(checkpointTime).toString()}
           </Typography>
         </Grid>
       )
@@ -173,15 +174,15 @@ class Checkpoints extends React.Component {
           />
           { legacyMode && (
             <Typography style={{ marginTop: 25 }}>
-              This app does not have permission to access your device's camera. Instead, you may take a picture of the QR code.
+              <Translation>{t => t('noCameraPermissionMessage')}</Translation>
             </Typography>
           ) }
           <Button onClick={this.openImageDialog.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 25 }}>
-            Take a picture
+            <Translation>{t => t('takePictureButton')}</Translation>
           </Button>
           <Button onClick={this.reset.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 25 }}>
             <ArrowBackIcon />
-            Back
+            <Translation>{t => t('backButton')}</Translation>
           </Button>
         </Grid>
       )
@@ -194,11 +195,11 @@ class Checkpoints extends React.Component {
           alignItems='center'
         >
           <Typography style={{ marginTop: 25, marginBottom: 25 }}>
-            You have joined the checkpoint successfully.
+            <Translation>{t => t('joinSuccessfulMessage')}</Translation>
           </Typography>
           <Button onClick={this.reset.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 25 }}>
             <ArrowBackIcon />
-            Back
+            <Translation>{t => t('backButton')}</Translation>
           </Button>
         </Grid>
       )
@@ -211,11 +212,11 @@ class Checkpoints extends React.Component {
           alignItems='center'
         >
           <Typography style={{ marginTop: 25, marginBottom: 25 }}>
-            The QR code could not be read. Please try again.
+            <Translation>{t => t('scanErrorMessage')}</Translation>
           </Typography>
           <Button onClick={this.reset.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 25 }}>
             <ArrowBackIcon />
-            Back
+            <Translation>{t => t('backButton')}</Translation>
           </Button>
         </Grid>
       )
