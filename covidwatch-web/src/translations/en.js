@@ -1,5 +1,6 @@
 module.exports = {
   'translation': {
+    'aboutButton': 'About',
     'checkpointsTab': 'Checkpoints',
     'statusTab': 'Status',
     'settingsTab': 'Settings',

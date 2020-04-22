@@ -165,7 +165,7 @@ class App extends React.Component {
               <ListItemIcon>
                 <InfoIcon />
               </ListItemIcon>
-              <ListItemText primary='About' />
+              <ListItemText primary=<Translation>{t => t('aboutButton')}</Translation> />
             </ListItemLink>
           </List>
         </SwipeableDrawer>
