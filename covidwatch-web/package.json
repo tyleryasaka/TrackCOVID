@@ -16,9 +16,12 @@
     "@material-ui/lab": "^4.0.0-alpha.47",
     "clsx": "latest",
     "covidwatch-js": "file:../covidwatch-js",
+    "i18next": "^19.4.3",
+    "i18next-browser-languagedetector": "^4.1.1",
     "qrcode.react": "^1.0.0",
     "react": "latest",
     "react-dom": "latest",
+    "react-i18next": "^11.3.5",
     "react-qr-reader": "^2.2.1",
     "react-scripts": "latest"
   },
@@ -33,5 +36,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "json-loader": "^0.5.7"
   }
 }

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import Container from '@material-ui/core/Container'
 import IconButton from '@material-ui/core/IconButton'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -22,6 +22,12 @@ import SettingsPage from './Settings'
 import StatusAlert from './StatusAlert'
 import logo from './logo.svg'
 import API from './api'
+import { Translation } from 'react-i18next'
+import MenuItem from '@material-ui/core/MenuItem'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
+import i18n from './i18n'
+import supportedLanguages from './languages'
 
 const oneSecond = 1000
 const pollingTime = 30 * oneSecond
@@ -37,7 +43,8 @@ class App extends React.Component {
       currentTab: 'checkpoints',
       status: false,
       statusLoaded: false,
-      isDrawerOpen: false
+      isDrawerOpen: false,
+      currentLanguage: i18n.language
     }
   }
 
@@ -76,8 +83,13 @@ class App extends React.Component {
     this.setState({ isDrawerOpen: false })
   }
 
+  onSelectLanguage (event) {
+    i18n.changeLanguage(event.target.value)
+    this.setState({ currentLanguage: event.target.value })
+  }
+
   render () {
-    const { currentTab, status, statusLoaded, isDrawerOpen } = this.state
+    const { currentTab, status, statusLoaded, isDrawerOpen, currentLanguage } = this.state
     const CurrentPage = (currentTab === 'checkpoints')
       ? CheckpointsPage
       : (currentTab === 'status')
@@ -103,12 +115,32 @@ class App extends React.Component {
           </Container>
         </AppBar>
         <Container maxWidth='sm' style={{ marginBottom: 76 }}>
-          <StatusAlert status={status} onExposuresTab={currentTab === 'status'} />
-          <CurrentPage status={status} statusLoaded={statusLoaded} />
-          <Container style={{ padding: 10, backgroundColor: '#343434', width: '100%', marginTop: 50, textAlign: 'center', verticalAlign: 'middle', fontSize: 16, color: 'rgba(255, 255, 255, 0.7)', lineHeight: '24px' }}>
-            <img src={logo} alt='Logo' width={24} height={24} style={{ verticalAlign: 'middle', marginRight: 8, filter: 'grayscale(100%)', opacity: 0.75 }} />
-            <span style={{ verticalAlign: 'middle', lineHeight: '24px' }}>Track</span><span style={{ verticalAlign: 'middle', lineHeight: '24px' }}>COVID</span>
-          </Container>
+          <Suspense fallback='loading'>
+            <StatusAlert status={status} onExposuresTab={currentTab === 'status'} />
+            <CurrentPage status={status} statusLoaded={statusLoaded} />
+            <Container style={{ padding: 10, backgroundColor: '#343434', width: '100%', marginTop: 50, textAlign: 'center', verticalAlign: 'middle', fontSize: 16, color: 'rgba(255, 255, 255, 0.7)', lineHeight: '24px' }}>
+              <img src={logo} alt='Logo' width={24} height={24} style={{ verticalAlign: 'middle', marginRight: 8, filter: 'grayscale(100%)', opacity: 0.75 }} />
+              <span style={{ verticalAlign: 'middle', lineHeight: '24px' }}>Track</span><span style={{ verticalAlign: 'middle', lineHeight: '24px' }}>COVID</span>
+            </Container>
+            <Container style={{ textAlign: 'center' }}>
+              <div>
+                <FormControl style={{ marginTop: '20px' }}>
+                  <Select
+                    labelId='language-select-label'
+                    id='language-select'
+                    value={currentLanguage}
+                    onChange={this.onSelectLanguage.bind(this)}
+                  >
+                    { supportedLanguages.map(language => {
+                      return (
+                        <MenuItem value={language.id}>{language.name}</MenuItem>
+                      )
+                    }) }
+                  </Select>
+                </FormControl>
+              </div>
+            </Container>
+          </Suspense>
         </Container>
         <BottomNavigation
           value={currentTab}
@@ -120,9 +152,9 @@ class App extends React.Component {
           onChange={this.onChangeTab.bind(this)}
           showLabels
         >
-          <BottomNavigationAction label='Checkpoints' value='checkpoints' icon={<CropFree />} />
-          <BottomNavigationAction label='Status' value='status' icon={<Face />} />
-          <BottomNavigationAction label='Settings' value='settings' icon={<Settings />} />
+          <BottomNavigationAction label={<Translation>{t => t('checkpointsTab')}</Translation>} value={<Translation>{t => t('checkpointsTab')}</Translation>} icon={<CropFree />} />
+          <BottomNavigationAction label=<Translation>{t => t('statusTab')}</Translation> value=<Translation>{t => t('statusTab')}</Translation> icon={<Face />} />
+          <BottomNavigationAction label=<Translation>{t => t('settingsTab')}</Translation> value=<Translation>{t => t('settingsTab')}</Translation> icon={<Settings />} />
         </BottomNavigation>
         <SwipeableDrawer
           open={isDrawerOpen}
