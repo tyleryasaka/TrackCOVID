@@ -61,5 +61,5 @@ See [covidwatch-model](covidwatch-model) for source code.
 - [Ben Stedman](https://benstedman.com/): logo
 - [Tyler Yasaka](https://tyleryasaka.me/): development
 - [@equinteros61](https://github.com/equinteros61): translation (Spanish)
-- [@equinteros61](https://github.com/sawravchy): translation (Bengali)
+- [@sawravchy](https://github.com/sawravchy): translation (Bengali)
 - You? (check out our [interest form](https://docs.google.com/forms/d/e/1FAIpQLSfj8AxQ5hVYF2cvlZGv1yopOCLHn71NigqPjyFYSv6sEaQijg/viewform?usp=sf_link))
