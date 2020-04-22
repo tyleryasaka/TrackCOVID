@@ -9,6 +9,7 @@ module.exports = {
     'joinCheckpointButton': ' চেকপয়েন্ট স্ক্যান করুন ',
     'hostingCheckpointMessage': ' আপনি এখন একটি চেকপয়েন্ট  তৈরি করেছেন এবং অন্যরা আপনার চেকপয়েন্টটি স্ক্যান করে স্থানটির বর্তমান অবস্থা সম্পর্কে জানতে পারবেন। ',
     'endCheckpointButton': 'চেকপয়েন্টটি  মুছে ফেলুন ',
+    'printCheckpointButton': 'Print',
     'checkpointCreatedMessage': ' চেকপয়েন্টটি তৈরি হয়েছে ',
     'noCameraPermissionMessage': " এপ্লিকেশনটিতে আপনার ডিভাইস এর ক্যামেরা ব্যবহারের অনুমতি দেয়া নেই কিন্তু আপনি ছবি তুলে QR কোডটি স্ক্যান করতে পারেন ",
     'takePictureButton': 'QR কোডটি স্ক্যান করুন ',
