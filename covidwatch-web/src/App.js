@@ -152,9 +152,9 @@ class App extends React.Component {
           onChange={this.onChangeTab.bind(this)}
           showLabels
         >
-          <BottomNavigationAction label={<Translation>{t => t('checkpointsTab')}</Translation>} value={<Translation>{t => t('checkpointsTab')}</Translation>} icon={<CropFree />} />
-          <BottomNavigationAction label=<Translation>{t => t('statusTab')}</Translation> value=<Translation>{t => t('statusTab')}</Translation> icon={<Face />} />
-          <BottomNavigationAction label=<Translation>{t => t('settingsTab')}</Translation> value=<Translation>{t => t('settingsTab')}</Translation> icon={<Settings />} />
+          <BottomNavigationAction label={<Translation>{t => t('checkpointsTab')}</Translation>} value='checkpoints' icon={<CropFree />} />
+          <BottomNavigationAction label=<Translation>{t => t('statusTab')}</Translation> value='status' icon={<Face />} />
+          <BottomNavigationAction label=<Translation>{t => t('settingsTab')}</Translation> value='settings' icon={<Settings />} />
         </BottomNavigation>
         <SwipeableDrawer
           open={isDrawerOpen}
