@@ -32,6 +32,8 @@ module.exports = {
     'cancelReportButton': 'Never mind',
     'confirmReportButton': 'Report now',
     'aboutUseConfirmedDiagnoses': 'Selecting "Use only confirmed diagnoses" will ignore possible transmission paths from unconfirmed reports.',
-    'useConfirmedDiagnosesButton': 'Use only confirmed diagnoses'
+    'useConfirmedDiagnosesButton': 'Use only confirmed diagnoses',
+    'elevatedRiskAlertMessage': 'Your risk level is elevated.',
+    'seeStatusTabMessage': 'See the status tab.'
   }
 }
