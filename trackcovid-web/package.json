@@ -1,11 +1,11 @@
 {
-  "name": "covidwatch-web",
+  "name": "trackcovid-web",
   "version": "0.0.0",
   "private": true,
   "scripts": {
     "start": "react-scripts start",
     "build": "REACT_APP_ENV=production react-scripts build",
-    "postbuild": "cp -R build/* ../covidwatch-server/app-public",
+    "postbuild": "cp -R build/* ../trackcovid-server/app-public",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -15,7 +15,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.47",
     "clsx": "latest",
-    "covidwatch-js": "file:../covidwatch-js",
+    "trackcovid-js": "file:../trackcovid-js",
     "i18next": "^19.4.3",
     "i18next-browser-languagedetector": "^4.1.1",
     "qrcode.react": "^1.0.0",

@@ -3,8 +3,8 @@ import {
   safetyPeriod,
   estimatedDiagnosisDelay,
   serverBaseUrl as urlPath
-} from 'covidwatch-js/config'
-import CovidWatch from 'covidwatch-js'
+} from 'trackcovid-js/config'
+import TrackCovid from 'trackcovid-js'
 
 const serverBaseUrl = `https://trackcovid.net${urlPath}`
 const checkpointsDBKey = 'CHECKPOINTS'
@@ -28,7 +28,7 @@ async function setUseConfirmed (newVal) {
   return AsyncStorage.setItem(useConfirmedDBKey, JSON.stringify(newVal))
 }
 
-const covidWatch = CovidWatch({
+const trackCovid = TrackCovid({
   serverBaseUrl,
   safetyPeriod,
   estimatedDiagnosisDelay,
@@ -43,7 +43,7 @@ const {
   joinCheckpoint,
   getExposureStatus,
   reportPositive
-} = covidWatch
+} = trackCovid
 
 module.exports = {
   hostCheckpoint,

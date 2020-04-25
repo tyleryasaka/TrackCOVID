@@ -13,7 +13,7 @@ import { Translation } from 'react-i18next'
 import API from './api'
 import {
   checkpointKeyLength
-} from 'covidwatch-js/config'
+} from 'trackcovid-js/config'
 
 const initialState = {
   mode: 'home',

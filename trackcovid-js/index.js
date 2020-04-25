@@ -1,6 +1,6 @@
 /* globals fetch */
 
-function CovidWatch (config) {
+function TrackCovid (config) {
   const {
     serverBaseUrl,
     safetyPeriod,
@@ -91,4 +91,4 @@ function CovidWatch (config) {
   }
 }
 
-module.exports = CovidWatch
+module.exports = TrackCovid

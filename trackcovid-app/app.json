@@ -30,6 +30,6 @@
       "supportsTablet": true
     },
     "description": "Peer-to-peer, privacy-preserving contact tracing. Feel free to try out this Android prototype, but the best way to use TrackCOVID at the moment is through the web app. Learn more at https://trackcovid.net.",
-    "githubUrl": "https://github.com/tyleryasaka/TrackCOVID/tree/master/covidwatch-app"
+    "githubUrl": "https://github.com/tyleryasaka/TrackCOVID/tree/master/trackcovid-app"
   }
 }

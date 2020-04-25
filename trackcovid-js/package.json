@@ -1,5 +1,5 @@
 {
-  "name": "covidwatch-js",
+  "name": "trackcovid-js",
   "version": "0.0.1",
   "description": "Javascript wrapper library for implementing a TrackCOVID frontend user interface.",
   "main": "index.js",

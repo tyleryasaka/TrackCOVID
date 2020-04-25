@@ -43,18 +43,18 @@ Android users may try out the prototype at https://expo.io/@tyleryasaka/trackcov
 
 I am currently unable to distribute a prototype for the iPhone, but the application has been tested and works on iOS devices.
 
-See [covidwatch-app](covidwatch-app) for source code and details.
+See [trackcovid-app](trackcovid-app) for source code and details.
 
 ## Server
 
-See [covidwatch-server](covidwatch-server) for source code.
+See [trackcovid-server](trackcovid-server) for source code.
 
 ## Network Simulation Model
 This is a simplistic model which serves as a proof-of-concept that TrackCOVID's peer-to-peer contact tracing method has potential to impact the outcome of an epidemic, in the right circumstances (including sufficient user adoption). This model was described in the [paper](https://doi.org/10.2196/18936).
 
 Web interface for the simulation: https://tyleryasaka.shinyapps.io/covidwatch/
 
-See [covidwatch-model](covidwatch-model) for source code.
+See [trackcovid-model](trackcovid-model) for source code.
 
 ## Contributors
 

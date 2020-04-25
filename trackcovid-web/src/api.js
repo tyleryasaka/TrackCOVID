@@ -1,9 +1,9 @@
-import CovidWatch from 'covidwatch-js'
+import TrackCovid from 'trackcovid-js'
 import {
   safetyPeriod,
   estimatedDiagnosisDelay,
   serverBaseUrl as defaultServerBaseUrl
-} from 'covidwatch-js/config'
+} from 'trackcovid-js/config'
 
 const checkpointsDBKey = 'CHECKPOINTS'
 const useConfirmedDBKey = 'USECONFIRMED'
@@ -33,7 +33,7 @@ async function setUseConfirmed (newVal) {
   return Promise.resolve(localStorage.setItem(useConfirmedDBKey, JSON.stringify(newVal)))
 }
 
-const covidWatch = CovidWatch({
+const trackCovid = TrackCovid({
   serverBaseUrl,
   safetyPeriod,
   estimatedDiagnosisDelay,
@@ -48,7 +48,7 @@ const {
   joinCheckpoint,
   getExposureStatus,
   reportPositive
-} = covidWatch
+} = trackCovid
 
 export default {
   hostCheckpoint,

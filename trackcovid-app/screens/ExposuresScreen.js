@@ -7,7 +7,7 @@ import { StatusContext } from '../status-context'
 import StatusBanner from '../components/status-banner'
 const {
   confirmcodeLength
-} = require('covidwatch-js/config')
+} = require('trackcovid-js/config')
 
 const initialState = {
   exposureStatus: false,

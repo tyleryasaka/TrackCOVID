@@ -16,7 +16,7 @@ import theme from './theme'
 import API from './api'
 import {
   confirmcodeLength
-} from 'covidwatch-js/config'
+} from 'trackcovid-js/config'
 
 const initialState = {
   exposureStatus: false,

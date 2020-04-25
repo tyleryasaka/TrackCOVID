@@ -9,7 +9,7 @@ import StatusBanner from '../components/status-banner'
 
 const {
   checkpointKeyLength
-} = require('covidwatch-js/config')
+} = require('trackcovid-js/config')
 
 const initialState = {
   mode: 'home',
