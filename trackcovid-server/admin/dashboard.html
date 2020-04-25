@@ -3,6 +3,35 @@
     <title>TrackCOVID (beta): Admin</title>
     <link rel="stylesheet" href="/admin/public/css/dashboard.css" />
     <link rel="stylesheet" href="/admin/public/css/bootstrap.min.css" />
+    <script>
+      function onUpload () {
+        var files = document.getElementById('checkpoint-upload').files;
+        if (files.length <= 0) {
+          return false;
+        }
+
+        var fr = new FileReader();
+
+        fr.onload = function(e) {
+          var result = JSON.parse(e.target.result);
+          var xhr = new XMLHttpRequest();
+          var url = '/admin/checkpoints';
+          xhr.open('POST', url, true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+              document.getElementById('checkpoint-upload-form').reset();
+              // document.getElementById('upload-success').style.display = 'block';
+              alert('The checkpoints were uploaded successfully.')
+            }
+          };
+          var data = JSON.stringify({ checkpoints: result });
+          xhr.send(data);
+        }
+
+        fr.readAsText(files.item(0))
+      }
+    </script>
   </head>
   <body class="">
     <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
@@ -22,7 +51,7 @@
               <li class="nav-item">
                 <a class="nav-link">
                   <span data-feather="home"></span>
-                  Confirmation codes
+                  Checkpoints
                 </a>
               </li>
             </ul>
@@ -30,16 +59,18 @@
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
           <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <h1 class="h2">Confirmation codes</h2>
+            <h1 class="h2">Upload Checkpoints</h2>
           </div>
-          <form action="/admin/confirmcode/generate" method="post" target="_blank">
-            <p>Click the button to generate a new confirmation code.</p>
-            <p>This will open a new tab with a QR confirmation code. You can print the page and deliver it to the patient.</p>
-            <button type="submit" class="btn btn-large btn-warning">New confirmation code</button>
+          <form action="/admin/checkpoints" method="post" target="_blank" id="checkpoint-upload-form">
+            <p>Click the button to upload a checkpoint history file.</p>
+            <p>A patient with a positive test can download this from the web app and email it to you to be uploaded here.</p>
+            <div class="alert alert-success" style="display: none;" id="upload-success" role="alert">
+              The checkpoints were uploaded successfully.
+            </div>
+            <input class="btn btn-large btn-warning" type="file" id="checkpoint-upload" value="Upload" onchange="onUpload()" />
           </form>
         </main>
       </div>
     </div>
-
   </body>
 </html>

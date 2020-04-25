@@ -1,9 +1,6 @@
 const express = require('express')
-const sha256 = require('js-sha256').sha256
 const passport = require('passport')
-const Confirmcode = require('../models/confirmcode')
-
-const confirmcodeLength = Number(process.env['CONFIRMCODE_LENGTH'])
+const Checkpoint = require('../models/checkpoint')
 
 const adminApiRouter = express.Router()
 
@@ -22,9 +19,6 @@ adminApiRouter.get('/', function (req, res) {
   } else {
     res.sendfile('admin/login.html')
   }
-})
-adminApiRouter.get('/confirmation-code', ensureAuthenticated, function (req, res) {
-  res.sendfile('admin/confirmation-code.html')
 })
 
 adminApiRouter.get('/logout', function (req, res) {
@@ -45,17 +39,17 @@ adminApiRouter.get('/status', function (req, res) {
   res.send({ isLoggedIn: req.isAuthenticated() })
 })
 
-adminApiRouter.post('/confirmcode/generate', ensureAuthenticated, (req, res) => {
-  const confirmcode = new Confirmcode({
-    code: sha256(String(Math.random())).substring(0, confirmcodeLength),
-    redeemed: false
+adminApiRouter.post('/checkpoints', ensureAuthenticated, (req, res) => {
+  const { checkpoints } = req.body
+  const checkpointsForDb = checkpoints.map(checkpoint => {
+    return { key: checkpoint.key, timestamp: checkpoint.timestamp }
   })
-  confirmcode.save(function (err, confirmcode) {
+  Checkpoint.create(checkpointsForDb, function (err, checkpoints) {
     if (err) {
       console.error(err)
       res.send({ error: true })
     } else {
-      res.redirect(`/admin/confirmation-code?code=${confirmcode.code}`)
+      res.send({ error: false })
     }
   })
 })
