@@ -1,4 +1,5 @@
 /* globals fetch */
+const sha256 = require('js-sha256').sha256
 
 function TrackCovid (config) {
   const {
@@ -7,9 +8,11 @@ function TrackCovid (config) {
     estimatedDiagnosisDelay,
     getCheckpoints,
     setCheckpoints,
-    getUseConfirmed,
-    setUseConfirmed
+    exposureWindow,
+    checkpointKeyLength
   } = config
+
+  const oneHour = 1000 * 60 * 60
 
   async function serverRequest (method, url = '', body) {
     const response = await fetch(`${serverBaseUrl}/${url}`, {
@@ -29,28 +32,17 @@ function TrackCovid (config) {
 
   async function addCheckpoint (checkpointKey) {
     const checkpoints = await getCheckpoints()
-    if (checkpoints.length > 0) {
-      const lastCheckpoint = checkpoints[checkpoints.length - 1]
-      await serverRequest('POST', `links/${checkpointKey}/${lastCheckpoint.key}`)
-    }
     const checkpointObj = {
       key: checkpointKey,
-      time: Date.now()
+      timestamp: Date.now()
     }
     checkpoints.push(checkpointObj)
     await setCheckpoints(checkpoints)
     return checkpointObj
   }
 
-  async function getCheckpointStatus (checkpointKey) {
-    const response = (await serverRequest('GET', `${checkpointKey}`))
-    const useConfirmed = await getUseConfirmed()
-    const riskLevelProp = useConfirmed ? 'confirmedRiskLevel' : 'riskLevel'
-    return !response.error && (response[riskLevelProp] === 'elevated')
-  }
-
   async function hostCheckpoint () {
-    const newCheckpointKey = (await serverRequest('POST')).checkpoint
+    const newCheckpointKey = sha256(String(Math.random())).substring(0, checkpointKeyLength)
     return addCheckpoint(newCheckpointKey)
   }
 
@@ -58,36 +50,38 @@ function TrackCovid (config) {
     return addCheckpoint(checkpointKey)
   }
 
-  async function getExposureStatus () {
-    const checkpoints = await getCheckpoints()
-    const recentCheckpoints = checkpoints.filter(checkpoint => {
-      return Date.now() - checkpoint.time <= safetyPeriod
+  async function exportCheckpoints () {
+    const visitedCheckpoints = await getCheckpoints()
+    const recentCheckpoints = visitedCheckpoints.filter(checkpoint => {
+      return (Date.now() - checkpoint.timestamp) <= estimatedDiagnosisDelay
     })
-    const statuses = await Promise.all(recentCheckpoints.map(checkpoint => {
-      return getCheckpointStatus(checkpoint.key)
-    }))
-    return statuses.some(status => status)
+    return recentCheckpoints
   }
 
-  async function reportPositive (confirmcode) {
-    const checkpoints = await getCheckpoints()
-    const recentCheckpoints = checkpoints.filter(checkpoint => {
-      return Date.now() - checkpoint.time <= estimatedDiagnosisDelay
+  async function getExposureStatus () {
+    const visitedCheckpoints = await getCheckpoints()
+    const recentCheckpoints = visitedCheckpoints.filter(checkpoint => {
+      return Date.now() - checkpoint.timestamp <= safetyPeriod
     })
-    const checkpointKeys = recentCheckpoints.map(({ key }) => key)
-    await serverRequest('POST', 'exposures', {
-      keys: checkpointKeys,
-      confirmcode
+    const response = await serverRequest('GET')
+    const exposedCheckpoints = response.error ? [] : response.checkpoints
+    const matches = recentCheckpoints.filter(visited => {
+      return exposedCheckpoints.filter(exposed => {
+        return (
+          (visited.key === exposed.key) &&
+          (visited.timestamp >= (exposed.timestamp - oneHour)) &&
+          (visited.timestamp - exposed.timestamp <= exposureWindow)
+        )
+      }).length > 0
     })
+    return matches.length > 0
   }
 
   return {
     hostCheckpoint,
     joinCheckpoint,
     getExposureStatus,
-    reportPositive,
-    getUseConfirmed,
-    setUseConfirmed
+    exportCheckpoints
   }
 }
 
