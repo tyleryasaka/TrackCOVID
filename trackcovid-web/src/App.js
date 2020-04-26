@@ -7,7 +7,6 @@ import BottomNavigation from '@material-ui/core/BottomNavigation'
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction'
 import CropFree from '@material-ui/icons/CropFree'
 import Face from '@material-ui/icons/Face'
-import Settings from '@material-ui/icons/Settings'
 import MenuIcon from '@material-ui/icons/Menu'
 import InfoIcon from '@material-ui/icons/Info'
 import AppBar from '@material-ui/core/AppBar'
@@ -18,7 +17,6 @@ import ListItemText from '@material-ui/core/ListItemText'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import CheckpointsPage from './Checkpoints'
 import ExposuresPage from './Exposures'
-import SettingsPage from './Settings'
 import StatusAlert from './StatusAlert'
 import logo from './logo.svg'
 import API from './api'
@@ -92,9 +90,7 @@ class App extends React.Component {
     const { currentTab, status, statusLoaded, isDrawerOpen, currentLanguage } = this.state
     const CurrentPage = (currentTab === 'checkpoints')
       ? CheckpointsPage
-      : (currentTab === 'status')
-        ? ExposuresPage
-        : SettingsPage
+      : ExposuresPage
     return (
       <div>
         <AppBar position='static' color='secondary'>
@@ -154,7 +150,6 @@ class App extends React.Component {
         >
           <BottomNavigationAction label={<Translation>{t => t('checkpointsTab')}</Translation>} value='checkpoints' icon={<CropFree />} />
           <BottomNavigationAction label=<Translation>{t => t('statusTab')}</Translation> value='status' icon={<Face />} />
-          <BottomNavigationAction label=<Translation>{t => t('settingsTab')}</Translation> value='settings' icon={<Settings />} />
         </BottomNavigation>
         <SwipeableDrawer
           open={isDrawerOpen}

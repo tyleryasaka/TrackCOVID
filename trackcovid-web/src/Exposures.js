@@ -2,15 +2,7 @@ import React from 'react'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import QRReader from 'react-qr-reader'
-import ArrowBackIcon from '@material-ui/icons/ArrowBack'
-import ReportProblemIcon from '@material-ui/icons/ReportProblem'
-import CropFreeIcon from '@material-ui/icons/CropFree'
+import GetAppIcon from '@material-ui/icons/GetApp'
 import { Translation } from 'react-i18next'
 import theme from './theme'
 import API from './api'
@@ -21,8 +13,6 @@ import {
 const initialState = {
   exposureStatus: false,
   loaded: false,
-  showReportConfirmation: false,
-  confirmcode: undefined,
   mode: 'default'
 }
 
@@ -51,16 +41,13 @@ class Exposures extends React.Component {
     this.setState(initialState)
   }
 
-  showReportPrompt () {
-    this.setState({ mode: 'report-prompt' })
-  }
-
-  exitReportPrompt () {
-    this.setState({ mode: 'default' })
-  }
-
-  scanConfirmcode () {
-    this.setState({ mode: 'scan-confirmcode' })
+  async downloadHistory () {
+    const checkpoints = await API.exportCheckpoints()
+    var dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(checkpoints))
+    var dlAnchorElem = document.getElementById('downloadAnchorElem')
+    dlAnchorElem.setAttribute('href', dataStr)
+    dlAnchorElem.setAttribute('download', 'checkpoints.json')
+    dlAnchorElem.click()
   }
 
   async handleScan (data) {
@@ -81,29 +68,9 @@ class Exposures extends React.Component {
     }
   }
 
-  handleScanError () {
-    this.setState({ mode: 'scan-error' })
-  }
-
-  reportConfirmation () {
-    this.setState({ showReportConfirmation: true })
-  }
-
-  async reportPositive () {
-    const { confirmcode } = this.state
-    try {
-      await API.reportPositive(confirmcode)
-      this.setState({ mode: 'report-done', showReportConfirmation: false })
-    } catch (e) {
-      console.error(e)
-      this.reset()
-      window.alert('There was an unexpected error. Please leave feedback so the developer can fix this.')
-    }
-  }
-
   render () {
     const { status, statusLoaded } = this.props
-    const { mode, showReportConfirmation } = this.state
+    const { mode } = this.state
     const statusMessageLoading = (<Translation>{t => t('statusLoadingMessage')}</Translation>)
     const statusMessageNegative = (<Translation>{t => t('statusNegativeMessage')}</Translation>)
     const statusMessagePositive = (<Translation>{t => t('statusPositiveMessage')}</Translation>)
@@ -144,103 +111,14 @@ class Exposures extends React.Component {
               <Typography style={{ marginTop: 25 }}>
                 <Translation>{t => t('aboutReportMessage')}</Translation>
               </Typography>
-              <Button onClick={this.showReportPrompt.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 25 }}>
-                <ReportProblemIcon />
-                <Translation>{t => t('reportButton')}</Translation>
+              <Button onClick={this.downloadHistory.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 25 }}>
+                <GetAppIcon />
+                <Translation>{t => t('downloadHistoryButton')}</Translation>
               </Button>
-            </Grid>
-          )) || ((mode === 'report-prompt') && (
-            <Grid
-              container
-              direction='column'
-              justify='center'
-              alignItems='center'
-            >
-              <Typography style={{ marginTop: 25 }}>
-                <Translation>{t => t('aboutConfirmationCodeMessage')}</Translation>
-              </Typography>
-              <Button onClick={this.scanConfirmcode.bind(this)} variant='contained' color='secondary' aria-label='add' style={{ marginTop: 50 }}>
-                <CropFreeIcon />
-                <Translation>{t => t('scanConfirmationCodeButton')}</Translation>
-              </Button>
-              <Button onClick={this.reportConfirmation.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 50 }}>
-                <Translation>{t => t('scanWithoutConfirmationCodeButton')}</Translation>
-              </Button>
-            </Grid>
-          )) || ((mode === 'scan-confirmcode') && (
-            <Grid
-              container
-              direction='column'
-              justify='center'
-              alignItems='center'
-            >
-              {!showReportConfirmation && (
-                <QRReader
-                  delay={300}
-                  onError={this.handleScanError.bind(this)}
-                  onScan={this.handleScan.bind(this)}
-                  style={{ width: '100%' }}
-                  facingMode='environment'
-                />
-              )}
-              <Button onClick={this.reset.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 25 }}>
-                <ArrowBackIcon />
-                <Translation>{t => t('backButton')}</Translation>
-              </Button>
-            </Grid>
-          )) || ((mode === 'scan-error') && (
-            <Grid
-              container
-              direction='column'
-              justify='center'
-              alignItems='center'
-            >
-              <Typography style={{ marginTop: 25, marginBottom: 25 }}>
-                <Translation>{t => t('scanErrorMessage')}</Translation>
-              </Typography>
-              <Button onClick={this.reset.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 25 }}>
-                <ArrowBackIcon />
-                <Translation>{t => t('backButton')}</Translation>
-              </Button>
-            </Grid>
-          )) || ((mode === 'report-done') && (
-            <Grid
-              container
-              direction='column'
-              justify='center'
-              alignItems='center'
-            >
-              <Typography style={{ marginTop: 25, marginBottom: 25 }}>
-                <Translation>{t => t('reportCompletedMessage')}</Translation>
-              </Typography>
-              <Button onClick={this.reset.bind(this)} variant='contained' color='primary' aria-label='add' style={{ marginTop: 25 }}>
-                <ArrowBackIcon />
-                <Translation>{t => t('backButton')}</Translation>
-              </Button>
+              <a id='downloadAnchorElem' href='/' style={{ display: 'none' }}><Translation>{t => t('downloadHistoryButton')}</Translation></a>
             </Grid>
           ))
         }
-        <Dialog
-          open={showReportConfirmation}
-          disableBackdropClick
-          aria-labelledby='alert-dialog-title'
-          aria-describedby='alert-dialog-description'
-        >
-          <DialogTitle id='alert-dialog-title'>Report positive status?</DialogTitle>
-          <DialogContent>
-            <DialogContentText id='alert-dialog-description'>
-              <Translation>{t => t('reportConfirmationMessage')}</Translation>
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.reset.bind(this)} color='secondary'>
-              <Translation>{t => t('cancelReportButton')}</Translation>
-            </Button>
-            <Button onClick={this.reportPositive.bind(this)} color='primary' autoFocus>
-              <Translation>{t => t('confirmReportButton')}</Translation>
-            </Button>
-          </DialogActions>
-        </Dialog>
       </Grid>
     )
   }
