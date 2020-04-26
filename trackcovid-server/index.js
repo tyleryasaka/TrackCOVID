@@ -56,13 +56,6 @@ app.use('/checkpoint/', storefrontApiRouter)
 app.use('/public/', express.static('landing-public'))
 app.use('/app/static', express.static('app-public/static'))
 
-app.get('/', function (req, res) {
-  res.sendfile('landing-public/index.html')
-})
-app.get('/app/', function (req, res) {
-  res.sendfile('app-public/index.html')
-})
-
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/checkpoints', { useNewUrlParser: true })
 const db = mongoose.connection
 
@@ -80,6 +73,10 @@ passport.use(User.createStrategy())
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
 app.use('/admin/', adminApiRouter)
+
+app.get('/', function (req, res) {
+  res.sendfile('app-public/index.html')
+})
 
 db.on('error', console.error.bind(console, 'connection error:'))
 db.once('open', function () {
