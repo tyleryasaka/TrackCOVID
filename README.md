@@ -1,8 +1,14 @@
 # TrackCOVID
 
-By tracking the spread of the virus, we can flatten the curve.
+QR Code-Based Contact Tracing for Communities
 
-![logo](doc/logo.png)
+This is an open source project which we provide freely to communities which are interested in setting up digital contact tracing to supplement manual contact tracing in a way that is both easy to use and 100% private.
+
+We propose a concrete strategy for setting up QR code-based contact tracing in your community, and we provide all of the source code necessary for this to happen. We believe our approach can add an additional layer of protection as public places begin reopening. Manual contact tracing in public places is very difficult, if not impossible in many cases. Our approach can help to notify people of potential exposure at these public places in a way that does not invade their privacy.
+
+If you are interested, we are happy to collaborate as needed to make this a reality in your community. We do this as a public service without asking for anything in return.
+
+![flyer](doc/qr-contact-tracing-flyer.png)
 
 - Learn more:
 https://trackcovid.net
@@ -10,40 +16,29 @@ https://trackcovid.net
 https://doi.org/10.2196/18936
 - Read my proposal for public checkpoints:
 https://tyleryasaka.me/2020/04/07/public-checkpoints/
-
-![network](doc/interactions.png)
+- Link to the [downloadable flyer](doc/qr-contact-tracing-flyer.pdf) for communities
 
 ## Web App
 
-A mobile-friendly web app is available for immediate use without any downloads or registration.
+We have a proof-of-concept web app which you are welcome to check out. A similar web app would be set up for your community.
 
 https://trackcovid.net/app
 
 ## Public Checkpoints
 
-We have created a link which generates a public checkpoint as a printable PDF. Public checkpoints should be generated once per location, per day, and can be posted at public places like stores and workplaces. Public checkpoints can be easily and quickly scanned by anyone with a smartphone as they enter, without entering any information or downloading an application.
+We have created a link which generates a public checkpoint as a printable PDF. Public can be posted at public places like stores and workplaces. Public checkpoints can be easily and quickly scanned by anyone with a smartphone as they enter, without entering any information or downloading an application. You may check out the example below:
 
 https://trackcovid.net/checkpoint
 
 ## Admin interface
 
-The admin interface is a feature which would allow authorized users from laboratories and/or health care facilities to issue confirmation codes for diagnoses. The current admin interface is for demonstration purposes only, but it is functional. You can try generating a confirmation code and then use it to confirm your self-report in the app. The [paper](https://doi.org/10.2196/18936) provides more details on the use of confirmation codes.
+The admin interface is a feature which would allow authorized users from health care facilities to upload QR code histories on behalf of diagnosed users. The current admin interface is for demonstration purposes only, but it is functional.
 
 Login with:
 - Username: `user`
 - password: `pass`
 
 https://trackcovid.net/admin
-
-## Native Mobile Apps
-
-The web app, above, is the best way to use TrackCOVID at the moment. However, I have developed a prototype for Android and iOS. (Web, Android, and iOS apps are equivalent in functionality.)
-
-Android users may try out the prototype at https://expo.io/@tyleryasaka/trackcovid.
-
-I am currently unable to distribute a prototype for the iPhone, but the application has been tested and works on iOS devices.
-
-See [trackcovid-app](trackcovid-app) for source code and details.
 
 ## Server
 
