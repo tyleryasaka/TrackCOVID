@@ -69,35 +69,14 @@
       <div class="bg-dark pt-3 px-3 pt-md-10 px-md-10 text-center text-white overflow-hidden">
         <div class="my-3 py-3">
           <h2 class="display-5">How it Works</h2>
-          <img src="public/interactions.png" class="interactions" alt="Graph of interactions" />
           <p class="about-text my-3">
-            TrackCOVID works by creating an anonymous graph of interactions, and uses this graph to find possible paths of disease transmission. Anywhere that people gather together in a way that could transmit COVID-19, people need to check in to a common checkpoint - this checkpoint is a node on the graph. Anyone can create a checkpoint using the app, and a QR code is generated which others can scan to join the checkpoint. Everyone stays anonymous in this process. As you and others join checkpoints over time, all of the interactions are linked to each other, without any record of the specific people involved.
+            Users scan QR codes as they enter public places. Scanning a QR code is like adding an entry to a private journal of places the user has been.
+            When someone tests positive, they have the option to share their QR code history with their doctor.
+            The user downloads a file from the web app and emails this file to their doctor.
+            The doctor then uploads the file to a database through a secure administrative system.
+            Each user's smartphone will constantly compare its QR code history with the public database of exposed QR codes.
+            If there is a match, the user is alerted that they may have crossed paths with an exposed person.
           </p>
-          <p class="about-text my-3">
-            If someone receives a positive test for COVID-19, they can report it anonymously through the app. Using the graph of interactions, it is possible for others to determine whether they may have been exposed without anyone's identity being revealed. Those who may have been exposed are notified of their elevated risk level through the app.
-          </p>
-          <a href="https://doi.org/10.2196/18936" target="_blank" class="btn btn-warning">Read the Paper</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="d-md-flex flex-md-equal w-100" id="how-it-works">
-      <div class="bg-light pt-3 px-3 pt-md-10 px-md-10 text-center text-dark overflow-hidden">
-        <div class="my-3 py-3">
-          <h2 class="display-5">Examples</h2>
-          <p class="lead about-text my-3">
-            So what does this look like in practice? There are basically 2 types of scenarios:
-          </p>
-          <p class="about-text my-3">
-            1. <strong>Personal interactions</strong>. Example: you go for a walk in the park with a friend. Although you’re being careful and neither of you are symptomatic, you decide the responsible thing to do is to create a checkpoint, just in case. You open <a style="color: #CB1212" href="/app">trackcovid.net/app</a> on your phone and press the "host a checkpoint" button. Your screen displays a QR code. You show the QR code to your friend, who uses their phone camera to scan it. This opens up <a style="color: #CB1212" href="/app">trackcovid.net/app</a> on your friend’s phone, and the screen on their phone says "You have checked in successfully." Then, the two of you proceed to have a pleasant walk through the park.
-          </p>
-          <p class="about-text my-3">
-            2. <strong>Public meeting places</strong>. Example: You go grocery shopping. Everyone is wearing masks and staying 6 feet away from each other, but masks are not foolproof and the SARS-COV-2 virus can linger on surfaces such as carts and grocery items. So, a worker is standing at the entrance offering people hand sanitizer as they enter. The worker is also asking everyone to use their smartphones to scan a QR code which is posted on a sign. The sign says something about "contact tracing" and stopping the spread of COVID-19, so you decide you might as well do it. You pull out your phone, scan the QR code, and a web page opens up saying, "you have checked in successfully". You proceed to get your groceries… A week later, you go grocery shopping again. You’re not tech-savvy and you haven’t used the TrackCOVID app since last week. This time, after you scan the QR code, the screen has a warning message saying you’re at an elevated risk of exposure. You proceed to self-isolate for two weeks.
-          </p>
-          <p class="lead about-text my-3">
-            I am primarily focused on the second scenario at the moment, as I believe it is the most realistic way to implement large-scale contact tracing in the US. I have written a blog post describing this proposal and why I believe it will be effective.
-          </p>
-          <a href="https://tyleryasaka.me/2020/04/07/public-checkpoints/" target="_blank" class="btn btn-dark">Public checkpoints proposal</a>
         </div>
       </div>
     </div>
@@ -106,14 +85,15 @@
       <div class="bg-dark pt-3 px-3 pt-md-10 px-md-10 text-center text-white overflow-hidden">
         <div class="my-3 py-3 text-light">
           <h2 class="display-5">Start Tracking</h2>
-          <p class="lead about-text my-3">TrackCOVID is currently in beta, but you can try out the web application today.</p>
+          <p class="lead about-text my-3">We have a proof-of-concept <a href="/app" target="_blank" class="text-warning">web application</a> that you can try out for yourself today.</p>
           <p class="lead about-text my-3">
-            Additionally, we have created a <a href="/checkpoint" target="_blank" class="text-warning">link</a> which generates a public checkpoint as a printable PDF.
-            Public checkpoints should be generated once per location, per day, and can be posted at public places like stores and workplaces.
-            Public checkpoints can be easily and quickly scanned by anyone with a smartphone, without downloading an application.
+            For those interested in taking next steps, we propose a concrete strategy for setting up QR code-based contact tracing in your community, and we provide all of the source code necessary for this to happen. We believe our approach can add an additional layer of protection as public places begin reopening. Manual contact tracing in public places is very difficult, if not impossible in many cases. Our approach can help to notify people of potential exposure at these public places in a way that does not invade their privacy.
+          </p>
+          <p class="lead about-text my-3">
+            If you are interested, we are happy to collaborate as needed to make this a reality in your community. We do this as a public service without asking for anything in return. You can learn more about how this might work by checking out <a href="/public/qr-contact-tracing-flyer.pdf" target="_blank" class="text-warning">this flyer</a>.
           </p>
           <a class="btn btn-light" href="/app" target="_blank">Web app</a>
-          <a href="https://tyleryasaka.me/2020/04/07/public-checkpoints/" target="_blank" class="btn btn-warning">Public checkpoints proposal</a>
+          <a href="/public/qr-contact-tracing-flyer.pdf" target="_blank" class="btn btn-warning">Contact Tracing for Communities</a>
         </div>
       </div>
     </div>
@@ -142,10 +122,6 @@
           <h2 class="display-5">Get Involved</h2>
           <p class="lead about-text my-3">
             If you would like to get involved in any way or simply would like to be kept up-to-date on the project, you are welcome to fill out our interest form.
-            Developers and designers may also contribute directly to the project on GitHub.
-          </p>
-          <p class="lead about-text my-3">
-            By tracking the spread of the virus, we can flatten the curve. Please join us.
           </p>
           <a href="https://docs.google.com/forms/d/e/1FAIpQLSfj8AxQ5hVYF2cvlZGv1yopOCLHn71NigqPjyFYSv6sEaQijg/viewform?usp=sf_link" target="_blank" class="btn btn-light">Interest form</a>
           <a href="https://github.com/tyleryasaka/TrackCOVID" target="_blank" class="btn btn-warning">GitHub project</a>
@@ -179,7 +155,6 @@
             <li><a class="text-muted" href="/app" target="_blank">Web App</a></li>
             <li><a class="text-muted" href="/admin" target="_blank">Admin</a></li>
             <li><a class="text-muted" href="/checkpoint" target="_blank">Public checkpoint</a></li>
-            <li><a class="text-muted" href="https://expo.io/@tyleryasaka/trackcovid" target="_blank">Android App</a></li>
           </ul>
         </div>
         <div class="col-6 col-md">
@@ -192,7 +167,7 @@
           <h5>Learn More</h5>
           <ul class="list-unstyled text-small">
             <li><a class="text-muted" href="https://doi.org/10.2196/18936" target="_blank">Peer-reviewed paper</a></li>
-            <li><a class="text-muted" href="https://tyleryasaka.me/2020/04/07/public-checkpoints/" target="_blank">The proposal</a></li>
+            <li><a class="text-muted" href="/public/qr-contact-tracing-flyer.pdf" target="_blank">Community Setup</a></li>
             <li><a class="text-muted" href="https://github.com/tyleryasaka/TrackCOVID" target="_blank">GitHub project</a></li>
             <li><a class="text-muted" href="https://tyleryasaka.shinyapps.io/covidwatch/" target="_blank">Simulation model</a></li>
           </ul>
