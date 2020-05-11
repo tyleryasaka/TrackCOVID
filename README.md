@@ -20,6 +20,10 @@ https://demo.trackcovid.net
 https://doi.org/10.2196/18936
 - Instructions for setting up in your community or jurisdiction: https://github.com/tyleryasaka/TrackCOVID-community/blob/master/README.md
 
+## Source code
+
+The app source code in this repository is stale. The up-to-date code is located at: https://github.com/tyleryasaka/TrackCOVID-community
+
 ## Contributors
 
 - [Ben Stedman](https://benstedman.com/): logo
