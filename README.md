@@ -8,48 +8,17 @@ We propose a concrete strategy for setting up QR code-based contact tracing in y
 
 If you are interested, we are happy to collaborate as needed to make this a reality in your community. We do this as a public service without asking for anything in return.
 
+If you are interested in setting up this project in your community or jurisdiction, [click here](https://github.com/tyleryasaka/TrackCOVID-community/blob/master/README.md) to learn more.
+
 ![flyer](doc/qr-contact-tracing-flyer.png)
 
-- Learn more:
+- About the project:
 https://trackcovid.net
+- App demo:
+https://demo.trackcovid.net
 - Read the peer-reviewed paper in JMIR mHealth and uHealth:
 https://doi.org/10.2196/18936
-- Read my proposal for public checkpoints:
-https://tyleryasaka.me/2020/04/07/public-checkpoints/
-- Link to the [downloadable flyer](doc/qr-contact-tracing-flyer.pdf) for communities
-
-## Web App
-
-We have a proof-of-concept web app which you are welcome to check out. A similar web app would be set up for your community.
-
-https://trackcovid.net/app
-
-## Public Checkpoints
-
-We have created a link which generates a public checkpoint as a printable PDF. Public can be posted at public places like stores and workplaces. Public checkpoints can be easily and quickly scanned by anyone with a smartphone as they enter, without entering any information or downloading an application. You may check out the example below:
-
-https://trackcovid.net/checkpoint
-
-## Admin interface
-
-The admin interface is a feature which would allow authorized users from health care facilities to upload QR code histories on behalf of diagnosed users. The current admin interface is for demonstration purposes only, but it is functional.
-
-Login with:
-- Username: `user`
-- password: `pass`
-
-https://trackcovid.net/admin
-
-## Server
-
-See [trackcovid-server](trackcovid-server) for source code.
-
-## Network Simulation Model
-This is a simplistic model which serves as a proof-of-concept that TrackCOVID's peer-to-peer contact tracing method has potential to impact the outcome of an epidemic, in the right circumstances (including sufficient user adoption). This model was described in the [paper](https://doi.org/10.2196/18936).
-
-Web interface for the simulation: https://tyleryasaka.shinyapps.io/covidwatch/
-
-See [trackcovid-model](trackcovid-model) for source code.
+- Instructions for setting up in your community or jurisdiction: https://github.com/tyleryasaka/TrackCOVID-community/blob/master/README.md
 
 ## Contributors
 
