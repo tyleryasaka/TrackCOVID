@@ -10,7 +10,7 @@ We propose a concrete strategy for setting up QR code-based contact tracing in y
 
 If you are interested, we are happy to collaborate as needed to make this a reality in your community. We do this as a public service without asking for anything in return.
 
-If you are interested in setting up this project in your community or jurisdiction, [click here](https://github.com/tyleryasaka/TrackCOVID-community/blob/master/README.md) to learn more.
+If you are interested in setting up this project in your community or jurisdiction, [click here](https://github.com/tyleryasaka/TrackCOVID-community#trackcovid-community) to learn more.
 
 - About the project:
 https://trackcovid.net
@@ -18,7 +18,7 @@ https://trackcovid.net
 https://demo.trackcovid.net
 - Read the peer-reviewed paper in JMIR mHealth and uHealth:
 https://doi.org/10.2196/18936
-- Instructions for setting up in your community or jurisdiction: https://github.com/tyleryasaka/TrackCOVID-community/blob/master/README.md
+- Instructions for setting up in your community or jurisdiction: https://github.com/tyleryasaka/TrackCOVID-community#trackcovid-community
 
 ## Source code
 
