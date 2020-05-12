@@ -2,6 +2,8 @@
 
 QR Code-Based Contact Tracing for Communities
 
+![logo](doc/logo.png)
+
 This is an open source project which we provide freely to communities which are interested in setting up digital contact tracing to supplement manual contact tracing in a way that is both easy to use and 100% private.
 
 We propose a concrete strategy for setting up QR code-based contact tracing in your community, and we provide all of the source code necessary for this to happen. We believe our approach can add an additional layer of protection as public places begin reopening. Manual contact tracing in public places is very difficult, if not impossible in many cases. Our approach can help to notify people of potential exposure at these public places in a way that does not invade their privacy.
@@ -9,8 +11,6 @@ We propose a concrete strategy for setting up QR code-based contact tracing in y
 If you are interested, we are happy to collaborate as needed to make this a reality in your community. We do this as a public service without asking for anything in return.
 
 If you are interested in setting up this project in your community or jurisdiction, [click here](https://github.com/tyleryasaka/TrackCOVID-community/blob/master/README.md) to learn more.
-
-![flyer](doc/qr-contact-tracing-flyer.png)
 
 - About the project:
 https://trackcovid.net
