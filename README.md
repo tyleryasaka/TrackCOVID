@@ -1,6 +1,6 @@
 # TrackCOVID
 
-QR Code-Based Contact Tracing for Communities
+An open source project which provides privacy-preserving contact tracing for communities using QR codes
 
 ![logo](doc/logo.png)
 
